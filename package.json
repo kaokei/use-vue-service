@@ -1,17 +1,24 @@
 {
   "name": "use-vue-service",
   "version": "1.0.0",
-  "description": "",
+  "description": "Use angular service in vue.",
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
     "build": "vite build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
+  "keywords": [
+    "angular",
+    "vue",
+    "service",
+    "Ioc",
+    "DI",
+    "Dependency injection"
+  ],
+  "author": "huanggm",
+  "license": "MIT",
+  "peerDependencies": {
     "reflect-metadata": "^0.1.13",
     "vue": "^3.0.0-rc.1"
   },
