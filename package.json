@@ -2,11 +2,12 @@
   "name": "use-vue-service",
   "version": "1.0.0",
   "description": "Use angular service in vue.",
-  "main": "src/index.ts",
+  "main": "lib/bundle.cjs.js",
+  "module": "lib/bundle.esm.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
-    "build": "vite build"
+    "build": "rollup -c"
   },
   "keywords": [
     "angular",
@@ -23,7 +24,19 @@
     "vue": "^3.0.0-rc.1"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^15.1.0",
+    "@rollup/plugin-typescript": "^6.0.0",
+    "@vue/compiler-sfc": "^3.0.0-rc.1",
+    "reflect-metadata": "^0.1.13",
+    "rollup": "^2.29.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "tslib": "^2.0.2",
+    "typescript": "^4.0.3",
     "vite": "^1.0.0-rc.1",
-    "@vue/compiler-sfc": "^3.0.0-rc.1"
-  }
+    "vue": "^3.0.0-rc.1"
+  },
+  "files": [
+    "lib/**/*"
+  ]
 }
