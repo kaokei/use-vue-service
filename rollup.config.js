@@ -1,6 +1,7 @@
 import { dirname } from "path";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
+import replace from '@rollup/plugin-replace'
 import { terser } from "rollup-plugin-terser";
 import pkg from "./package.json";
 
@@ -79,6 +80,7 @@ if (pkg.main) {
     {
       external: external.concat(nodeModule),
       input: pkg.module,
+      plugins: [replace({__DEV__: !production})],
       output: [
         {
           file: pkg.main,
@@ -109,7 +111,7 @@ if (production && pkg.es2015) {
     {
       external: external.concat(nodeModule),
       input: pkg.module,
-      plugins: [terser(uglifyOpts)],
+      plugins: [replace({__DEV__: !production}), terser(uglifyOpts)],
       output: {
         banner,
         file: parseName(pkg.es2015) + ".min.js",
@@ -127,6 +129,7 @@ if (pkg.browser) {
       external: nodeModule,
       input: pkg.module,
       plugins: [
+        replace({__DEV__: !production}),
         resolve({
           mainFields: ["browser", "module", "main"],
         }),
@@ -161,6 +164,7 @@ if (pkg.bin) {
     config.push({
       external: external.concat(nodeModule),
       input: binSrcPath,
+      plugins: [replace({__DEV__: !production})],
       output: [
         {
           file: binPath,
