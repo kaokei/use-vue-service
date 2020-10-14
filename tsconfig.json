@@ -6,7 +6,7 @@
     "noFallthroughCasesInSwitch": true,
     "pretty": true,
     "outDir": "dist",
-    "target": "ES2019",
+    "target": "esnext",
     "types": ["node"],
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -22,7 +22,7 @@
     "noEmit": false,
     "jsx": "react"
   },
-  "include": ["src", "example"],
+  "include": ["src"],
   "exclude": [
     "node_modules",
     "**/__tests__/*",
