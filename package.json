@@ -2,12 +2,15 @@
   "name": "use-vue-service",
   "version": "1.0.0",
   "description": "Use angular service in vue.",
-  "main": "lib/bundle.cjs.js",
-  "module": "lib/bundle.esm.js",
   "scripts": {
+    "tsc": "tsc -p tsconfig.json",
+    "tsc:dev": "tsc -p tsconfig.dev.json",
+    "tsc:w": "tsc -p tsconfig.json -w",
+    "rp": "rollup -c rollup.config.js",
+    "rp:w": "npm run tsc:w | rollup -wc rollup.config.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
-    "build": "rollup -c"
+    "build": "npm run tsc && npm run rp"
   },
   "keywords": [
     "angular",
@@ -17,6 +20,20 @@
     "DI",
     "Dependency injection"
   ],
+  "bin": {},
+  "browser": "",
+  "es2015": "./dist/index.es2015.js",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bugs": {
+    "url": "https://github.com/waitingsong/npm-base/issues"
+  },
+  "homepage": "https://github.com/waitingsong/npm-base#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/waitingsong/npm-base.git"
+  },
   "author": "huanggm",
   "license": "MIT",
   "peerDependencies": {
@@ -25,11 +42,10 @@
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^15.1.0",
-    "@rollup/plugin-typescript": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
     "@vue/compiler-sfc": "^3.0.0-rc.1",
     "reflect-metadata": "^0.1.13",
     "rollup": "^2.29.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^7.0.2",
     "tslib": "^2.0.2",
     "typescript": "^4.0.3",
