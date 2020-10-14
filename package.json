@@ -1,6 +1,6 @@
 {
   "name": "use-vue-service",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Use angular service in vue.",
   "scripts": {
     "tsc": "tsc -p tsconfig.json",
@@ -10,8 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
     "build": "npm run tsc && npm run rp",
-    "clean": "rm -rf dist/* && npm run clean:lock",
-    "clean:lock": "rm -rf package-lock.json",
+    "clean": "rm -rf dist/*",
     "postpublish": "git push origin --follow-tags",
     "prepublishOnly": "npm run clean && npm run build",
     "release": "standard-version -r",
