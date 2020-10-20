@@ -1,7 +1,40 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "declaration": false
+    "declaration": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noFallthroughCasesInSwitch": true,
+    "pretty": true,
+    "outDir": "dist",
+    "target": "esnext",
+    "types": ["node"],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": false,
+    "jsx": "react"
   },
-  "include": ["services"]
+  "include": ["services"],
+  "exclude": [
+    "node_modules",
+    "**/__tests__/*",
+    "asset",
+    "assets",
+    "public",
+    "app/public",
+    "app/views",
+    "dist",
+    "test",
+    "lib",
+    "**/*.d.ts",
+    "**/*.spec.ts"
+  ]
 }
