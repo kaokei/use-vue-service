@@ -8,7 +8,7 @@
     "rp": "rollup -c rollup.config.js",
     "rp:w": "npm run tsc:w | rollup -wc rollup.config.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint --fix --ext js,jsx,ts,tsx,vue src",
+    "lint": "eslint src --fix --ext js,ts,jsx,tsx,vue",
     "dev": "webpack serve",
     "build": "npm run tsc && npm run rp",
     "clean": "rm -rf dist/*",
@@ -53,8 +53,11 @@
     "@rollup/plugin-replace": "^2.3.3",
     "@vue/compiler-sfc": "^3.0.1",
     "@webpack-cli/serve": "^1.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.5.0",
+    "@typescript-eslint/parser": "^4.5.0",
     "babel-loader": "^8.1.0",
     "css-loader": "^5.0.0",
+    "eslint": "^7.11.0",
     "eslint-config-prettier": "^6.13.0",
     "eslint-plugin-prettier": "^3.1.4",
     "file-loader": "^6.1.1",
@@ -157,9 +160,8 @@
     }
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,vue}": [
-      "eslint --fix --ext js,jsx,ts,tsx,vue src",
-      "git add"
+    "src/**/*.{js,ts,jsx,tsx,vue}": [
+      "eslint --fix --ext js,ts,jsx,tsx,vue src"
     ]
   }
 }

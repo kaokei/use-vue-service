@@ -1,0 +1,8 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "eslint.options": {
+    "extensions": [".js", ".ts", ".tsx", ".vue"]
+  },
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue"]
+}
