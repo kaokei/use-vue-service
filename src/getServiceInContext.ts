@@ -21,9 +21,20 @@ import 'reflect-metadata';
 import { PARAM_TYPES } from './Inject';
 
 type Constructor<T = any> = new (...args: any[]) => T;
-export interface ContextProps {
-  providers: any[];
-  parent?: ContextProps;
+
+interface IProvider {
+  provide: any;
+  useClass: any;
+  useExisting: any;
+  useValue: any;
+  useFactory: any;
+  deps: Array<any>;
+  multi: boolean;
+  namespace: string;
+}
+export interface IContextProps {
+  providers: IProvider[];
+  parent?: IContextProps;
   [key: string]: any;
 }
 
@@ -34,13 +45,13 @@ const defaultNamespace = 'root';
  *
  * @export
  * @param {*} serviceIdentifier
- * @param {ContextProps} ctx
+ * @param {IContextProps} ctx
  * @param {*} [options]
  * @return {*}  {*}
  */
 export function getServiceInContext(
   serviceIdentifier: any,
-  ctx: ContextProps,
+  ctx: IContextProps,
   options?: any
 ): any {
   const { parent, providers = [] } = ctx;
@@ -59,8 +70,9 @@ export function getServiceInContext(
     } else {
       const namespace = (options && options.namespace) || defaultNamespace;
       ctx[namespace] = ctx[namespace] || new Map();
-      if (ctx[namespace].get(serviceIdentifier)) {
-        return ctx[namespace].get(serviceIdentifier);
+      const value = ctx[namespace].get(serviceIdentifier);
+      if (value) {
+        return value;
       } else {
         const newValue = generateServiceByClass(serviceIdentifier, ctx);
         ctx[namespace].set(serviceIdentifier, newValue);
@@ -77,7 +89,7 @@ export function getServiceInContext(
  * @param {*} ctx
  * @return {*}
  */
-function generateServiceByProvider(provider: any, ctx: any) {
+function generateServiceByProvider(provider: IProvider, ctx: IContextProps) {
   if (provider.useValue) {
     return provider.useValue;
   } else if (provider.useClass) {
@@ -86,14 +98,14 @@ function generateServiceByProvider(provider: any, ctx: any) {
     return getServiceInContext(provider.useExisting, ctx);
   } else if (provider.useFactory) {
     const deps = provider.deps;
-    if (deps) {
+    if (deps && deps.length) {
       const args = deps.map((dep: any) => getServiceInContext(dep, ctx));
       return provider.useFactory(args);
     } else {
       return provider.useFactory();
     }
   } else {
-    return generateServiceByClass(provider, ctx);
+    throw new Error('provider 格式异常');
   }
 }
 
@@ -103,10 +115,8 @@ function generateServiceByProvider(provider: any, ctx: any) {
  * @param {*} ClassName
  * @param {*} ctx
  */
-function generateServiceByClass<T>(ClassName: Constructor<T>, ctx: any): T {
-  console.log('ClassName, ctx :>> ', ClassName, ctx);
+function generateServiceByClass<T>(ClassName: Constructor<T>, ctx: IContextProps): T {
   const params = Reflect.getMetadata(PARAM_TYPES, ClassName);
-  console.log('params :>> ', params);
   if (params && params.length) {
     const args = params.map((provide: any) => getServiceInContext(provide, ctx));
     return new ClassName(...args);
