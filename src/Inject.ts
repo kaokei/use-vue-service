@@ -37,19 +37,16 @@ export function Inject(serviceIdentifier: any) {
 
 export function Injectable() {
   return function (target: any) {
-    console.log('Injectable :>> ', 'Injectable test');
     if (Reflect.hasOwnMetadata(PARAM_TYPES, target)) {
       throw new Error('重复装饰器错误');
     }
 
     const metadata = Reflect.getMetadata(PARAM_TYPES, target);
-    console.log('metadata :>> ', metadata);
     if (metadata) {
       return target;
     }
 
     const types = Reflect.getMetadata(DESIGN_PARAM_TYPES, target) || [];
-    console.log('types :>> ', types, target);
     Reflect.defineMetadata(PARAM_TYPES, types, target);
 
     return target;
