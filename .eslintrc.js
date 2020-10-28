@@ -48,7 +48,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 0,
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/ban-ts-ignore': 0,
-    '@typescript-eslint/ban-ts-ignore': 0,
+    '@typescript-eslint/explicit-module-boundary-types': 0,
   },
   overrides: [
     //定制一组文件的规则
