@@ -1,6 +1,6 @@
-import { inject } from "vue";
-import { ServiceContext, DefaultContext } from "./ServiceContext";
-import { ContextProps, getServiceInContext } from "./getServiceInContext";
+import { inject } from 'vue';
+import { ServiceContext, DefaultContext } from './ServiceContext';
+import { ContextProps, getServiceInContext } from './getServiceInContext';
 
 interface IProvider<T> {
   provide: T;

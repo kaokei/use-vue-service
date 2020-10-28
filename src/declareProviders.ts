@@ -1,9 +1,9 @@
-import { provide, inject } from "vue";
-import { ServiceContext, DefaultContext } from "./ServiceContext";
+import { provide, inject } from 'vue';
+import { ServiceContext, DefaultContext } from './ServiceContext';
 
 export function declareProviders(providers: any[]) {
   const parentCtx = inject(ServiceContext, DefaultContext);
-  const newProviders = providers.map((p) => {
+  const newProviders = providers.map(p => {
     if (p.provide) {
       return p;
     } else {

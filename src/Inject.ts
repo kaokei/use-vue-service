@@ -16,16 +16,16 @@
  *   实例访问器：原型, 方法名, 属性描述符
  */
 
-export const PARAM_TYPES = "service:paramtypes";
-export const DESIGN_PARAM_TYPES = "design:paramtypes";
+export const PARAM_TYPES = 'service:paramtypes';
+export const DESIGN_PARAM_TYPES = 'design:paramtypes';
 
 export function Inject(serviceIdentifier: any) {
   return function (target: any, targetKey: string, index?: number): void {
     if (serviceIdentifier === undefined) {
-      throw new Error("未提供serviceIdentifier参数");
+      throw new Error('未提供serviceIdentifier参数');
     }
 
-    if (typeof index === "number") {
+    if (typeof index === 'number') {
       const metadata =
         Reflect.getMetadata(PARAM_TYPES, target, targetKey) ||
         Reflect.getMetadata(DESIGN_PARAM_TYPES, target, targetKey);
@@ -39,7 +39,7 @@ export function Injectable() {
   return function (target: any) {
     console.log('Injectable :>> ', 'Injectable test');
     if (Reflect.hasOwnMetadata(PARAM_TYPES, target)) {
-      throw new Error("重复装饰器错误");
+      throw new Error('重复装饰器错误');
     }
 
     const metadata = Reflect.getMetadata(PARAM_TYPES, target);

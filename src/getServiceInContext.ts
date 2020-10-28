@@ -17,8 +17,8 @@
  * 多实例提供者
  */
 
-import "reflect-metadata";
-import { PARAM_TYPES } from "./Inject";
+import 'reflect-metadata';
+import { PARAM_TYPES } from './Inject';
 
 type Constructor<T = any> = new (...args: any[]) => T;
 export interface ContextProps {
@@ -27,7 +27,7 @@ export interface ContextProps {
   [key: string]: any;
 }
 
-const defaultNamespace = "root";
+const defaultNamespace = 'root';
 
 /**
  * 根据一个服务标志获取一个服务
@@ -44,7 +44,7 @@ export function getServiceInContext(
   options?: any
 ): any {
   const { parent, providers = [] } = ctx;
-  const provider = providers.find((item) => item.provide === serviceIdentifier);
+  const provider = providers.find(item => item.provide === serviceIdentifier);
   if (provider) {
     if (provider.useValue) {
       return provider.useValue;
@@ -104,13 +104,11 @@ function generateServiceByProvider(provider: any, ctx: any) {
  * @param {*} ctx
  */
 function generateServiceByClass<T>(ClassName: Constructor<T>, ctx: any): T {
-  console.log("ClassName, ctx :>> ", ClassName, ctx);
+  console.log('ClassName, ctx :>> ', ClassName, ctx);
   const params = Reflect.getMetadata(PARAM_TYPES, ClassName);
-  console.log("params :>> ", params);
+  console.log('params :>> ', params);
   if (params && params.length) {
-    const args = params.map((provide: any) =>
-      getServiceInContext(provide, ctx)
-    );
+    const args = params.map((provide: any) => getServiceInContext(provide, ctx));
     return new ClassName(...args);
   } else {
     return new ClassName();
