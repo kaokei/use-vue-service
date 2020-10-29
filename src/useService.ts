@@ -1,6 +1,6 @@
 import { inject } from 'vue';
 import { ServiceContext, DefaultContext } from './ServiceContext';
-import { ContextProps, getServiceInContext } from './getServiceInContext';
+import { IContextProps, getServiceInContext } from './getServiceInContext';
 
 export function useService<T = string>(Service: string, options?: any): T;
 export function useService<T, K = void>(
@@ -8,7 +8,7 @@ export function useService<T, K = void>(
   options?: any
 ): K extends T ? K : T;
 export function useService(Service: any, options?: any) {
-  const ctx = inject(ServiceContext, DefaultContext as ContextProps);
+  const ctx = inject(ServiceContext, DefaultContext as IContextProps);
   const service = getServiceInContext(Service, ctx, options);
   return service;
 }
