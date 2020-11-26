@@ -1,4 +1,4 @@
-import { inject } from 'vue';
+import { inject, reactive } from 'vue';
 import { ServiceContext, DefaultContext } from './ServiceContext';
 import { IContextProps, getServiceInContext } from './getServiceInContext';
 
@@ -10,5 +10,5 @@ export function useService<T, K = void>(
 export function useService(Service: any, options?: any) {
   const ctx = inject(ServiceContext, DefaultContext as IContextProps);
   const service = getServiceInContext(Service, ctx, options);
-  return service;
+  return reactive(service);
 }
