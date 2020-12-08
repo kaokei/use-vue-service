@@ -20,10 +20,10 @@ import Main from './components/Main.vue';
 import CountService from './services/count.service';
 import LoggerService from './services/logger.service';
 
-import { reactive } from 'vue';
+import { reactive, defineComponent } from 'vue';
 import { useService, declareProviders } from '../src';
 
-export default {
+export default defineComponent({
   name: 'App',
   components: {
     Main,
@@ -52,5 +52,5 @@ export default {
       countService: reactive(countService),
     };
   },
-};
+});
 </script>
