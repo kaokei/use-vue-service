@@ -2,11 +2,15 @@ import { inject, reactive } from 'vue';
 import { ServiceContext, DefaultContext } from './ServiceContext';
 import { IContextProps, getServiceInContext } from './getServiceInContext';
 
-type TupleCtr<T> = {
+type TupleConstructor<T> = {
   [P in keyof T]: T[P] extends new (...args: any) => infer R ? R : T[P];
 };
 
-type Ret<T> = T extends new (...args: any) => infer S ? S : TupleCtr<T>;
+type Ret<T> = T extends new (...args: any) => infer S
+  ? S
+  : T extends Array<any>
+  ? TupleConstructor<T>
+  : T;
 
 export function useService<T = string>(Service: string, options?: any): T;
 export function useService<T = number>(Service: number, options?: any): T;
