@@ -20,8 +20,6 @@
 import 'reflect-metadata';
 import { PARAM_TYPES } from './Inject';
 
-type Constructor<T = any> = new (...args: any[]) => T;
-
 interface IProvider {
   provide: any;
   useClass: any;
@@ -30,12 +28,18 @@ interface IProvider {
   useFactory: any;
   deps: Array<any>;
   multi: boolean;
-  namespace: string;
 }
 export interface IContextProps {
   providers: IProvider[];
   parent?: IContextProps;
   [key: string]: any;
+}
+
+export interface IOptions {
+  // 对直接注入的service和间接注入的service都生效
+  namespace?: string;
+  // 只对直接注入的service生效，该service依赖的其他service不直接生效，但是有间接影响
+  skip?: true | number;
 }
 
 const defaultNamespace = 'root';
@@ -46,13 +50,13 @@ const defaultNamespace = 'root';
  * @export
  * @param {*} serviceIdentifier
  * @param {IContextProps} ctx
- * @param {*} [options]
+ * @param {IOptions} [options]
  * @return {*}  {*}
  */
 export function getServiceInContext(
   serviceIdentifier: any,
   ctx: IContextProps,
-  options?: any
+  options?: IOptions
 ): any {
   const { parent, providers = [] } = ctx;
   const provider = providers.find(item => item.provide === serviceIdentifier);
@@ -60,7 +64,7 @@ export function getServiceInContext(
     if (provider.useValue) {
       return provider.useValue;
     } else {
-      const newValue = generateServiceByProvider(provider, ctx);
+      const newValue = generateServiceByProvider(provider, ctx, options);
       provider.useValue = newValue;
       return newValue;
     }
@@ -69,13 +73,13 @@ export function getServiceInContext(
       return getServiceInContext(serviceIdentifier, parent, options);
     } else {
       const namespace = (options && options.namespace) || defaultNamespace;
-      ctx[namespace] = ctx[namespace] || new Map();
-      const value = ctx[namespace].get(serviceIdentifier);
+      const namespaceCtx = (ctx[namespace] = ctx[namespace] || new Map());
+      const value = namespaceCtx.get(serviceIdentifier);
       if (value) {
         return value;
       } else {
-        const newValue = generateServiceByClass(serviceIdentifier, ctx);
-        ctx[namespace].set(serviceIdentifier, newValue);
+        const newValue = generateServiceByClass(serviceIdentifier, ctx, options);
+        namespaceCtx.set(serviceIdentifier, newValue);
         return newValue;
       }
     }
@@ -89,18 +93,22 @@ export function getServiceInContext(
  * @param {*} ctx
  * @return {*}
  */
-function generateServiceByProvider(provider: IProvider, ctx: IContextProps) {
+function generateServiceByProvider(
+  provider: IProvider,
+  ctx: IContextProps,
+  options?: IOptions
+) {
   if (provider.useValue) {
     return provider.useValue;
   } else if (provider.useClass) {
-    return generateServiceByClass(provider.useClass, ctx);
+    return generateServiceByClass(provider.useClass, ctx, options);
   } else if (provider.useExisting) {
-    return getServiceInContext(provider.useExisting, ctx);
+    return getServiceInContext(provider.useExisting, ctx, options);
   } else if (provider.useFactory) {
     const deps = provider.deps;
     if (deps && deps.length) {
-      const args = deps.map((dep: any) => getServiceInContext(dep, ctx));
-      return provider.useFactory(args);
+      const args = deps.map((dep: any) => getServiceInContext(dep, ctx, options));
+      return provider.useFactory(...args);
     } else {
       return provider.useFactory();
     }
@@ -115,10 +123,14 @@ function generateServiceByProvider(provider: IProvider, ctx: IContextProps) {
  * @param {*} ClassName
  * @param {*} ctx
  */
-function generateServiceByClass<T>(ClassName: Constructor<T>, ctx: IContextProps): T {
+function generateServiceByClass<T>(
+  ClassName: new (...args: any[]) => T,
+  ctx: IContextProps,
+  options?: IOptions
+): T {
   const params = Reflect.getMetadata(PARAM_TYPES, ClassName);
   if (params && params.length) {
-    const args = params.map((provide: any) => getServiceInContext(provide, ctx));
+    const args = params.map((provide: any) => getServiceInContext(provide, ctx, options));
     return new ClassName(...args);
   } else {
     return new ClassName();
