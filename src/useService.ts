@@ -12,7 +12,10 @@ type Ret<T> = T extends new (...args: any) => infer S
   ? TupleConstructor<T>
   : T;
 
-export function useService<T>(Service: T, options?: any): Ret<T>;
+export function useService<R, T = unknown>(
+  Service: T,
+  options?: any
+): T extends R ? Ret<T> : Ret<R>;
 export function useService(Service: any, options?: any) {
   if (Array.isArray(Service)) {
     return Service.map(s => useService(s));
