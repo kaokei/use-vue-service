@@ -36,7 +36,7 @@ export default {
     const number123 = useService(123);
     const string123 = useService<string>(123);
     const string456 = useService('456');
-    const number456 = useService<number>('456');
+    const number456 = useService<number>('4561');
 
     const date1 = useService(Date);
     const date11 = useService<CountService>(Date);
