@@ -39,6 +39,7 @@ export default {
     const number456 = useService<number>('456');
 
     const date1 = useService(Date);
+    const date11 = useService<CountService>(Date);
     const date2 = useService(new Date());
     const map1 = useService(new Map<string, number>());
 
