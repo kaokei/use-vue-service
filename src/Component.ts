@@ -1,0 +1,58 @@
+import { PARAM_TYPES } from './ServiceContext';
+import { Options } from 'vue-class-component';
+import { declareProviders } from './declareProviders';
+import { useService } from './useService';
+
+/**
+ * 禁止在组件的构造函数中声明依赖注入
+ * 因为类组件需要继承Vue，Vue已经定义了自己的构造函数，导致子类必须在构造函数中手动调用super(props, ctx);
+ * 第二点就是组件在实例化的时候，已经写死了`new Ctor(props, ctx);`
+ * 没有办法实现依赖注入，假设vue-class-component库支持传递多余的参数`new Ctor(props, ctx, ...rest);`
+ * 我认为数据不需要proxy，只需要reactive即可
+ *
+ * 这里是代理了Options的功能
+ *
+ * 并且仿造了createDecorator的逻辑来代理setup函数
+ *
+ * @export
+ * @return {*}
+ */
+export function Component(options: any = {}) {
+  return function (target: any) {
+    const { providers } = options;
+    delete options.providers;
+
+    Options(options)(target); // 使用@Component代替@Options
+
+    if (!target.__d) {
+      target.__d = [];
+    }
+    target.__d.push((options: any) => {
+      const originSetup = options.setup;
+
+      options.setup = (props: any, ctx: any) => {
+        if (providers) {
+          declareProviders(providers);
+        }
+        let result = originSetup ? originSetup(props, ctx) : {};
+        const metadata = Reflect.getMetadata(PARAM_TYPES, target);
+        const services = useService(metadata.map((item: any) => item.type));
+
+        if (result instanceof Promise) {
+          result = result.then(res => {
+            metadata.forEach(
+              (item: any, index: number) => (res[item.name] = services[index])
+            );
+            return res;
+          });
+        } else {
+          metadata.forEach(
+            (item: any, index: number) => (result[item.name] = services[index])
+          );
+        }
+
+        return result;
+      };
+    });
+  };
+}
