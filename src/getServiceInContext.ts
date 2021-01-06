@@ -18,7 +18,14 @@
  */
 
 import 'reflect-metadata';
-import { PARAM_TYPES } from './Inject';
+import { inject, reactive } from 'vue';
+import {
+  SERVICE_INJECTED_KEY,
+  SERVICE_INJECTED_PROPS,
+  SERVICE_PARAM_TYPES,
+  ServiceContext,
+  DefaultContext,
+} from './ServiceContext';
 
 interface IProvider {
   provide: any;
@@ -128,11 +135,71 @@ function generateServiceByClass<T>(
   ctx: IContextProps,
   options?: IOptions
 ): T {
-  const params = Reflect.getMetadata(PARAM_TYPES, ClassName);
+  const params = Reflect.getMetadata(SERVICE_PARAM_TYPES, ClassName);
   if (params && params.length) {
     const args = params.map((provide: any) => getServiceInContext(provide, ctx, options));
     return new ClassName(...args);
   } else {
     return new ClassName();
   }
+}
+
+type Ret<T> = T extends new (...args: any) => infer S
+  ? S
+  : T extends Array<any>
+  ? { [P in keyof T]: Ret<T[P]> }
+  : T;
+
+export function useService<R, T = unknown>(
+  Service: T,
+  options?: IOptions
+): T extends R ? Ret<T> : Ret<R>;
+export function useService(Service: any, options?: IOptions) {
+  if (Array.isArray(Service)) {
+    return Service.map(s => useService(s, options));
+  }
+  let ctx = inject(ServiceContext, DefaultContext as IContextProps);
+  if (options && options.skip) {
+    let skip = Number(options.skip);
+    while (skip > 0 && ctx.parent) {
+      if (ctx.providers.find(item => item.provide === Service)) {
+        skip--;
+      }
+      ctx = ctx.parent;
+    }
+  }
+  const service = getServiceInContext(Service, ctx, options);
+  return reactive(service);
+}
+
+export function getPropertiesByClass<T>(ClassName: new (...args: any[]) => T) {
+  const propertiesMetadatas =
+    Reflect.getMetadata(SERVICE_INJECTED_PROPS, ClassName) || {};
+
+  const properties: any = {};
+  // const services = useService(metadata.map((item: any) => item.type));
+
+  for (const key in propertiesMetadatas) {
+    if (Object.prototype.hasOwnProperty.call(propertiesMetadatas, key)) {
+      const propertyMetadatas = propertiesMetadatas[key] || [];
+      const [Cotr, options] = getOptionsByMetadatas(propertyMetadatas);
+      properties[key] = useService(Cotr, options);
+    }
+  }
+  return properties;
+}
+
+export function getOptionsByMetadatas(metadatas: any[]) {
+  const ctor = metadatas.find(meta => meta.key === SERVICE_INJECTED_KEY);
+  if (!ctor) {
+    throw new Error('找不到可注入的服务');
+  }
+  const options = metadatas.reduce((acc, meta) => {
+    if (meta.key !== SERVICE_INJECTED_KEY) {
+      acc[meta.key] = meta.value;
+    }
+    return acc;
+  }, {} as any);
+
+  return [ctor.value, options];
 }

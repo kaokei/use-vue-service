@@ -1,7 +1,6 @@
-import { PARAM_TYPES } from './ServiceContext';
 import { Options } from 'vue-class-component';
 import { declareProviders } from './declareProviders';
-import { useService } from './useService';
+import { getPropertiesByClass } from './getServiceInContext';
 
 /**
  * 禁止在组件的构造函数中声明依赖注入
@@ -34,25 +33,26 @@ export function Component(options: any = {}) {
         if (providers) {
           declareProviders(providers);
         }
-        let result = originSetup ? originSetup(props, ctx) : {};
-        const metadata = Reflect.getMetadata(PARAM_TYPES, target);
-        const services = useService(metadata.map((item: any) => item.type));
 
-        if (result instanceof Promise) {
-          result = result.then(res => {
-            metadata.forEach(
-              (item: any, index: number) => (res[item.name] = services[index])
-            );
-            return res;
+        // 获取构造函数的实例属性
+        // 注意组件不支持构造函数参数注入实例属性
+        const properties = getPropertiesByClass(target);
+
+        const setupState = originSetup ? originSetup(props, ctx) : {};
+        let result: any = null;
+
+        if (setupState instanceof Promise) {
+          result = setupState.then(state => {
+            return Object.assign(state, properties);
           });
         } else {
-          metadata.forEach(
-            (item: any, index: number) => (result[item.name] = services[index])
-          );
+          result = Object.assign(setupState, properties);
         }
 
         return result;
       };
     });
+
+    return target;
   };
 }

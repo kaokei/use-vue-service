@@ -1,4 +1,4 @@
-import { PARAM_TYPES, DESIGN_PARAM_TYPES } from './ServiceContext';
+import { SERVICE_PARAM_TYPES, DESIGN_PARAM_TYPES } from './ServiceContext';
 
 /**
  * 表明服务可注入
@@ -8,21 +8,14 @@ import { PARAM_TYPES, DESIGN_PARAM_TYPES } from './ServiceContext';
  * @return {*}
  */
 export function Injectable() {
-  return function (target: any): void {
-    if (Reflect.hasOwnMetadata(PARAM_TYPES, target)) {
-      throw new Error('重复装饰器错误');
-    }
-
-    const metadata = Reflect.getMetadata(PARAM_TYPES, target);
-    if (metadata) {
-      return;
+  return function (target: any) {
+    if (Reflect.hasOwnMetadata(SERVICE_PARAM_TYPES, target)) {
+      throw new Error('重复Injectable装饰器错误');
     }
 
     const types = Reflect.getMetadata(DESIGN_PARAM_TYPES, target) || [];
-    const newTypes = types.map((type: any, index: number) => ({
-      name: index,
-      type: type,
-    }));
-    Reflect.defineMetadata(PARAM_TYPES, newTypes, target);
+    Reflect.defineMetadata(SERVICE_PARAM_TYPES, types, target);
+
+    return target;
   };
 }
