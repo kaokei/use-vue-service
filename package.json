@@ -7,6 +7,7 @@
     "tsc:w": "tsc -p tsconfig.json -w",
     "rp": "rollup -c rollup.config.js",
     "rp:w": "npm run tsc:w | rollup -wc rollup.config.js",
+    "unit": "jest",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src --fix --ext js,ts,jsx,tsx,vue",
     "dev": "webpack serve",
@@ -56,6 +57,7 @@
     "@typescript-eslint/parser": "^4.5.0",
     "@vue/compiler-sfc": "^3.0.1",
     "@webpack-cli/serve": "^1.0.1",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-loader": "^8.1.0",
     "css-loader": "^5.0.0",
     "eslint": "^7.11.0",
@@ -65,6 +67,10 @@
     "file-loader": "^6.1.1",
     "html-webpack-plugin": "^4.5.0",
     "husky": "^4.3.0",
+    "jest": "^26.6.3",
+    "jest-environment-jsdom": "^26.6.2",
+    "jest-environment-node": "^26.6.2",
+    "jest-serializer-vue": "^2.0.2",
     "lint-staged": "^10.4.2",
     "prettier": "^2.1.2",
     "reflect-metadata": "^0.1.13",
@@ -72,11 +78,13 @@
     "rollup-plugin-terser": "^7.0.2",
     "standard-version": "^9.0.0",
     "style-loader": "^2.0.0",
+    "ts-jest": "^26.4.4",
     "ts-loader": "^8.0.5",
     "tslib": "^2.0.2",
-    "typescript": "^4.0.3",
+    "typescript": "^4.1.3",
     "vue": "^3.0.0-rc.1",
     "vue-class-component": "^8.0.0-rc.1",
+    "vue-jest": "^3.0.7",
     "vue-loader": "^16.0.0-beta.4",
     "vue-router": "^4.0.0-alpha.13",
     "vuex": "^4.0.0-beta.2",
@@ -97,61 +105,6 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
-    ]
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ]
-  },
-  "jest": {
-    "roots": [
-      "<rootDir>/src"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
-      "!src/**/*.d.ts"
-    ],
-    "setupFiles": [
-      "react-app-polyfill/jsdom"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/setupTests.ts"
-    ],
-    "testMatch": [
-      "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
-      "<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}"
-    ],
-    "testEnvironment": "jest-environment-jsdom-fourteen",
-    "transform": {
-      "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
-      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
-      "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
-    },
-    "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$",
-      "^.+\\.module\\.(css|sass|scss)$"
-    ],
-    "modulePaths": [],
-    "moduleNameMapper": {
-      "^react-native$": "react-native-web",
-      "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
-    },
-    "moduleFileExtensions": [
-      "web.js",
-      "js",
-      "web.ts",
-      "ts",
-      "web.tsx",
-      "tsx",
-      "json",
-      "web.jsx",
-      "jsx",
-      "node"
-    ],
-    "watchPlugins": [
-      "jest-watch-typeahead/filename",
-      "jest-watch-typeahead/testname"
     ]
   },
   "husky": {

@@ -1,22 +1,22 @@
-"use strict";
+'use strict';
 
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { VueLoaderPlugin } = require("vue-loader");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { VueLoaderPlugin } = require('vue-loader');
 
 module.exports = {
-  mode: "development",
-  entry: "./example/main.js",
+  mode: 'development',
+  entry: './example/main.js',
   output: {
-    filename: "main.js",
-    path: path.resolve(__dirname, "dist"),
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
-    extensions: [".ts", ".js"],
+    extensions: ['.ts', '.js'],
     alias: {
-      vue: "@vue/runtime-dom",
-      vuex: "vuex/dist/vuex.esm-bundler",
-      "@": path.join(__dirname, "src"),
+      vue: '@vue/runtime-dom',
+      vuex: 'vuex/dist/vuex.esm-bundler',
+      '@': path.join(__dirname, 'src'),
     },
   },
   module: {
@@ -25,7 +25,7 @@ module.exports = {
         test: /\.vue$/,
         use: [
           {
-            loader: "vue-loader",
+            loader: 'vue-loader',
           },
         ],
       },
@@ -33,9 +33,9 @@ module.exports = {
         test: /\.js|\.ts|\.tsx$/,
         exclude: /node_modules/,
         use: [
-          "babel-loader",
+          'babel-loader',
           {
-            loader: "ts-loader",
+            loader: 'ts-loader',
             options: {
               appendTsxSuffixTo: [/\.vue$/],
               transpileOnly: true,
@@ -47,26 +47,26 @@ module.exports = {
         test: /\.css$/,
         use: [
           {
-            loader: "style-loader",
+            loader: 'style-loader',
           },
           {
-            loader: "css-loader",
+            loader: 'css-loader',
           },
         ],
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
-        loader: "file-loader",
+        loader: 'file-loader',
         options: {
-          name: "images/[name].[ext]",
+          name: 'images/[name].[ext]',
         },
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: "./index.html",
+      filename: 'index.html',
+      template: './index.html',
     }),
     new VueLoaderPlugin(),
   ],
