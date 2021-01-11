@@ -4,5 +4,12 @@
   "eslint.options": {
     "extensions": [".js", ".ts", ".tsx", ".vue"]
   },
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue"]
+"eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue"
+],
+"vetur.experimental.templateInterpolationService": true
 }

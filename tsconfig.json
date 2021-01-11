@@ -7,7 +7,7 @@
     "pretty": true,
     "outDir": "dist",
     "target": "esnext",
-    "types": ["node"],
+    "types": ["node", "jest"],
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -22,19 +22,15 @@
     "noEmit": false,
     "jsx": "react"
   },
-  "include": ["src"],
+  "include": ["src", "test", "shims-vue.d.ts"],
   "exclude": [
     "node_modules",
-    "**/__tests__/*",
     "asset",
     "assets",
     "public",
     "app/public",
     "app/views",
     "dist",
-    "test",
-    "lib",
-    "**/*.d.ts",
-    "**/*.spec.ts"
+    "lib"
   ]
 }
