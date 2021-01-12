@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Component matches snapshot 1`] = `
+<div>
+  <h1>counter2</h1>
+  <div class="countNum">1</div><button type="button">add</button>
+</div>
+`;

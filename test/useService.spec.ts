@@ -1,15 +1,5 @@
-import 'reflect-metadata';
 import { useService } from '../src';
-import { DESIGN_PARAM_TYPES, SERVICE_PARAM_TYPES } from '../src/ServiceContext';
-
 import CounterService from '../example/services/counter.service';
-
-jest.mock('vue', () => ({
-  inject: jest.fn(() => {
-    return {};
-  }),
-  reactive: jest.fn(args => args),
-}));
 
 describe('useService', () => {
   test('Test CounterService', () => {
