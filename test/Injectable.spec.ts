@@ -27,7 +27,7 @@ describe('test Injectable', () => {
 
 describe('test Component', () => {
   it('renders li for each item in props.items', () => {
-    const wrapper = mount(Component1 as any, {
+    const wrapper = mount(Component1, {
       props: {},
     });
     expect(wrapper.findAll('div')).toHaveLength(2);

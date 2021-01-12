@@ -8,7 +8,8 @@
     "outDir": "dist",
     "target": "esnext",
     "types": ["node", "jest"],
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "typeRoots": ["node_modules/@types", "./typings"],
+    "lib": ["dom", "dom.iterable", "esnext", "scripthost"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -20,9 +21,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "jsx": "react"
+    "jsx": "preserve"
   },
-  "include": ["src", "test", "shims-vue.d.ts"],
+  "include": ["src", "test", "typings"],
   "exclude": [
     "node_modules",
     "asset",
