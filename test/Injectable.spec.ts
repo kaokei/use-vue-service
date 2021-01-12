@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 import { DESIGN_PARAM_TYPES, SERVICE_PARAM_TYPES } from '../src/ServiceContext';
 
-import Person from './data/Person.service';
-import Component1 from './data/Counter.vue';
+import Logger from '../example/services/logger.service';
+import Person from '../example/services/person.service';
+import Component1 from '../example/components/Counter.vue';
 // import App from '../example/App.vue';
 import { mount } from '@vue/test-utils';
-import Logger from './data/Logger.service';
 // import { createRenderer } from 'vue-server-renderer';
 
 const Component2 = {
