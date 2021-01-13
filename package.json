@@ -10,7 +10,7 @@
     "unit": "jest",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src --fix --ext js,ts,jsx,tsx,vue",
-    "dev": "webpack serve",
+    "dev": "webpack serve --config ./example/webpack.config.js",
     "build": "npm run tsc && npm run rp",
     "clean": "rm -rf dist/*",
     "postpublish": "git push origin --follow-tags",

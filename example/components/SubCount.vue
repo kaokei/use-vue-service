@@ -2,7 +2,9 @@
   <div>
     <h1>SubCount</h1>
     <div>
-      <button type="button" @click="countService.add1">SubCount add1 {{countService.count}}</button>
+      <button type="button" @click="countService.add1">
+        SubCount add1 {{ countService.count }}
+      </button>
     </div>
     <div>
       <SubSubCount></SubSubCount>
@@ -14,7 +16,7 @@
 <script>
 import { reactive } from 'vue';
 import { useService, declareProviders } from '../../src';
-import CountService from '../services/count.service';
+import CountService from '../services/counter.service';
 
 import SubSubCount from './SubSubCount.vue';
 
