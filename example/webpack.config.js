@@ -7,7 +7,7 @@ const { VueLoaderPlugin } = require('vue-loader');
 
 module.exports = {
   mode: 'development',
-  entry: './example/main.js',
+  entry: './example/main.ts',
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
@@ -67,7 +67,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: './index.html',
+      template: './example/index.html',
     }),
     new VueLoaderPlugin(),
   ],

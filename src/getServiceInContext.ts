@@ -135,6 +135,9 @@ function generateServiceByClass<T>(
   ctx: IContextProps,
   options?: IOptions
 ): T {
+  if (typeof ClassName !== 'function') {
+    throw new Error('服务标识符不是类名');
+  }
   const params = Reflect.getMetadata(SERVICE_PARAM_TYPES, ClassName);
   if (params && params.length) {
     const args = params.map((provide: any) => getServiceInContext(provide, ctx, options));
