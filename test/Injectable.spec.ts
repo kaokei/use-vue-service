@@ -6,7 +6,7 @@ import Logger from '../example/services/logger.service';
 import Person from '../example/services/person.service';
 
 describe('Injectable', () => {
-  test('Test Person', () => {
+  test('获取类的构造函数参数类型', () => {
     const person = useService(Person);
     const types1 = Reflect.getMetadata(DESIGN_PARAM_TYPES, Person);
     const types2 = Reflect.getMetadata(SERVICE_PARAM_TYPES, Person);

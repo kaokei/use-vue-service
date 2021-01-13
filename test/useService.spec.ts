@@ -2,7 +2,7 @@ import { useService } from '../src';
 import CounterService from '../example/services/counter.service';
 
 describe('useService', () => {
-  test('Test CounterService', () => {
+  test('测试服务状态、方法', () => {
     const counterService = useService(CounterService);
     expect(counterService.count).toBe(0);
     counterService.increment();

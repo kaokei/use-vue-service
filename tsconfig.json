@@ -22,7 +22,7 @@
     "noEmit": false,
     "jsx": "preserve"
   },
-  "include": ["src", "test", "typings"],
+  "include": ["src"],
   "exclude": [
     "node_modules",
     "asset",
