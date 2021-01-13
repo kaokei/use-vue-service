@@ -6,7 +6,7 @@ import Counter from '../example/components/Counter.vue';
 jest.unmock('vue');
 
 describe('Component', () => {
-  it('renders count number', async () => {
+  it('渲染组件、获取服务数据', async () => {
     const wrapper = mount(Counter, {
       props: {
         name: 'counter1',
@@ -19,7 +19,7 @@ describe('Component', () => {
     expect(wrapper.find('.countNum').text()).toBe('1');
   });
 
-  it('matches snapshot', async () => {
+  it('组件快照、服务共享', async () => {
     const wrapper = mount(Counter, {
       props: {
         name: 'counter2',
