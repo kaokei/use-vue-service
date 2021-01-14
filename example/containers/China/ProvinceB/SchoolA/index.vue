@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-    <h4>ProvinceA</h4>
+    <h4>SchoolA</h4>
     <div>
-      <Counter name="ProvinceA Counter" :counter="counterService"></Counter>
+      <Counter name="SchoolA Counter" :counter="counterService"></Counter>
     </div>
     <div class="box">
-      <SchoolA></SchoolA>
-      <SchoolB></SchoolB>
+      <ClassA></ClassA>
+      <ClassB></ClassB>
     </div>
   </div>
 </template>
@@ -14,31 +14,23 @@
 <script>
 import { reactive, defineComponent } from 'vue';
 
-import { useService, declareProviders } from '@src/index';
+import { useService } from '@src/index';
 
 import CounterService from '@services/counter.service';
-import { COUNTER_THEME } from '@services/service.context';
 
 import Counter from '@components/Counter.vue';
 
-import SchoolA from './SchoolA/index.vue';
-import SchoolB from './SchoolB/index.vue';
+import ClassA from './ClassA/index.vue';
+import ClassB from './ClassB/index.vue';
 
 export default defineComponent({
-  name: 'ProvinceA',
+  name: 'SchoolA',
   components: {
     Counter,
-    SchoolA,
-    SchoolB,
+    ClassA,
+    ClassB,
   },
   setup() {
-    declareProviders([
-      {
-        provide: COUNTER_THEME,
-        useValue: '#ffc069',
-      },
-      CounterService,
-    ]);
     const counterService = useService(CounterService);
     return {
       counterService,
@@ -49,7 +41,7 @@ export default defineComponent({
 
 <style lang="css" scoped>
 .box {
-  width: 800px;
+  width: 400px;
   margin: 0 auto;
   display: flex;
 }
