@@ -20,7 +20,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@services/*": ["example/services/*"]
+    }
   },
   "include": ["src"],
   "exclude": [

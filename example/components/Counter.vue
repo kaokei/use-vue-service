@@ -1,23 +1,27 @@
 <template>
   <div>
-    <h1>{{ name || 'defaultName' }}</h1>
-    <div class="countNum">{{ counterService.count }}</div>
-    <button type="button" @click="counterService.increment">add</button>
+    <span class="title">{{ name || 'defaultName' }}: </span>
+    <button type="button" @click="counter.decrement">-</button>
+    <span class="countNum">{{ counter.count }}</span>
+    <button type="button" @click="counter.increment">+</button>
   </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
-import { useService } from '../../src/getServiceInContext';
-import CounterService from '../services/counter.service';
 
 export default defineComponent({
-  props: ['name'],
-  setup() {
-    const counterService = useService(CounterService);
-    return {
-      counterService,
-    };
-  },
+  props: ['name', 'counter'],
 });
 </script>
+
+<style scoped lang="css">
+.title {
+  font-weight: bold;
+  margin-right: 10px;
+  font-size: 14px;
+}
+.countNum {
+  padding: 0 5px;
+}
+</style>
