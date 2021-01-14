@@ -9,7 +9,8 @@
 
 <script>
 import { reactive, defineComponent } from 'vue';
-import { useService } from '@src';
+
+import { useService } from '@src/index';
 
 import CounterService from '@services/counter.service';
 

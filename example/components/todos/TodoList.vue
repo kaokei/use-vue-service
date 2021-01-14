@@ -14,8 +14,11 @@
 
 <script>
 import { reactive } from 'vue';
-import { useService } from '../../src';
-import CountService from '../services/count.service';
+
+import { useService } from '@src/index';
+
+import CountService from '@services/count.service';
+
 import SubCount from './SubCount.vue';
 
 export default {

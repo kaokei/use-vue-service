@@ -23,10 +23,14 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@services/*": ["example/services/*"]
+      "@services/*": ["example/services/*"],
+      "@components/*": ["example/components/*"],
+      "@containers/*": ["example/containers/*"],
+      "@src/*": ["src/*"],
+      "@/*": ["example/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "example", "typings"],
   "exclude": [
     "node_modules",
     "asset",

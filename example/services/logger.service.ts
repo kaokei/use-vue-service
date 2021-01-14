@@ -1,4 +1,4 @@
-import { Injectable } from '../../src';
+import { Injectable } from '@src/index';
 
 @Injectable()
 export default class LoggerService {

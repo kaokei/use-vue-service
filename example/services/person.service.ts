@@ -1,4 +1,4 @@
-import { Injectable } from '../../src/Injectable';
+import { Injectable } from '@src/index';
 import Logger from './logger.service';
 
 @Injectable()
