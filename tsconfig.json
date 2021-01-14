@@ -30,7 +30,7 @@
       "@/*": ["example/*"]
     }
   },
-  "include": ["src", "example", "typings"],
+  "include": ["src", "test", "example", "typings"],
   "exclude": [
     "node_modules",
     "asset",
