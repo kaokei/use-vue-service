@@ -2,7 +2,6 @@ import { Injectable } from '@src/index';
 import Logger from './logger.service';
 
 function logDec(target: any, key: string, descriptor: PropertyDescriptor) {
-  console.log('logDec start :>> ');
   const originalMethod = descriptor.value;
 
   descriptor.value = function (...args: any[]) {
