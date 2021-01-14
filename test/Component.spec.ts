@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import { mount } from '@vue/test-utils';
 
 import Counter from '../example/components/Counter.vue';
@@ -25,7 +26,14 @@ describe('Component', () => {
 
     await wrapper.find('.decrementBtn').trigger('click');
     expect(wrapper.find('.countNum').text()).toBe('0');
-    return;
+
+    counterService.add(10);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.countNum').text()).toBe('10');
+
+    counterService.minus(5);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.countNum').text()).toBe('5');
   });
 
   test('组件快照、服务共享', async () => {
@@ -37,7 +45,7 @@ describe('Component', () => {
     });
     expect(wrapper.find('.title').text()).toBe('counter2:');
     // 共享service的原因
-    expect(wrapper.find('.countNum').text()).toBe('0');
+    expect(wrapper.find('.countNum').text()).toBe('5');
     await wrapper.vm.$nextTick();
     expect(wrapper.html()).toMatchSnapshot();
   });
