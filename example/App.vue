@@ -15,6 +15,7 @@ import { reactive, defineComponent } from 'vue';
 import { useService, declareProviders } from '@src/index';
 
 import CounterService from '@services/counter.service';
+import { COUNTER_THEME } from '@services/service.context';
 
 import Counter from '@components/Counter.vue';
 
@@ -30,6 +31,13 @@ export default defineComponent({
     console.log('mounted :>> ');
   },
   setup() {
+    declareProviders([
+      {
+        provide: COUNTER_THEME,
+        useValue: '#69c0ff',
+      },
+      CounterService,
+    ]);
     const counterService = useService(CounterService);
     return {
       counterService,
