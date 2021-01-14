@@ -2,11 +2,15 @@ import { Injectable } from '../../src/Injectable';
 import Logger from './logger.service';
 
 function logDec(target: any, key: string, descriptor: PropertyDescriptor) {
+  console.log('logDec start :>> ');
   const originalMethod = descriptor.value;
-  target[key] = function (...args: any[]) {
-    console.log('from logDec before: ', this.count);
-    originalMethod.apply(this, args);
-    console.log('from logDec after: ', this.count);
+
+  descriptor.value = function (...args: any[]) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const context: any = this;
+    console.log('from logDec before: ', context.count);
+    originalMethod.apply(context, args);
+    console.log('from logDec after: ', context.count);
   };
 }
 
@@ -16,7 +20,6 @@ export default class Counter {
 
   constructor(public logger: Logger) {}
 
-  @logDec
   public add(num: number) {
     this.count += num;
     this.logger.log('this.count: ==>', this.count);
@@ -27,13 +30,13 @@ export default class Counter {
     this.logger.log('this.count: ==>', this.count);
   }
 
+  @logDec
   public increment() {
     this.count++;
-    this.logger.log('this.count: ==>', this.count);
   }
 
+  @logDec
   public decrement() {
     this.count--;
-    this.logger.log('this.count: ==>', this.count);
   }
 }

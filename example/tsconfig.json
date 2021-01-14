@@ -3,5 +3,5 @@
   "compilerOptions": {
     "declaration": false
   },
-  "include": ["../example", "../typings"],
+  "include": ["../example/**/*", "../typings"]
 }
