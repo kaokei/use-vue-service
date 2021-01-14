@@ -15,8 +15,10 @@
 
 <script>
 import { reactive } from 'vue';
-import { useService, declareProviders } from '../../src';
-import CountService from '../services/counter.service';
+
+import { useService, declareProviders } from '@src/index';
+
+import CountService from '@services/counter.service';
 
 import SubSubCount from './SubSubCount.vue';
 

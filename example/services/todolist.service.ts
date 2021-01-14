@@ -1,4 +1,4 @@
-import { useService, declareProviders, Inject, Injectable } from '../../src';
+import { useService, declareProviders, Inject, Injectable } from '@src/index';
 
 import LoggerService from './logger.service';
 

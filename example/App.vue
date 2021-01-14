@@ -11,13 +11,14 @@
 
 <script lang="ts">
 import { reactive, defineComponent } from 'vue';
-import { useService, declareProviders } from '../src';
 
-import CounterService from './services/counter.service';
+import { useService, declareProviders } from '@src/index';
 
-import Counter from './components/Counter.vue';
+import CounterService from '@services/counter.service';
 
-import Earth from './containers/Earth.vue';
+import Counter from '@components/Counter.vue';
+
+import Earth from '@containers/Earth.vue';
 
 export default defineComponent({
   name: 'App',
