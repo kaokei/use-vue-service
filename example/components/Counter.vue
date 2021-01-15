@@ -12,10 +12,12 @@ import { defineComponent } from 'vue';
 
 import { useService } from '@src/index';
 
+import { COUNTER_THEME } from '@services/service.context';
+
 export default defineComponent({
   props: ['name', 'counter'],
   setup() {
-    const theme = useService('COUNTER_THEME');
+    const theme = useService(COUNTER_THEME);
     return {
       theme,
     };
