@@ -36,7 +36,6 @@ export default defineComponent({
         provide: COUNTER_THEME,
         useValue: '#69c0ff',
       },
-      CounterService,
     ]);
     const counterService = useService(CounterService);
     return {
