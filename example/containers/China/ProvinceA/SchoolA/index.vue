@@ -40,10 +40,6 @@ export default defineComponent({
       CounterService,
     ]);
     const counterService = useService(CounterService);
-
-    provide(COUNTER_THEME, 'school a');
-    const theme1 = inject(COUNTER_THEME);
-    console.log('from School A theme1 :>> ', theme1);
     return {
       counterService,
     };

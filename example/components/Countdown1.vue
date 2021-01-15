@@ -12,14 +12,16 @@ import { defineComponent } from 'vue';
 
 import { useService } from '@src/index';
 
-import { COUNTER_THEME } from '@services/service.context';
+import { COUNTDOWN_THEME } from '@services/service.context';
+import CountdownService from '@services/countdown.service';
 
 export default defineComponent({
   props: ['name', 'counter'],
   setup() {
-    const theme = useService(COUNTER_THEME);
+    const [theme, countdownService] = useService([COUNTDOWN_THEME, CountdownService]);
     return {
       theme,
+      countdownService,
     };
   },
 });

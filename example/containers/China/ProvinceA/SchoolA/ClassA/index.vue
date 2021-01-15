@@ -32,13 +32,6 @@ export default defineComponent({
       CounterService,
     ]);
     const counterService = useService(CounterService);
-    const theme = useService(COUNTER_THEME);
-    console.log('theme :>> ', theme);
-
-    provide(COUNTER_THEME, 'qqqqqqq');
-    debugger;
-    const theme1 = inject(COUNTER_THEME);
-    console.log('from class a theme1 :>> ', theme1);
     return {
       counterService,
     };
