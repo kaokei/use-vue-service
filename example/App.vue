@@ -18,6 +18,7 @@ import CounterService from '@services/counter.service';
 import { COUNTER_THEME } from '@services/service.context';
 
 import Counter from '@components/Counter.vue';
+import Countdown from '@components/Countdown.vue';
 
 import Earth from '@containers/Earth.vue';
 
