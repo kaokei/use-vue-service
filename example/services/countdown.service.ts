@@ -40,7 +40,11 @@ export default class Countdown {
       return;
     }
     this.timer = window.setInterval(() => {
-      this.remainTime -= 1;
+      if (this.remainTime > 0) {
+        this.remainTime -= 1;
+      } else {
+        this.stopTimer();
+      }
     }, 1000);
   }
 
