@@ -1,9 +1,13 @@
 <template>
   <div class="container" :style="{ background: bgTheme }">
     <span class="title">{{ name || 'defaultName' }}:</span>
-    <button class="decrementBtn" type="button" @click="counter.decrement">-</button>
-    <span class="countNum">{{ counter.count }}</span>
-    <button class="incrementBtn" type="button" @click="counter.increment">+</button>
+    <button class="decrementBtn" type="button" @click="countdownService.minus(minus)">
+      - {{ minus }}
+    </button>
+    <span class="countNum">{{ countdownService.time }}</span>
+    <button class="incrementBtn" type="button" @click="countdownService.add(add)">
+      + {{ add }}
+    </button>
   </div>
 </template>
 
@@ -12,16 +16,20 @@ import { defineComponent, computed } from 'vue';
 
 import { useService } from '@src/index';
 
-import { COUNTER_THEME } from '@services/service.context';
+import { COUNTDOWN_THEME } from '@services/service.context';
+import CountdownService from '@services/countdown.service';
 import SwitchService from '@services/switch.service';
 
 export default defineComponent({
-  props: ['name', 'counter'],
-  setup() {
-    const theme = useService(COUNTER_THEME);
-    const switchService = useService(SwitchService);
+  props: ['name', 'add', 'minus'],
+  setup(props) {
+    const [theme, countdownService, switchService] = useService([
+      COUNTDOWN_THEME,
+      CountdownService,
+      SwitchService,
+    ]);
     const bgTheme = computed(() => {
-      if (switchService.counterStatus === 1) {
+      if (switchService.countdownStatus === 1) {
         return theme;
       } else {
         return 'transparent';
@@ -29,6 +37,8 @@ export default defineComponent({
     });
     return {
       bgTheme,
+      countdownService,
+      switchService,
     };
   },
 });

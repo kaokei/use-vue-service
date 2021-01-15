@@ -2,7 +2,12 @@
   <div class="container">
     <h4>ClassA</h4>
     <div>
-      <Counter name="ClassA Counter" :counter="counterService"></Counter>
+      <div>
+        <Counter name="ClassA Counter" :counter="counterService"></Counter>
+      </div>
+      <div class="mt5">
+        <Countdown name="ClassA Countdown" :minus="10" :add="10"></Countdown>
+      </div>
     </div>
   </div>
 </template>
@@ -17,11 +22,13 @@ import CounterService from '@services/counter.service';
 import { COUNTER_THEME } from '@services/service.context';
 
 import Counter from '@components/Counter.vue';
+import Countdown from '@components/Countdown.vue';
 
 export default defineComponent({
   name: 'ClassA',
   components: {
     Counter,
+    Countdown,
   },
   setup() {
     declareProviders([

@@ -2,7 +2,12 @@
   <div class="container">
     <h4>SchoolB</h4>
     <div>
-      <Counter name="SchoolB Counter" :counter="counterService"></Counter>
+      <div>
+        <Counter name="SchoolB Counter" :counter="counterService"></Counter>
+      </div>
+      <div class="mt5">
+        <Countdown name="SchoolB Countdown" :minus="10" :add="10"></Countdown>
+      </div>
     </div>
     <div class="box">
       <ClassA></ClassA>
@@ -19,6 +24,7 @@ import { useService } from '@src/index';
 import CounterService from '@services/counter.service';
 
 import Counter from '@components/Counter.vue';
+import Countdown from '@components/Countdown.vue';
 
 import ClassA from './ClassA/index.vue';
 import ClassB from './ClassB/index.vue';
@@ -27,6 +33,7 @@ export default defineComponent({
   name: 'SchoolB',
   components: {
     Counter,
+    Countdown,
     ClassA,
     ClassB,
   },
@@ -41,7 +48,7 @@ export default defineComponent({
 
 <style lang="css" scoped>
 .box {
-  width: 400px;
+  width: 620px;
   margin: 0 auto;
   display: flex;
 }
