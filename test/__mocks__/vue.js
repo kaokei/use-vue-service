@@ -1,7 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const vue = require('vue');
 
-vue.inject = jest.fn(() => ({}));
+const context = {};
+
+vue.inject = jest.fn(() => context);
 
 // vue.reactive = jest.fn(arg => arg);
 

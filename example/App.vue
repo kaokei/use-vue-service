@@ -12,6 +12,7 @@
       <Earth></Earth>
     </div>
     <div class="switch-box">
+      <h4>These areas with same background color have same service instance.</h4>
       <div>
         <button type="button" @click="switchService.toggleCounterStatus">
           {{ switchService.counterStatus === 1 ? 'hide' : 'show' }} counter background
