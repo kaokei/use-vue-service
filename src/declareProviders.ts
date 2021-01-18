@@ -1,4 +1,4 @@
-import { provide, inject } from 'vue';
+import { provide, inject, getCurrentInstance } from 'vue';
 import { ServiceContext, DefaultContext } from './ServiceContext';
 
 /**
@@ -11,10 +11,20 @@ import { ServiceContext, DefaultContext } from './ServiceContext';
  * 还考虑到官网的示例代码中也是直接在setup函数中调用provide函数，而且vue2.x版本中就是采用的provide/inject属性来配置。vue3中已经转为函数了
  * 我觉得我也没有必要一定为了追求声明式代码，强制实现声明式功能
  *
+ * 1. 需要解决重复调用的问题
+ * 2. 不能直接利用原型来索引，因为provide不仅仅是string|symbol，还可能是类
+ *
  * @export
  * @param {any[]} providers
  */
 export function declareProviders(providers: any[]) {
+  const instance: any = getCurrentInstance();
+  if (!instance) {
+    throw new Error('declareProviders 只能在setup内部使用');
+  }
+  if (instance.__current_providers__) {
+    throw new Error('禁止重复调用declareProviders');
+  }
   const parentCtx = inject(ServiceContext, DefaultContext);
   const newProviders = providers.map(p => {
     if (p.provide) {
@@ -30,5 +40,6 @@ export function declareProviders(providers: any[]) {
     parent: parentCtx,
     providers: newProviders,
   };
+  instance.__current_providers__ = currentCtx;
   provide(ServiceContext, currentCtx);
 }
