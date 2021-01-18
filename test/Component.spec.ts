@@ -63,9 +63,9 @@ describe('Component', () => {
       },
     });
     expect(wrapper.find('.title').text()).toBe('counter2:');
-    // 共享service的原因
+        // 共享service的原因
     expect(wrapper.find('.countNum').text()).toBe('5');
-    await wrapper.vm.$nextTick();
+       await wrapper.vm.$nextTick();
     expect(wrapper.html()).toMatchSnapshot();
   });
 });
