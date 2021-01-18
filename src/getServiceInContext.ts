@@ -18,7 +18,7 @@
  */
 
 import 'reflect-metadata';
-import { inject, reactive } from 'vue';
+import { inject, reactive, ref } from 'vue';
 import {
   SERVICE_INJECTED_KEY,
   SERVICE_INJECTED_PROPS,
@@ -136,6 +136,7 @@ function generateServiceByClass<T>(
   options?: IOptions
 ): T {
   if (typeof ClassName !== 'function') {
+    console.log('ClassName :>> ', ClassName);
     throw new Error('服务标识符不是类名');
   }
   const params = Reflect.getMetadata(SERVICE_PARAM_TYPES, ClassName);
@@ -172,7 +173,7 @@ export function useService(Service: any, options?: IOptions) {
     }
   }
   const service = getServiceInContext(Service, ctx, options);
-  return reactive(service);
+  return service && typeof service === 'object' ? reactive(service) : ref(service);
 }
 
 export function getPropertiesByClass<T>(ClassName: new (...args: any[]) => T) {
