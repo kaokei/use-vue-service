@@ -147,8 +147,7 @@ function generateServiceByProvider(
  */
 function generateServiceByClass<T>(
   ClassName: new (...args: any[]) => T,
-  ctx: IContextProps,
-  options?: IOptions
+  ctx: IContextProps
 ): T {
   if (typeof ClassName !== 'function') {
     throw new Error(`服务标识符不是类名: ${ClassName}`);
@@ -158,16 +157,16 @@ function generateServiceByClass<T>(
   if (params && params.length) {
     const propertiesMetadatas =
       Reflect.getMetadata(SERVICE_INJECTED_PARAMS, ClassName) || {};
-
     const newParams = getNewParamsWithPropertiesMetadatas(params, propertiesMetadatas);
-
-    const args = newParams.map(
-      (item: any) => getServiceInContext(item.provide, ctx, item.options) // 没有对skip做处理 todo
+    const args = newParams.map((item: any) =>
+      getServiceInContext(item.provide, ctx, item.options)
     );
     service = new ClassName(...args);
   } else {
     service = new ClassName();
   }
+  const properties = getPropertiesByClass(ClassName);
+  Object.assign(service, properties);
   return service;
 }
 
@@ -188,24 +187,6 @@ function getNewParamsWithPropertiesMetadatas(params: any[], propertiesMetadatas:
   });
 }
 
-type Ret<T> = T extends new (...args: any) => infer S
-  ? S
-  : T extends Array<any>
-  ? { [P in keyof T]: Ret<T[P]> }
-  : T;
-
-export function useService<R, T = unknown>(
-  Service: T,
-  options?: IOptions
-): T extends R ? Ret<T> : Ret<R>;
-export function useService(Service: any, options?: IOptions) {
-  const ctx = inject(ServiceContext, DefaultContext as IContextProps);
-  if (Array.isArray(Service)) {
-    return Service.map(s => useServiceWithContext(s, ctx, options));
-  }
-  return useServiceWithContext(Service, ctx, options);
-}
-
 /**
  * 1. useService 负责获取context
  * 2. useServiceWithContext 负责reactive/ref
@@ -216,7 +197,11 @@ export function useService(Service: any, options?: IOptions) {
  * @param {IOptions} [options]
  * @return {*}
  */
-function useServiceWithContext(Service: any, ctx: IContextProps, options?: IOptions) {
+export function useServiceWithContext(
+  Service: any,
+  ctx: IContextProps,
+  options?: IOptions
+) {
   options = options || {};
   options.skip = Number(options.skip) || 0;
   const service = getServiceInContext(Service, ctx, options);
