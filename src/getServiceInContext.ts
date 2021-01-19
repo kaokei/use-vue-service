@@ -15,12 +15,19 @@
  * { provide: HeroService, useFactory: heroServiceFactory, deps: [Logger, UserService] }
  * 预定义令牌
  * 多实例提供者
+ *
+ * 1. 组件只支持实例属性注入，并且实例属性必须使用@Inject
+ * 2. 类服务既支持实例属性注入，也支持构造函数参数注入，并且构造函数参数也支持@Inject
+ *
+ * 1. options只对自己有效
+ * 2. ctx只会往上冒泡，不会每次从头开始寻找
  */
 
 import 'reflect-metadata';
 import { inject, reactive, ref } from 'vue';
 import {
   SERVICE_INJECTED_KEY,
+  SERVICE_INJECTED_PARAMS,
   SERVICE_INJECTED_PROPS,
   SERVICE_PARAM_TYPES,
   ServiceContext,
@@ -46,13 +53,14 @@ export interface IOptions {
   // 对直接注入的service和间接注入的service都生效
   namespace?: string;
   // 只对直接注入的service生效，该service依赖的其他service不直接生效，但是有间接影响
-  skip?: true | number;
+  skip?: boolean | number;
 }
 
 const defaultNamespace = 'root';
 
 /**
  * 根据一个服务标志获取一个服务
+ * 处理options里的各种参数
  *
  * @export
  * @param {*} serviceIdentifier
@@ -63,11 +71,18 @@ const defaultNamespace = 'root';
 export function getServiceInContext(
   serviceIdentifier: any,
   ctx: IContextProps,
-  options?: IOptions
+  options: IOptions
 ): any {
   const { parent, providers = [] } = ctx;
+  const { namespace, skip = 0 } = options;
   const provider = providers.find(item => item.provide === serviceIdentifier);
-  if (provider) {
+
+  if (provider && parent && skip > 0) {
+    return getServiceInContext(serviceIdentifier, parent, {
+      ...options,
+      skip: (skip as number) - 1,
+    });
+  } else if (provider) {
     if (provider.useValue) {
       return provider.useValue;
     } else {
@@ -79,13 +94,13 @@ export function getServiceInContext(
     if (parent) {
       return getServiceInContext(serviceIdentifier, parent, options);
     } else {
-      const namespace = (options && options.namespace) || defaultNamespace;
-      const namespaceCtx = (ctx[namespace] = ctx[namespace] || new Map());
+      const ns = namespace || defaultNamespace;
+      const namespaceCtx = (ctx[ns] = ctx[ns] || new Map());
       const value = namespaceCtx.get(serviceIdentifier);
       if (value) {
         return value;
       } else {
-        const newValue = generateServiceByClass(serviceIdentifier, ctx, options);
+        const newValue = generateServiceByClass(serviceIdentifier, ctx);
         namespaceCtx.set(serviceIdentifier, newValue);
         return newValue;
       }
@@ -103,12 +118,12 @@ export function getServiceInContext(
 function generateServiceByProvider(
   provider: IProvider,
   ctx: IContextProps,
-  options?: IOptions
+  options: IOptions
 ) {
   if (provider.useValue) {
     return provider.useValue;
   } else if (provider.useClass) {
-    return generateServiceByClass(provider.useClass, ctx, options);
+    return generateServiceByClass(provider.useClass, ctx);
   } else if (provider.useExisting) {
     return getServiceInContext(provider.useExisting, ctx, options);
   } else if (provider.useFactory) {
@@ -136,16 +151,41 @@ function generateServiceByClass<T>(
   options?: IOptions
 ): T {
   if (typeof ClassName !== 'function') {
-    console.log('ClassName :>> ', ClassName);
-    throw new Error('服务标识符不是类名');
+    throw new Error(`服务标识符不是类名: ${ClassName}`);
   }
+  let service;
   const params = Reflect.getMetadata(SERVICE_PARAM_TYPES, ClassName);
   if (params && params.length) {
-    const args = params.map((provide: any) => getServiceInContext(provide, ctx, options));
-    return new ClassName(...args);
+    const propertiesMetadatas =
+      Reflect.getMetadata(SERVICE_INJECTED_PARAMS, ClassName) || {};
+
+    const newParams = getNewParamsWithPropertiesMetadatas(params, propertiesMetadatas);
+
+    const args = newParams.map(
+      (item: any) => getServiceInContext(item.provide, ctx, item.options) // 没有对skip做处理 todo
+    );
+    service = new ClassName(...args);
   } else {
-    return new ClassName();
+    service = new ClassName();
   }
+  return service;
+}
+
+function getNewParamsWithPropertiesMetadatas(params: any[], propertiesMetadatas: any) {
+  return params.map((provide, index) => {
+    const propertyMetadatas: any[] = propertiesMetadatas[index] || [];
+    const ctor = propertyMetadatas.find(meta => meta.key === SERVICE_INJECTED_KEY);
+    const options = propertyMetadatas.reduce((acc, meta) => {
+      if (meta.key !== SERVICE_INJECTED_KEY) {
+        acc[meta.key] = meta.value;
+      }
+      return acc;
+    }, {} as any);
+    return {
+      provide: (ctor && ctor.value) || provide,
+      options: options,
+    };
+  });
 }
 
 type Ret<T> = T extends new (...args: any) => infer S
@@ -159,35 +199,52 @@ export function useService<R, T = unknown>(
   options?: IOptions
 ): T extends R ? Ret<T> : Ret<R>;
 export function useService(Service: any, options?: IOptions) {
+  const ctx = inject(ServiceContext, DefaultContext as IContextProps);
   if (Array.isArray(Service)) {
-    return Service.map(s => useService(s, options));
+    return Service.map(s => useServiceWithContext(s, ctx, options));
   }
-  let ctx = inject(ServiceContext, DefaultContext as IContextProps);
-  if (options && options.skip) {
-    let skip = Number(options.skip);
-    while (skip > 0 && ctx.parent) {
-      if (ctx.providers.find(item => item.provide === Service)) {
-        skip--;
-      }
-      ctx = ctx.parent;
-    }
-  }
+  return useServiceWithContext(Service, ctx, options);
+}
+
+/**
+ * 1. useService 负责获取context
+ * 2. useServiceWithContext 负责reactive/ref
+ * 3. getServiceInContext 负责处理skip
+ *
+ * @param {*} Service
+ * @param {IContextProps} ctx
+ * @param {IOptions} [options]
+ * @return {*}
+ */
+function useServiceWithContext(Service: any, ctx: IContextProps, options?: IOptions) {
+  options = options || {};
+  options.skip = Number(options.skip) || 0;
   const service = getServiceInContext(Service, ctx, options);
   return service && typeof service === 'object' ? reactive(service) : ref(service);
 }
 
+/**
+ * 类组件中@Inject注入的数据
+ * 只支持实例属性注入，不支持类的构造函数参数注入
+ * 只能在setup中使用
+ *
+ * @export
+ * @template T
+ * @param {new (...args: any[]) => T} ClassName
+ * @return {*}
+ */
 export function getPropertiesByClass<T>(ClassName: new (...args: any[]) => T) {
   const propertiesMetadatas =
     Reflect.getMetadata(SERVICE_INJECTED_PROPS, ClassName) || {};
 
   const properties: any = {};
-  // const services = useService(metadata.map((item: any) => item.type));
+  const ctx = inject(ServiceContext, DefaultContext as IContextProps);
 
   for (const key in propertiesMetadatas) {
     if (Object.prototype.hasOwnProperty.call(propertiesMetadatas, key)) {
       const propertyMetadatas = propertiesMetadatas[key] || [];
       const [Cotr, options] = getOptionsByMetadatas(propertyMetadatas);
-      properties[key] = useService(Cotr, options);
+      properties[key] = useServiceWithContext(Cotr, ctx, options);
     }
   }
   return properties;
