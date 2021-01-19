@@ -33,7 +33,7 @@ export const Skip = createPropertyDecorator('skip', true);
 export const Namespace = createPropertyDecorator('namespace', true);
 
 function createPropertyDecorator(decoratorKey: string, defaultValue?: any) {
-  return function (serviceIdentifier: any) {
+  return function (serviceIdentifier?: any) {
     return function (target: any, targetKey: string, index?: number): void {
       const isParameterDecorator = typeof index === 'number';
       const Ctor = isParameterDecorator ? target : target.constructor;

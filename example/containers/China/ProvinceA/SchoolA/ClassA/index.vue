@@ -50,6 +50,7 @@ import { reactive, provide, inject, defineComponent } from 'vue';
 import { useService, declareProviders } from '@src/index';
 
 import CounterService from '@services/counter.service';
+import PersonService from '@services/person.service';
 
 import { COUNTER_THEME } from '@services/service.context';
 
@@ -69,6 +70,7 @@ export default defineComponent({
         useValue: '#ff7875',
       },
       CounterService,
+      PersonService,
     ]);
     const counterService4ClassA = useService(CounterService);
     const counterService4SchoolA = useService(CounterService, { skip: 1 });
@@ -81,6 +83,11 @@ export default defineComponent({
     const counterTheme4ProvinceA = useService(COUNTER_THEME, { skip: 2 });
     const counterTheme4China = useService(COUNTER_THEME, { skip: 3 });
     const counterTheme4Global = useService(COUNTER_THEME, { skip: 4 });
+
+    const personService = useService(PersonService);
+
+    console.log('expect personService.check() toBe true :>> ', personService.check());
+
     return {
       counterService4ClassA,
       counterService4SchoolA,
@@ -92,6 +99,7 @@ export default defineComponent({
       counterTheme4ProvinceA,
       counterTheme4China,
       counterTheme4Global,
+      personService,
     };
   },
 });
