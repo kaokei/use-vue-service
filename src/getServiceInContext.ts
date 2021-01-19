@@ -75,6 +75,15 @@ export function getServiceInContext(
 ): any {
   const { parent, providers = [] } = ctx;
   const { namespace, skip = 0 } = options;
+
+  if (namespace && parent) {
+    return getServiceInContext(
+      serviceIdentifier,
+      DefaultContext as IContextProps,
+      options
+    );
+  }
+
   const provider = providers.find(item => item.provide === serviceIdentifier);
 
   if (provider && parent && skip > 0) {
