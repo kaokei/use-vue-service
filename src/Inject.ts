@@ -43,10 +43,7 @@ function createPropertyDecorator(decoratorKey: string, defaultValue?: any) {
         ? SERVICE_INJECTED_PARAMS
         : SERVICE_INJECTED_PROPS;
 
-      let paramsOrPropertiesMetadata: any = isParameterDecorator ? [] : {};
-      if (Reflect.hasOwnMetadata(metadataKey, Ctor)) {
-        paramsOrPropertiesMetadata = Reflect.getMetadata(metadataKey, Ctor);
-      }
+      const paramsOrPropertiesMetadata = Reflect.getMetadata(metadataKey, Ctor) || {};
 
       // 每个参数或者实例属性都可以有多个装饰器
       const paramOrPropertyMetadata = paramsOrPropertiesMetadata[key] || [];
