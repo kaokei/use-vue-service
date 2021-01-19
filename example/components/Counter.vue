@@ -15,14 +15,15 @@ import { useService } from '@src/index';
 import { COUNTER_THEME } from '@services/service.context';
 import SwitchService from '@services/switch.service';
 
+// Counter组件是一个完全受控的组件
 export default defineComponent({
-  props: ['name', 'counter'],
-  setup() {
+  props: ['name', 'counter', 'bgColor'],
+  setup(props) {
     const theme = useService(COUNTER_THEME);
     const switchService = useService(SwitchService);
     const bgTheme = computed(() => {
       if (switchService.counterStatus === 1) {
-        return theme;
+        return props.bgColor || theme.value;
       } else {
         return 'transparent';
       }
