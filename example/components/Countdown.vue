@@ -20,6 +20,8 @@ import { COUNTDOWN_THEME } from '@services/service.context';
 import CountdownService from '@services/countdown.service';
 import SwitchService from '@services/switch.service';
 
+// Countdown组件则不是完全受控的组件
+// Countdown组件完全依赖最近的declareProviders定义的服务
 export default defineComponent({
   props: ['name', 'add', 'minus'],
   setup(props) {
@@ -30,7 +32,7 @@ export default defineComponent({
     ]);
     const bgTheme = computed(() => {
       if (switchService.countdownStatus === 1) {
-        return theme;
+        return theme.value;
       } else {
         return 'transparent';
       }
