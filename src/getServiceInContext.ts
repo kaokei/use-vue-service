@@ -33,6 +33,7 @@ import {
   ServiceContext,
   DefaultContext,
 } from './ServiceContext';
+import { merge, has } from './utils';
 
 interface IProvider {
   provide: any;
@@ -175,7 +176,8 @@ function generateServiceByClass<T>(
     service = new ClassName();
   }
   const properties = getPropertiesByClass(ClassName);
-  Object.assign(service, properties);
+  // todo 需要验证这样合并是否符合预期
+  merge(service, properties);
   return service;
 }
 
@@ -235,7 +237,7 @@ export function getPropertiesByClass<T>(ClassName: new (...args: any[]) => T) {
   const ctx = inject(ServiceContext, DefaultContext as IContextProps);
 
   for (const key in propertiesMetadatas) {
-    if (Object.prototype.hasOwnProperty.call(propertiesMetadatas, key)) {
+    if (has(propertiesMetadatas, key)) {
       const propertyMetadatas = propertiesMetadatas[key] || [];
       const [Cotr, options] = getOptionsByMetadatas(propertyMetadatas);
       properties[key] = useServiceWithContext(Cotr, ctx, options);

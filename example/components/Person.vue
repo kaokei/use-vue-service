@@ -8,7 +8,6 @@
 </template>
 
 <script lang="ts">
-import { Ref } from 'vue';
 import { Vue } from 'vue-class-component';
 
 import { useService, Component, Inject } from '@src/index';
@@ -33,7 +32,7 @@ class Props {
 })
 export default class Person extends Vue.with(Props) {
   @Inject(COUNTER_THEME)
-  public theme!: Ref<string>;
+  public theme!: string;
 
   @Inject()
   public counter!: CounterService;
@@ -43,26 +42,10 @@ export default class Person extends Vue.with(Props) {
 
   public get bgTheme() {
     if (this.switchService.counterStatus === 1) {
-      return this.bgColor || this.theme.value;
+      return this.bgColor || this.theme;
     } else {
       return 'transparent';
     }
-  }
-
-  public msg = 'hello world';
-
-  mounted() {
-    console.log('this.bgTheme :>> ', this.bgTheme, this, this.theme.value, this.theme);
-    console.log(
-      'Person component mounted: ',
-      this.name,
-      this.bgColor,
-      this.theme,
-      this.counter,
-      this.switchService,
-      this.bgTheme,
-      this.msg
-    );
   }
 }
 </script>

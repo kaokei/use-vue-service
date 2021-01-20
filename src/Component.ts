@@ -1,6 +1,7 @@
 import { Options } from 'vue-class-component';
 import { declareProviders } from './declareProviders';
 import { getPropertiesByClass } from './getServiceInContext';
+import { merge } from './utils';
 
 /**
  * 禁止在组件的构造函数中声明依赖注入
@@ -38,20 +39,17 @@ export function Component(options: any = {}) {
         // 注意组件不支持构造函数参数注入实例属性
         const properties = getPropertiesByClass(target);
 
-        console.log('properties :>> ', properties);
-
         const setupState = originSetup ? originSetup(props, ctx) : {};
+
         let result: any = null;
 
         if (setupState instanceof Promise) {
           result = setupState.then(state => {
-            return Object.assign(state, properties);
+            return merge(state, properties);
           });
         } else {
-          result = Object.assign(setupState, properties);
+          result = merge(setupState, properties);
         }
-
-        console.log('result :>> ', result);
 
         return result;
       };
