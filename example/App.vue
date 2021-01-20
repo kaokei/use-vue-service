@@ -48,9 +48,6 @@ export default defineComponent({
     Countdown,
     Earth,
   },
-  mounted() {
-    console.log('mounted :>> ');
-  },
   setup() {
     declareProviders([
       {
