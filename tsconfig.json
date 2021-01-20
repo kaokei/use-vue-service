@@ -4,6 +4,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "noFallthroughCasesInSwitch": true,
+    "useDefineForClassFields": true,
     "pretty": true,
     "outDir": "dist",
     "target": "esnext",
