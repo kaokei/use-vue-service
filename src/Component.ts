@@ -38,6 +38,8 @@ export function Component(options: any = {}) {
         // 注意组件不支持构造函数参数注入实例属性
         const properties = getPropertiesByClass(target);
 
+        console.log('properties :>> ', properties);
+
         const setupState = originSetup ? originSetup(props, ctx) : {};
         let result: any = null;
 
@@ -48,6 +50,8 @@ export function Component(options: any = {}) {
         } else {
           result = Object.assign(setupState, properties);
         }
+
+        console.log('result :>> ', result);
 
         return result;
       };
