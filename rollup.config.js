@@ -1,9 +1,9 @@
-import { dirname } from "path";
-import commonjs from "@rollup/plugin-commonjs";
-import resolve from "@rollup/plugin-node-resolve";
-import replace from '@rollup/plugin-replace'
-import { terser } from "rollup-plugin-terser";
-import pkg from "./package.json";
+import { dirname } from 'path';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
+import { terser } from 'rollup-plugin-terser';
+import pkg from './package.json';
 
 // `npm run build` -> `production` is true
 // `npm run dev` -> `production` is false
@@ -11,10 +11,10 @@ const production = !process.env.ROLLUP_WATCH;
 console.log('production :>> ', production);
 let name = pkg.name;
 
-if (name.slice(0, 1) === "@") {
-  name = name.split("/")[1];
+if (name.slice(0, 1) === '@') {
+  name = name.split('/')[1];
   if (!name) {
-    throw new TypeError("pkg.name invalid");
+    throw new TypeError('pkg.name invalid');
   }
 }
 name = parseName(name);
@@ -54,11 +54,11 @@ const uglifyOpts = {
 };
 
 const globals = {
-  "rxjs/operators": "rxjs.operators",
-  "rxjs/websocket": "rxjs.websocket",
+  'rxjs/operators': 'rxjs.operators',
+  'rxjs/websocket': 'rxjs.websocket',
 };
-let external = ["rxjs", "rxjs/operators", "rxjs/websocket", "rxjs/ajax"];
-const nodeModule = ["fs", "path", "util", "os"];
+let external = ['rxjs', 'rxjs/operators', 'rxjs/websocket', 'rxjs/ajax'];
+const nodeModule = ['fs', 'path', 'util', 'os'];
 
 if (deps && Object.keys(deps).length) {
   for (const depName of Object.keys(deps)) {
@@ -80,13 +80,13 @@ if (pkg.main) {
     {
       external: external.concat(nodeModule),
       input: pkg.module,
-      plugins: [replace({__DEV__: !production})],
+      plugins: [replace({ __DEV__: !production })],
       output: [
         {
           file: pkg.main,
           amd: { id: name },
           banner,
-          format: "cjs",
+          format: 'cjs',
           globals,
           name,
           sourcemap: true,
@@ -99,7 +99,7 @@ if (pkg.main) {
 if (pkg.es2015) {
   config[0].output.push({
     banner,
-    format: "es",
+    format: 'es',
     file: pkg.es2015,
     sourcemap: true,
   });
@@ -111,11 +111,11 @@ if (production && pkg.es2015) {
     {
       external: external.concat(nodeModule),
       input: pkg.module,
-      plugins: [replace({__DEV__: !production}), terser(uglifyOpts)],
+      plugins: [replace({ __DEV__: !production }), terser(uglifyOpts)],
       output: {
         banner,
-        file: parseName(pkg.es2015) + ".min.js",
-        format: "es",
+        file: parseName(pkg.es2015) + '.min.js',
+        format: 'es',
         sourcemap: true,
       },
     }
@@ -129,9 +129,9 @@ if (pkg.browser) {
       external: nodeModule,
       input: pkg.module,
       plugins: [
-        replace({__DEV__: !production}),
+        replace({ __DEV__: !production }),
         resolve({
-          mainFields: ["browser", "module", "main"],
+          mainFields: ['browser', 'module', 'main'],
         }),
         commonjs(),
         production && terser(uglifyOpts),
@@ -140,7 +140,7 @@ if (pkg.browser) {
         amd: { id: name },
         banner,
         file: `${targetDir}/${name}.umd.min.js`,
-        format: "umd",
+        format: 'umd',
         globals,
         name,
         sourcemap: production ? true : false,
@@ -157,19 +157,19 @@ if (pkg.bin) {
       continue;
     }
     const binSrcPath =
-      binPath.includes("bin/") && !binPath.includes("dist/bin/")
-        ? binPath.replace("bin/", "dist/bin/")
+      binPath.includes('bin/') && !binPath.includes('dist/bin/')
+        ? binPath.replace('bin/', 'dist/bin/')
         : binPath;
 
     config.push({
       external: external.concat(nodeModule),
       input: binSrcPath,
-      plugins: [replace({__DEV__: !production})],
+      plugins: [replace({ __DEV__: !production })],
       output: [
         {
           file: binPath,
           banner: shebang,
-          format: "cjs",
+          format: 'cjs',
           globals,
         },
       ],
@@ -179,17 +179,17 @@ if (pkg.bin) {
 
 // remove pkg.name extension if exists
 function parseName(name) {
-  if (typeof name === "string" && name) {
-    const arr = name.split(".");
+  if (typeof name === 'string' && name) {
+    const arr = name.split('.');
     const len = arr.length;
 
     if (len > 2) {
-      return arr.slice(0, -1).join(".");
+      return arr.slice(0, -1).join('.');
     } else if (len === 2 || len === 1) {
       return arr[0];
     }
   } else {
-    throw new TypeError("name invalid");
+    throw new TypeError('name invalid');
   }
   return name;
 }
