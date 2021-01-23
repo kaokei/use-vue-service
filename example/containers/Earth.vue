@@ -15,7 +15,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { reactive, defineComponent } from 'vue';
 
 import { useService, declareProviders } from '@src/index';
