@@ -47,7 +47,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { reactive, provide, inject, defineComponent } from 'vue';
 
 import { useService, declareProviders } from '@src/index';

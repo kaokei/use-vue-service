@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { reactive, defineComponent } from 'vue';
 
 import { useService } from '@src/index';
