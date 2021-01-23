@@ -1,6 +1,6 @@
 {
   "name": "use-vue-service",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Use angular service in vue.",
   "scripts": {
     "tsc": "tsc -p tsconfig.json",
