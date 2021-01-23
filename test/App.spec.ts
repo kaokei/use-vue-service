@@ -1,14 +1,14 @@
 import 'reflect-metadata';
 
-import { mount, VueWrapper } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 
-import App from '@/App.vue';
+import TestTreeScope from '@containers/TestTreeScope.vue';
 
 jest.unmock('vue');
 
 describe('App', () => {
   test('渲染组件、获取服务数据', async () => {
-    const wrapper = mount(App);
+    const wrapper = mount(TestTreeScope);
     const Earth = wrapper.findComponent({ name: 'Earth' });
     const China = Earth.findComponent({ name: 'China' });
     const ProvinceA = China.findComponent({ name: 'ProvinceA' });
@@ -19,7 +19,7 @@ describe('App', () => {
   });
 
   test('组件快照、服务共享', async () => {
-    const wrapper = mount(App);
+    const wrapper = mount(TestTreeScope);
     await wrapper.vm.$nextTick();
     expect(wrapper.html()).toMatchSnapshot();
   });
