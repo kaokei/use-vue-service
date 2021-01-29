@@ -24,13 +24,6 @@
 - 使用rollup打包源码
 
 ## bug记录
-1. example中的文件import时路径解析有点问题。
-
-主要是因为在tsconfig.json中配置了paths。
-观察到example中的ts文件会使用example目录下的tsconfig.json文件中的paths配置。
-但是example中的vue文件则会使用根目录下的tsconfig.json文件中的paths配置。
-总结就是ts文件中的解析机制是正确的，它会寻找最近的tsconfig.json文件。而vue文件则总是从根目录寻找。
-
-2. vue-class-component和vue-test-utils似乎配合有点问题
+1. vue-class-component和vue-test-utils似乎配合有点问题
 
 观察到的现象是vue-class-component定义的组件中，template中访问到的变量似乎在组件创建之前就访问了，此时访问到的数据还没有定义
