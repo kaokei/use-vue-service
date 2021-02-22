@@ -1,4 +1,4 @@
-import { inject } from 'vue';
+import { inject } from './fakeInject';
 
 import { IOptions, IContextProps, useServiceWithContext } from './getServiceInContext';
 
@@ -15,7 +15,7 @@ export function useService<R, T = unknown>(
   options?: IOptions
 ): T extends R ? Ret<T> : Ret<R>;
 export function useService(Service: any, options?: IOptions) {
-  const ctx = inject(ServiceContext, DefaultContext as IContextProps);
+  const ctx = inject(ServiceContext, DefaultContext as IContextProps, false, true);
   if (Array.isArray(Service)) {
     return Service.map(s => useServiceWithContext(s, ctx, options));
   }

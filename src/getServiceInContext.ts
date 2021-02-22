@@ -24,7 +24,8 @@
  */
 
 import 'reflect-metadata';
-import { inject, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
+import { inject } from './fakeInject';
 import {
   SERVICE_INJECTED_KEY,
   SERVICE_INJECTED_PARAMS,
@@ -234,7 +235,7 @@ export function getPropertiesByClass<T>(ClassName: new (...args: any[]) => T) {
     Reflect.getMetadata(SERVICE_INJECTED_PROPS, ClassName) || {};
 
   const properties: any = {};
-  const ctx = inject(ServiceContext, DefaultContext as IContextProps);
+  const ctx = inject(ServiceContext, DefaultContext as IContextProps, false, true);
 
   for (const key in propertiesMetadatas) {
     if (has(propertiesMetadatas, key)) {

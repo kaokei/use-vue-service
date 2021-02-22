@@ -1,5 +1,8 @@
-import { provide, inject, getCurrentInstance } from 'vue';
+import { provide, getCurrentInstance } from 'vue';
 import { ServiceContext, DefaultContext } from './ServiceContext';
+import { IContextProps } from './getServiceInContext';
+
+import { inject } from './fakeInject';
 
 /**
  * 类组件可以通过装饰器声明providers，内部实际上也是调用的declareProviders方法
@@ -25,7 +28,7 @@ export function declareProviders(providers: any[]) {
   if (instance.__current_providers__) {
     throw new Error('禁止重复调用declareProviders');
   }
-  const parentCtx = inject(ServiceContext, DefaultContext);
+  const parentCtx = inject(ServiceContext, DefaultContext as IContextProps, false, true);
   const newProviders = providers.map(p => {
     if (p.provide) {
       return p;
