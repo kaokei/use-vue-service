@@ -42,7 +42,7 @@ import Countdown from '@components/Countdown.vue';
 import Earth from '@containers/Earth.vue';
 
 export default defineComponent({
-  name: 'App',
+  name: 'TestTreeScope',
   components: {
     Counter,
     Countdown,
