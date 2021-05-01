@@ -25,7 +25,7 @@ import ShowCounter from '@containers/components/ShowCounter.vue';
 import ShowAge from '@containers/components/ShowAge.vue';
 
 export default defineComponent({
-  name: 'App',
+  name: 'TestPartialScope',
   components: {
     ShowCounter,
     ShowAge,
