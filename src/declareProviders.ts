@@ -3,6 +3,7 @@ import { ServiceContext, DefaultContext } from './ServiceContext';
 import { IContextProps } from './getServiceInContext';
 
 import { inject } from './fakeInject';
+import { has } from './utils';
 
 /**
  * 类组件可以通过装饰器声明providers，内部实际上也是调用的declareProviders方法
@@ -16,19 +17,20 @@ import { inject } from './fakeInject';
  *
  * 1. 需要解决重复调用的问题
  * 2. 不能直接利用原型来索引，因为provide不仅仅是string|symbol，还可能是类
+ *    从这个角度来看，我的declareProviders可以看作是原生vue的provide的升级版本
  *
  * @export
  * @param {any[]} providers
  */
 export function declareProviders(providers: any[]) {
-  const instance: any = getCurrentInstance();
+  const instance = getCurrentInstance();
   if (!instance) {
     throw new Error('declareProviders 只能在setup内部使用');
   }
-  if (instance.__current_providers__) {
+  const parentCtx = inject(ServiceContext, DefaultContext as IContextProps, false, true);
+  if (parentCtx.uid === instance.uid) {
     throw new Error('禁止重复调用declareProviders');
   }
-  const parentCtx = inject(ServiceContext, DefaultContext as IContextProps, false, true);
   const newProviders = providers.map(p => {
     if (p.provide) {
       return p;
@@ -40,9 +42,9 @@ export function declareProviders(providers: any[]) {
     }
   });
   const currentCtx = {
+    uid: instance.uid,
     parent: parentCtx,
     providers: newProviders,
   };
-  instance.__current_providers__ = currentCtx;
   provide(ServiceContext, currentCtx);
 }
