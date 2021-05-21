@@ -4,7 +4,7 @@ export const DefaultContext = {};
 export const DESIGN_PARAM_TYPES = 'design:paramtypes';
 export const DESIGN_TYPE = 'design:type';
 
-export const SERVICE_PARAM_TYPES = 'service:paramtypes';
+export const SERVICE_PARAM_TYPES = 'service:paramtypes'; // 构造函数原始的类型数据，可能会被@Inject等覆盖
 export const SERVICE_INJECTED_PARAMS = 'service:injected:params';
 export const SERVICE_INJECTED_PROPS = 'service:injected:props';
 export const SERVICE_INJECTED_KEY = 'service:injected:key';
