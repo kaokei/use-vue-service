@@ -118,5 +118,8 @@
     "{src,example,test,typings}/**/*.{js,ts,jsx,tsx,vue}": [
       "eslint --fix --ext js,ts,jsx,tsx,vue"
     ]
+  },
+  "dependencies": {
+    "@kaokei/di": "^1.0.1"
   }
 }

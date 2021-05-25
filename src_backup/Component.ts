@@ -1,9 +1,7 @@
 import { Options } from 'vue-class-component';
 import { declareProviders } from './declareProviders';
+import { getPropertiesByClass } from './getServiceInContext';
 import { merge } from './utils';
-import { ServiceContext, DefaultContext } from './ServiceContext';
-import { inject } from './fakeInject';
-import { Injector } from '@kaokei/di';
 
 /**
  * 禁止在组件的构造函数中声明依赖注入
@@ -37,16 +35,9 @@ export function Component(options: any = {}) {
           declareProviders(providers);
         }
 
-        const parentInjector: Injector = inject(
-          ServiceContext,
-          DefaultContext,
-          false,
-          true
-        );
-
         // 获取构造函数的实例属性
         // 注意组件不支持构造函数参数注入实例属性
-        const properties = parentInjector.getInjectProperties(target);
+        const properties = getPropertiesByClass(target);
 
         const setupState = originSetup ? originSetup(props, ctx) : {};
 
