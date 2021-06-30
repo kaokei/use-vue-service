@@ -4,7 +4,7 @@ exports[`App 组件快照、服务共享 1`] = `
 <div>
   <div>
     <div>
-      <div class="container" style="background: rgb(105, 192, 255);"><span class="title">Global Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+      <div class="container" style="background: rgb(105, 192, 255);"><span class="title">Global Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
     </div>
     <div class="mt5">
       <div class="container" style="background: rgb(105, 192, 255);"><span class="title">Global Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -15,7 +15,7 @@ exports[`App 组件快照、服务共享 1`] = `
       <h4>Earth</h4>
       <div>
         <div>
-          <div class="container" style="background: rgb(105, 192, 255);"><span class="title">Earth Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+          <div class="container" style="background: rgb(105, 192, 255);"><span class="title">Earth Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
         </div>
         <div class="mt5">
           <div class="container" style="background: rgb(92, 219, 211);"><span class="title">Earth Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -26,7 +26,7 @@ exports[`App 组件快照、服务共享 1`] = `
           <h4>China</h4>
           <div>
             <div>
-              <div class="container" style="background: rgb(211, 242, 97);"><span class="title">China Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+              <div class="container" style="background: rgb(211, 242, 97);"><span class="title">China Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
             </div>
             <div class="mt5">
               <div class="container" style="background: rgb(92, 219, 211);"><span class="title">China Countdown:</span><button class="decrementBtn" type="button"> - 60</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 60</button></div>
@@ -37,7 +37,7 @@ exports[`App 组件快照、服务共享 1`] = `
               <h4>ProvinceA</h4>
               <div>
                 <div>
-                  <div class="container" style="background: rgb(255, 192, 105);"><span class="title">ProvinceA Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                  <div class="container" style="background: rgb(255, 192, 105);"><span class="title">ProvinceA Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                 </div>
                 <div class="mt5">
                   <div class="container" style="background: rgb(92, 219, 211);"><span class="title">ProvinceA Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -48,7 +48,7 @@ exports[`App 组件快照、服务共享 1`] = `
                   <h4>SchoolA</h4>
                   <div>
                     <div>
-                      <div class="container" style="background: rgb(255, 156, 110);"><span class="title">SchoolA Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                      <div class="container" style="background: rgb(255, 156, 110);"><span class="title">SchoolA Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                     </div>
                     <div class="mt5">
                       <div class="container" style="background: rgb(92, 219, 211);"><span class="title">SchoolA Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -59,22 +59,13 @@ exports[`App 组件快照、服务共享 1`] = `
                       <h4>ClassA</h4>
                       <div>
                         <div>
-                          <div class="container" style="background: rgb(255, 120, 117);"><span class="title">ClassA Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                          <div class="container" style="background: rgb(255, 120, 117);"><span class="title">ClassA Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                         </div>
                         <div class="mt5">
-                          <div class="container" style="background: rgb(255, 156, 110);"><span class="title">SchoolA Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                          <div class="container" style="background: rgb(255, 156, 110);"><span class="title">SchoolA Counter @SkipSelf:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                         </div>
                         <div class="mt5">
-                          <div class="container" style="background: rgb(255, 192, 105);"><span class="title">ProvinceA Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
-                        </div>
-                        <div class="mt5">
-                          <div class="container" style="background: rgb(211, 242, 97);"><span class="title">China Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
-                        </div>
-                        <div class="mt5">
-                          <div class="container" style="background: rgb(105, 192, 255);"><span class="title">Global Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
-                        </div>
-                        <div class="mt5">
-                          <div class="container" name="Local Person Counter"><span class="title">defaultName:</span><button class="decrementBtn" type="button">-</button><span class="countNum"></span><button class="incrementBtn" type="button">+</button></div>
+                          <div class="container" style="background: red;" name="Local Person Counter"><span class="title">defaultName:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                         </div>
                         <div class="mt5">
                           <div class="container" style="background: rgb(92, 219, 211);"><span class="title">ClassA Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -85,7 +76,7 @@ exports[`App 组件快照、服务共享 1`] = `
                       <h4>ClassB</h4>
                       <div>
                         <div>
-                          <div class="container" style="background: rgb(255, 156, 110);"><span class="title">ClassB Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                          <div class="container" style="background: rgb(255, 156, 110);"><span class="title">ClassB Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                         </div>
                         <div class="mt5">
                           <div class="container" style="background: rgb(92, 219, 211);"><span class="title">ClassB Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -98,7 +89,7 @@ exports[`App 组件快照、服务共享 1`] = `
                   <h4>SchoolB</h4>
                   <div>
                     <div>
-                      <div class="container" style="background: rgb(255, 192, 105);"><span class="title">SchoolB Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                      <div class="container" style="background: rgb(255, 192, 105);"><span class="title">SchoolB Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                     </div>
                     <div class="mt5">
                       <div class="container" style="background: rgb(92, 219, 211);"><span class="title">SchoolB Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -109,7 +100,7 @@ exports[`App 组件快照、服务共享 1`] = `
                       <h4>ClassA</h4>
                       <div>
                         <div>
-                          <div class="container" style="background: rgb(255, 192, 105);"><span class="title">ClassA Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                          <div class="container" style="background: rgb(255, 192, 105);"><span class="title">ClassA Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                         </div>
                         <div class="mt5">
                           <div class="container" style="background: rgb(92, 219, 211);"><span class="title">ClassA Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -120,7 +111,7 @@ exports[`App 组件快照、服务共享 1`] = `
                       <h4>ClassB</h4>
                       <div>
                         <div>
-                          <div class="container" style="background: rgb(255, 192, 105);"><span class="title">ClassB Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                          <div class="container" style="background: rgb(255, 192, 105);"><span class="title">ClassB Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                         </div>
                         <div class="mt5">
                           <div class="container" style="background: rgb(92, 219, 211);"><span class="title">ClassB Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -135,7 +126,7 @@ exports[`App 组件快照、服务共享 1`] = `
               <h4>ProvinceB</h4>
               <div>
                 <div>
-                  <div class="container" style="background: rgb(211, 242, 97);"><span class="title">ProvinceB Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                  <div class="container" style="background: rgb(211, 242, 97);"><span class="title">ProvinceB Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                 </div>
                 <div class="mt5">
                   <div class="container" style="background: rgb(133, 165, 255);"><span class="title">ProvinceB Countdown:</span><button class="decrementBtn" type="button"> - 30</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 30</button></div>
@@ -146,7 +137,7 @@ exports[`App 组件快照、服务共享 1`] = `
                   <h4>SchoolA</h4>
                   <div>
                     <div>
-                      <div class="container" style="background: rgb(211, 242, 97);"><span class="title">SchoolA Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                      <div class="container" style="background: rgb(211, 242, 97);"><span class="title">SchoolA Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                     </div>
                     <div class="mt5">
                       <div class="container" style="background: rgb(133, 165, 255);"><span class="title">SchoolA Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -157,7 +148,7 @@ exports[`App 组件快照、服务共享 1`] = `
                       <h4>ClassA</h4>
                       <div>
                         <div>
-                          <div class="container" style="background: rgb(211, 242, 97);"><span class="title">ClassA Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                          <div class="container" style="background: rgb(211, 242, 97);"><span class="title">ClassA Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                         </div>
                         <div class="mt5">
                           <div class="container" style="background: rgb(133, 165, 255);"><span class="title">ClassA Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -168,7 +159,7 @@ exports[`App 组件快照、服务共享 1`] = `
                       <h4>ClassB</h4>
                       <div>
                         <div>
-                          <div class="container" style="background: rgb(211, 242, 97);"><span class="title">ClassB Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                          <div class="container" style="background: rgb(211, 242, 97);"><span class="title">ClassB Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                         </div>
                         <div class="mt5">
                           <div class="container" style="background: rgb(133, 165, 255);"><span class="title">ClassB Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -181,7 +172,7 @@ exports[`App 组件快照、服务共享 1`] = `
                   <h4>SchoolB</h4>
                   <div>
                     <div>
-                      <div class="container" style="background: rgb(211, 242, 97);"><span class="title">SchoolB Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                      <div class="container" style="background: rgb(211, 242, 97);"><span class="title">SchoolB Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                     </div>
                     <div class="mt5">
                       <div class="container" style="background: rgb(179, 127, 235);"><span class="title">SchoolB Countdown:</span><button class="decrementBtn" type="button"> - 20</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 20</button></div>
@@ -192,7 +183,7 @@ exports[`App 组件快照、服务共享 1`] = `
                       <h4>ClassA</h4>
                       <div>
                         <div>
-                          <div class="container" style="background: rgb(211, 242, 97);"><span class="title">ClassA Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                          <div class="container" style="background: rgb(211, 242, 97);"><span class="title">ClassA Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                         </div>
                         <div class="mt5">
                           <div class="container" style="background: rgb(179, 127, 235);"><span class="title">ClassA Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -203,7 +194,7 @@ exports[`App 组件快照、服务共享 1`] = `
                       <h4>ClassB</h4>
                       <div>
                         <div>
-                          <div class="container" style="background: rgb(211, 242, 97);"><span class="title">ClassB Counter:</span><button class="decrementBtn" type="button">-</button><span class="countNum">0</span><button class="incrementBtn" type="button">+</button></div>
+                          <div class="container" style="background: rgb(211, 242, 97);"><span class="title">ClassB Counter:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                         </div>
                         <div class="mt5">
                           <div class="container" style="background: rgb(255, 133, 192);"><span class="title">ClassB Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
@@ -220,7 +211,7 @@ exports[`App 组件快照、服务共享 1`] = `
     </div>
   </div>
   <div class="switch-box">
-    <h4>These areas with same background color have same service instance.</h4>
+    <h4> These areas with same background color have same service instance. </h4>
     <div><button type="button">hide counter background </button></div>
     <div class="mt5"><button type="button">hide countdown background </button></div>
   </div>

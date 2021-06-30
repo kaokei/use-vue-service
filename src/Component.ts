@@ -1,9 +1,8 @@
 import { Options } from 'vue-class-component';
 import { declareProviders } from './declareProviders';
 import { merge } from './utils';
-import { ServiceContext, DefaultContext } from './ServiceContext';
-import { inject } from './fakeInject';
-import { Injector } from '@kaokei/di';
+import { INJECTOR_KEY, DEFAULT_INJECTOR } from './constants';
+import { injectFromSelf } from './fakeInject';
 
 /**
  * 禁止在组件的构造函数中声明依赖注入
@@ -24,12 +23,16 @@ export function Component(options: any = {}) {
     const { providers } = options;
     delete options.providers;
 
-    Options(options)(target); // 使用@Component代替@Options
+    // 优先执行Options
+    // 稍后再补充我们自己的逻辑
+    Options(options)(target);
 
     if (!target.__d) {
       target.__d = [];
     }
     target.__d.push((options: any) => {
+      // 注意options.setup是由上方Options方法包装的
+      // options本身是没有setup这个属性的
       const originSetup = options.setup;
 
       options.setup = (props: any, ctx: any) => {
@@ -37,21 +40,20 @@ export function Component(options: any = {}) {
           declareProviders(providers);
         }
 
-        const parentInjector: Injector = inject(
-          ServiceContext,
-          DefaultContext,
-          false,
-          true
-        );
+        const parentInjector = injectFromSelf(INJECTOR_KEY, DEFAULT_INJECTOR);
 
         // 获取构造函数的实例属性
         // 注意组件不支持构造函数参数注入实例属性
         const properties = parentInjector.getInjectProperties(target);
 
+        // 这里的setupState只能是promise或者plaindata
+        // 而不会是render function
         const setupState = originSetup ? originSetup(props, ctx) : {};
 
         let result: any = null;
 
+        // 这个merge的过程其实最好是写在vue-class-component中
+        // 但是估计pr不会被接受
         if (setupState instanceof Promise) {
           result = setupState.then(state => {
             return merge(state, properties);

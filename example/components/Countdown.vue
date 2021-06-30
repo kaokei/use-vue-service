@@ -1,11 +1,19 @@
 <template>
   <div class="container" :style="{ background: bgTheme }">
     <span class="title">{{ name || 'defaultName' }}:</span>
-    <button class="decrementBtn" type="button" @click="countdownService.minus(minus)">
+    <button
+      class="decrementBtn"
+      type="button"
+      @click="countdownService.minus(minus)"
+    >
       - {{ minus }}
     </button>
     <span class="countNum">{{ countdownService.time }}</span>
-    <button class="incrementBtn" type="button" @click="countdownService.add(add)">
+    <button
+      class="incrementBtn"
+      type="button"
+      @click="countdownService.add(add)"
+    >
       + {{ add }}
     </button>
   </div>

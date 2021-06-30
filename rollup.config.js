@@ -1,27 +1,21 @@
-import { dirname } from 'path';
-import commonjs from '@rollup/plugin-commonjs';
-import resolve from '@rollup/plugin-node-resolve';
-import replace from '@rollup/plugin-replace';
-import { terser } from 'rollup-plugin-terser';
-import pkg from './package.json';
+/* eslint-disable @typescript-eslint/no-var-requires */
+import path from 'path';
 
-// `npm run build` -> `production` is true
-// `npm run dev` -> `production` is false
-const production = !process.env.ROLLUP_WATCH;
-console.log('production :>> ', production);
-let name = pkg.name;
-
-if (name.slice(0, 1) === '@') {
-  name = name.split('/')[1];
-  if (!name) {
-    throw new TypeError('pkg.name invalid');
-  }
-}
-name = parseName(name);
-
-const targetDir = dirname(pkg.main);
-const deps = pkg.dependencies;
-const peerDeps = pkg.peerDependencies;
+let hasTSChecked = false;
+const pkg = require('./package.json');
+const name = 'index';
+const formats = [
+  'cjs',
+  'cjs.min',
+  'cjs.runtime',
+  'cjs.runtime.min',
+  'esm',
+  'esm.min',
+  'esm.runtime',
+  'esm.runtime.min',
+  'iife',
+  'iife.min',
+];
 
 const banner = `
 /**
@@ -34,164 +28,155 @@ const banner = `
  * @link ${pkg.homepage}
  */
 `.trimLeft();
-const uglifyOpts = {
-  mangle: true,
-  compress: {
-    unused: false,
-    sequences: true,
-    dead_code: true,
-    conditionals: true,
-    booleans: true,
-    if_return: true,
-    join_vars: true,
-    drop_console: false,
-    drop_debugger: false,
-    typeofs: false,
-  },
-  output: {
-    // preamble: banner,
-  },
-};
 
-const globals = {
-  'rxjs/operators': 'rxjs.operators',
-  'rxjs/websocket': 'rxjs.websocket',
-};
-let external = ['rxjs', 'rxjs/operators', 'rxjs/websocket', 'rxjs/ajax'];
-const nodeModule = ['fs', 'path', 'util', 'os'];
+const packageConfigs = formats.map(format => createConfig(format));
 
-if (deps && Object.keys(deps).length) {
-  for (const depName of Object.keys(deps)) {
-    external.push(depName);
-  }
-}
-if (peerDeps && Object.keys(peerDeps).length) {
-  for (const depName of Object.keys(peerDeps)) {
-    external.push(depName);
-  }
-}
-external = [...new Set(external)];
+export default packageConfigs;
 
-const config = [];
-
-if (pkg.main) {
-  config.push(
-    // CommonJS (for Node) and ES module (for bundlers) build.
-    {
-      external: external.concat(nodeModule),
-      input: pkg.module,
-      plugins: [replace({ __DEV__: !production })],
-      output: [
-        {
-          file: pkg.main,
-          amd: { id: name },
-          banner,
-          format: 'cjs',
-          globals,
-          name,
-          sourcemap: true,
-        },
-      ],
-    }
-  );
-}
-
-if (pkg.es2015) {
-  config[0].output.push({
+function createConfig(fileSuffix) {
+  const format = fileSuffix.split('.')[0];
+  const output = {
     banner,
-    format: 'es',
-    file: pkg.es2015,
+    format,
+    file: path.resolve(__dirname, `dist/${name}.${fileSuffix}.js`),
+    exports: 'auto',
     sourcemap: true,
+    externalLiveBindings: false,
+    globals: {
+      // 暂时没有用上globals
+      postcss: 'postcss',
+      jquery: '$',
+      '@rollup/plugin-babel': 'helloWorldPluginBabel',
+    },
+  };
+
+  const isRuntimeBuild = /runtime/.test(fileSuffix);
+  const isProductionBuild = /\.min\.js$/.test(output.file);
+  const isGlobalBuild = format === 'iife';
+  const isESBuild = format === 'esm';
+  const isCommonJSBuild = format === 'cjs';
+
+  if (isGlobalBuild) {
+    output.name = pkg.browserVariableName;
+  }
+
+  let entryFile = `src/index.ts`;
+
+  // 这样写意味着不会打包任何npm包了
+  let external = [
+    ...Object.keys(pkg.dependencies || {}),
+    ...Object.keys(pkg.devDependencies || {}),
+    ...Object.keys(pkg.peerDependencies || {}),
+    ...['path', 'url', 'stream', 'fs', 'os'],
+  ];
+
+  const minifyPlugins = isProductionBuild
+    ? [createMinifyPlugin(isESBuild)]
+    : [];
+
+  return {
+    input: path.resolve(__dirname, entryFile),
+    external,
+    output,
+    plugins: [
+      createJsonPlugin(),
+      createTypescriptPlugin(),
+      createReplacePlugin(isProductionBuild),
+      ...createNodePlugins(isCommonJSBuild),
+      createBabelPlugin(isESBuild, isRuntimeBuild, isGlobalBuild),
+      ...minifyPlugins,
+    ],
+    onwarn: (msg, warn) => {
+      if (!/Circular/.test(msg)) {
+        warn(msg);
+      }
+    },
+    treeshake: {
+      moduleSideEffects: false,
+    },
+  };
+}
+
+function createJsonPlugin() {
+  const json = require('@rollup/plugin-json');
+  return json({
+    namedExports: false,
   });
 }
 
-if (production && pkg.es2015) {
-  config.push(
-    // esm minify
-    {
-      external: external.concat(nodeModule),
-      input: pkg.module,
-      plugins: [replace({ __DEV__: !production }), terser(uglifyOpts)],
-      output: {
-        banner,
-        file: parseName(pkg.es2015) + '.min.js',
-        format: 'es',
-        sourcemap: true,
+function createTypescriptPlugin() {
+  const hasTSChecked2 = hasTSChecked;
+  hasTSChecked = true;
+  const ts = require('rollup-plugin-typescript2');
+  const shouldEmitDeclarations = pkg.types && !hasTSChecked2;
+  const tsPlugin = ts({
+    check: !hasTSChecked2,
+    tsconfig: path.resolve(__dirname, 'tsconfig.app.json'),
+    cacheRoot: path.resolve(__dirname, 'node_modules/.rts2_cache'),
+    tsconfigOverride: {
+      compilerOptions: {
+        sourceMap: true,
+        declaration: shouldEmitDeclarations,
+        declarationMap: shouldEmitDeclarations,
       },
-    }
-  );
+    },
+  });
+  return tsPlugin;
 }
 
-if (pkg.browser) {
-  config.push(
-    // umd bundle min
-    {
-      external: nodeModule,
-      input: pkg.module,
-      plugins: [
-        replace({ __DEV__: !production }),
-        resolve({
-          mainFields: ['browser', 'module', 'main'],
+function createReplacePlugin(isProductionBuild) {
+  const replace = require('@rollup/plugin-replace');
+  const replacements = {
+    __VERSION__: pkg.version,
+    __DEV__: !isProductionBuild,
+  };
+  return replace({
+    values: replacements,
+    preventAssignment: true,
+  });
+}
+
+function createNodePlugins(isCommonJSBuild) {
+  return isCommonJSBuild
+    ? [
+        require('@rollup/plugin-commonjs')({
+          sourceMap: false,
         }),
-        commonjs(),
-        production && terser(uglifyOpts),
-      ],
-      output: {
-        amd: { id: name },
-        banner,
-        file: `${targetDir}/${name}.umd.min.js`,
-        format: 'umd',
-        globals,
-        name,
-        sourcemap: production ? true : false,
-      },
-    }
-  );
+        require('@rollup/plugin-node-resolve').nodeResolve(),
+      ]
+    : [
+        require('@rollup/plugin-commonjs')({
+          sourceMap: false,
+        }),
+        require('rollup-plugin-polyfill-node')(),
+        require('@rollup/plugin-node-resolve').nodeResolve(),
+      ];
 }
 
-if (pkg.bin) {
-  const shebang = `#!/usr/bin/env node\n\n${banner}`;
-
-  for (const binPath of Object.values(pkg.bin)) {
-    if (!binPath) {
-      continue;
-    }
-    const binSrcPath =
-      binPath.includes('bin/') && !binPath.includes('dist/bin/')
-        ? binPath.replace('bin/', 'dist/bin/')
-        : binPath;
-
-    config.push({
-      external: external.concat(nodeModule),
-      input: binSrcPath,
-      plugins: [replace({ __DEV__: !production })],
-      output: [
-        {
-          file: binPath,
-          banner: shebang,
-          format: 'cjs',
-          globals,
-        },
-      ],
-    });
-  }
+function createBabelPlugin(isESBuild, isRuntimeBuild, isGlobalBuild) {
+  const { getBabelOutputPlugin } = require('@rollup/plugin-babel');
+  return isRuntimeBuild
+    ? getBabelOutputPlugin({
+        allowAllFormats: isGlobalBuild,
+        presets: [['@babel/preset-env', { modules: false }]],
+        plugins: [
+          ['@babel/plugin-transform-runtime', { useESModules: isESBuild }],
+        ],
+      })
+    : getBabelOutputPlugin({
+        allowAllFormats: isGlobalBuild,
+        presets: [['@babel/preset-env', { modules: false }]],
+      });
 }
 
-// remove pkg.name extension if exists
-function parseName(name) {
-  if (typeof name === 'string' && name) {
-    const arr = name.split('.');
-    const len = arr.length;
-
-    if (len > 2) {
-      return arr.slice(0, -1).join('.');
-    } else if (len === 2 || len === 1) {
-      return arr[0];
-    }
-  } else {
-    throw new TypeError('name invalid');
-  }
-  return name;
+function createMinifyPlugin(isESBuild) {
+  const { terser } = require('rollup-plugin-terser');
+  return terser({
+    module: isESBuild,
+    compress: {
+      ecma: 2015,
+      pure_getters: true,
+    },
+    safari10: true,
+  });
 }
-
-export default config;

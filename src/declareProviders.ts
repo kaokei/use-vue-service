@@ -1,9 +1,8 @@
 import { provide, getCurrentInstance } from 'vue';
-import { ServiceContext, DefaultContext } from './ServiceContext';
+import { INJECTOR_KEY, DEFAULT_INJECTOR } from './constants';
 
-import { inject } from './fakeInject';
-import { has } from './utils';
-import { Injector } from '@kaokei/di';
+import { injectFromSelf } from './fakeInject';
+import { getInjector } from './utils';
 
 /**
  * 类组件可以通过装饰器声明providers，内部实际上也是调用的declareProviders方法
@@ -27,12 +26,12 @@ export function declareProviders(providers: any[]) {
   if (!instance) {
     throw new Error('declareProviders 只能在setup内部使用');
   }
-  const parentInjector = inject(ServiceContext, DefaultContext, false, true);
+  const parentInjector = injectFromSelf(INJECTOR_KEY, DEFAULT_INJECTOR);
   if (parentInjector.uid === instance.uid) {
     throw new Error('禁止重复调用declareProviders');
   }
-  const currentInjector = new Injector(providers, parentInjector);
+  const currentInjector = getInjector(providers, parentInjector);
   (<any>currentInjector).uid = instance.uid;
 
-  provide(ServiceContext, currentInjector);
+  provide(INJECTOR_KEY, currentInjector);
 }

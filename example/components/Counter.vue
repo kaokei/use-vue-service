@@ -1,9 +1,13 @@
 <template>
   <div class="container" :style="{ background: bgTheme }">
     <span class="title">{{ name || 'defaultName' }}:</span>
-    <button class="decrementBtn" type="button" @click="counter.decrement">-</button>
+    <button class="decrementBtn" type="button" @click="counter.decrement">
+      -
+    </button>
     <span class="countNum">{{ counter.count }}</span>
-    <button class="incrementBtn" type="button" @click="counter.increment">+</button>
+    <button class="incrementBtn" type="button" @click="counter.increment">
+      +
+    </button>
   </div>
 </template>
 
@@ -16,6 +20,7 @@ import { COUNTER_THEME } from '@services/service.context';
 import SwitchService from '@services/switch.service';
 
 // Counter组件是一个完全受控的组件
+// 依赖于父组件传递进来的counter属性和bgColor属性
 export default defineComponent({
   props: ['name', 'counter', 'bgColor'],
   setup(props) {

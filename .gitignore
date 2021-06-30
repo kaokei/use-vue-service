@@ -12,6 +12,7 @@
 /build
 /lib
 /dist
+/example/dist
 
 # misc
 .DS_Store
@@ -26,5 +27,6 @@ yarn-error.log*
 *.local
 
 .project
+# .vscode
 
 storybook-static

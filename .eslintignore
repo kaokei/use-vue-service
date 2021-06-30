@@ -1,7 +1,9 @@
-.vscode/*
 build/*
+dist/*
 config/*
 node_modules/*
 public/*
 scripts/*
 src/stories/*
+
+.vscode/*

@@ -55,7 +55,7 @@ module.exports = {
   overrides: [
     //定制一组文件的规则
     {
-      files: ['src/**/*.d.ts'],
+      files: ['src/types/**/*.ts'],
       rules: {
         'no-unused-vars': 0,
         '@typescript-eslint/no-unused-vars': 0,
