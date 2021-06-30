@@ -36,19 +36,21 @@ export default class Countdown {
   }
 
   public startTimer() {
-    if (this.timer) {
-      return;
-    }
+    this.stopTimer();
     this.timer = window.setInterval(() => {
       if (this.remainTime > 0) {
         this.remainTime -= 1;
+        console.log('this.remainTime :>> ', this.remainTime);
       } else {
         this.stopTimer();
       }
     }, 1000);
+
+    console.log('startTimer this.timer :>> ', this.timer);
   }
 
   public stopTimer() {
     window.clearInterval(this.timer);
+    console.log('stopTimer this.timer :>> ', this.timer);
   }
 }

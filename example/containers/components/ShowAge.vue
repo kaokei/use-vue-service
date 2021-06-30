@@ -1,12 +1,16 @@
 <template>
   <div class="container">
-    <span
-      >It does not trigger ShowAge Component render when counterService.count
-      changed</span
+    <span class="mr10"
+      >This is ShowAge Component which depend on only one attr(age) of
+      CounterService.</span
     >
-    <button class="decrementBtn" type="button" @click="counter.decrementAge">-</button>
+    <button class="decrementBtn" type="button" @click="counter.decrementAge">
+      -
+    </button>
     <span class="countNum">age: {{ counter.age }}</span>
-    <button class="incrementBtn" type="button" @click="counter.incrementAge">+</button>
+    <button class="incrementBtn" type="button" @click="counter.incrementAge">
+      +
+    </button>
   </div>
 </template>
 

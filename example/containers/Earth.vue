@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 
 import { useService, declareProviders } from '@src/index';
 

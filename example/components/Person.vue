@@ -1,16 +1,20 @@
 <template>
   <div class="container" :style="{ background: bgTheme }">
     <span class="title">{{ name || 'defaultName' }}:</span>
-    <button class="decrementBtn" type="button" @click="counter.decrement">-</button>
-    <span class="countNum">{{ counter?.count }}</span>
-    <button class="incrementBtn" type="button" @click="counter.increment">+</button>
+    <button class="decrementBtn" type="button" @click="counter.decrement">
+      -
+    </button>
+    <span class="countNum">{{ counter.count }}</span>
+    <button class="incrementBtn" type="button" @click="counter.increment">
+      +
+    </button>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-import { useService, Component, Inject } from '@src/index';
+import { Component, Inject } from '@src/index';
 
 import { COUNTER_THEME } from '@services/service.context';
 import SwitchService from '@services/switch.service';
@@ -34,10 +38,10 @@ export default class Person extends Vue.with(Props) {
   @Inject(COUNTER_THEME)
   public theme!: string;
 
-  @Inject()
+  @Inject(CounterService)
   public counter!: CounterService;
 
-  @Inject()
+  @Inject(SwitchService)
   public switchService!: SwitchService;
 
   public get bgTheme() {
