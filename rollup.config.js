@@ -43,10 +43,8 @@ function createConfig(fileSuffix) {
     sourcemap: true,
     externalLiveBindings: false,
     globals: {
-      // 暂时没有用上globals
-      postcss: 'postcss',
-      jquery: '$',
-      '@rollup/plugin-babel': 'helloWorldPluginBabel',
+      vue: 'Vue',
+      'vue-class-component': 'VueClassComponent',
     },
   };
 
