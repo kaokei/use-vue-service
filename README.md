@@ -1,7 +1,7 @@
 <h1 align="center">use-vue-service</h1>
 <div align="center">
 
-[![Build Status](https://travis-ci.com/kaokei/use-vue-service.svg?branch=main)](https://travis-ci.com/kaokei/use-vue-service) [![Coverage Status](https://coveralls.io/repos/github/kaokei/use-vue-service/badge.svg?branch=main)](https://coveralls.io/github/kaokei/use-vue-service?branch=main)
+[![Build CI](https://github.com/kaokei/use-vue-service/actions/workflows/build.yml/badge.svg)](https://github.com/kaokei/use-vue-service/actions/workflows/build.yml) [![Coverage Status](https://coveralls.io/repos/github/kaokei/use-vue-service/badge.svg?branch=main)](https://coveralls.io/github/kaokei/use-vue-service?branch=main)
 
 </div>
 
