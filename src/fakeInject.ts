@@ -13,6 +13,7 @@ export function inject(
     // #2400
     // to support `app.use` plugins,
     // fallback to appContext's `provides` if the intance is at root
+    // 注意这里的 instance.provides 的原型链的最末端就是 instance.vnode.appContext.provides
     const provides = selfInject
       ? instance.provides
       : instance.parent == null
@@ -30,6 +31,12 @@ export function inject(
       console.warn(`injection "${String(key)}" not found.`);
     }
   } else {
-    console.warn(`inject() can only be used inside setup() or functional components.`);
+    console.warn(
+      `inject() can only be used inside setup() or functional components.`
+    );
   }
+}
+
+export function injectFromSelf(key: any, defaultValue: any) {
+  return inject(key, defaultValue, false, true);
 }

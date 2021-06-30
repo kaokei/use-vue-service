@@ -1,0 +1,6 @@
+{
+  "name": "@kaokei/use-vue-service-example",
+  "version": "1.0.0",
+  "description": "Example",
+  "sideEffects": true
+}

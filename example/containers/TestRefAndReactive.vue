@@ -1,21 +1,33 @@
 <template>
   <div>
     <div>
+      <h1>
+        This example approves that ref data is deep reactive even though after
+        replaced.
+      </h1>
       <h2>test ref</h2>
-      <div>refData.data1.data2.data3.data4: {{ refData.data1.data2.data3.data4 }}</div>
       <div>
-        <button type="button" @click="changeRefValue">change ref value</button>
-        <button type="button" @click="autoIncrementRef">ref value auto increment</button>
+        refData.data1.data2.data3.data4: {{ refData.data1.data2.data3.data4 }}
+      </div>
+      <div>
+        <button type="button" @click="changeRefValue">
+          replace refData.value to a new obj
+        </button>
+
+        <button type="button" @click="autoIncrementRef">
+          refData.data1.data2.data3.data4 ++
+        </button>
       </div>
     </div>
     <div>
       <h2>test reactive</h2>
       <div>
-        reactiveData.data1.data2.data3.data4: {{ reactiveData.data1.data2.data3.data4 }}
+        reactiveData.data1.data2.data3.data4:
+        {{ reactiveData.data1.data2.data3.data4 }}
       </div>
       <div>
         <button type="button" @click="autoIncrementReactive">
-          ref value auto increment
+          reactiveData.data1.data2.data3.data4 ++
         </button>
       </div>
     </div>

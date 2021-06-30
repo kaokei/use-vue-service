@@ -1,4 +1,5 @@
 import './index.css';
+import 'reflect-metadata';
 import * as VueRouter from 'vue-router';
 import { createApp } from 'vue';
 

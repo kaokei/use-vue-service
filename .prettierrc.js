@@ -1,7 +1,5 @@
 module.exports = {
-  printWidth: 90,
-  tabWidth: 2,
-  useTabs: false,
+  printWidth: 80,
   semi: true,
   singleQuote: true,
   quoteProps: 'as-needed',
@@ -13,5 +11,4 @@ module.exports = {
   proseWrap: 'preserve',
   htmlWhitespaceSensitivity: 'css',
   vueIndentScriptAndStyle: false,
-  endOfLine: 'lf',
 };

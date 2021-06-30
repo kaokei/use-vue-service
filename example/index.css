@@ -12,6 +12,18 @@
   margin-top: 5px;
 }
 
+.mt20 {
+  margin-top: 20px;
+}
+
 .ml20 {
   margin-left: 20px;
+}
+
+.mr10 {
+  margin-right: 10px;
+}
+
+.mr20 {
+  margin-right: 20px;
 }
