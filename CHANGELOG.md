@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.13](https://github.com/kaokei/use-vue-service/compare/v1.0.12...v1.0.13) (2021-06-30)
+
+
+### Bug Fixes
+
+* **ci:** add globals ([49b3d34](https://github.com/kaokei/use-vue-service/commit/49b3d3408d2caeaa767195551e7c152cd97cbff6))
+
 ### [1.0.12](https://github.com/kaokei/use-vue-service/compare/v1.0.11...v1.0.12) (2021-06-30)
 
 
