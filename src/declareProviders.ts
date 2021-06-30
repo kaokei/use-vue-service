@@ -1,8 +1,8 @@
 import { provide, getCurrentInstance } from 'vue';
-import { ServiceContext, DefaultContext } from './ServiceContext';
-import { IContextProps } from './getServiceInContext';
+import { INJECTOR_KEY, DEFAULT_INJECTOR } from './constants';
 
-import { inject } from './fakeInject';
+import { injectFromSelf } from './fakeInject';
+import { getInjector } from './utils';
 
 /**
  * 类组件可以通过装饰器声明providers，内部实际上也是调用的declareProviders方法
@@ -16,33 +16,22 @@ import { inject } from './fakeInject';
  *
  * 1. 需要解决重复调用的问题
  * 2. 不能直接利用原型来索引，因为provide不仅仅是string|symbol，还可能是类
+ *    从这个角度来看，我的declareProviders可以看作是原生vue的provide的升级版本
  *
  * @export
  * @param {any[]} providers
  */
 export function declareProviders(providers: any[]) {
-  const instance: any = getCurrentInstance();
+  const instance = getCurrentInstance();
   if (!instance) {
     throw new Error('declareProviders 只能在setup内部使用');
   }
-  if (instance.__current_providers__) {
+  const parentInjector = injectFromSelf(INJECTOR_KEY, DEFAULT_INJECTOR);
+  if (parentInjector.uid === instance.uid) {
     throw new Error('禁止重复调用declareProviders');
   }
-  const parentCtx = inject(ServiceContext, DefaultContext as IContextProps, false, true);
-  const newProviders = providers.map(p => {
-    if (p.provide) {
-      return p;
-    } else {
-      return {
-        provide: p,
-        useClass: p,
-      };
-    }
-  });
-  const currentCtx = {
-    parent: parentCtx,
-    providers: newProviders,
-  };
-  instance.__current_providers__ = currentCtx;
-  provide(ServiceContext, currentCtx);
+  const currentInjector = getInjector(providers, parentInjector);
+  (<any>currentInjector).uid = instance.uid;
+
+  provide(INJECTOR_KEY, currentInjector);
 }

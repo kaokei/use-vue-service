@@ -12,15 +12,19 @@
       <Earth></Earth>
     </div>
     <div class="switch-box">
-      <h4>These areas with same background color have same service instance.</h4>
+      <h4>
+        These areas with same background color have same service instance.
+      </h4>
       <div>
         <button type="button" @click="switchService.toggleCounterStatus">
-          {{ switchService.counterStatus === 1 ? 'hide' : 'show' }} counter background
+          {{ switchService.counterStatus === 1 ? 'hide' : 'show' }} counter
+          background
         </button>
       </div>
       <div class="mt5">
         <button type="button" @click="switchService.toggleCountdownStatus">
-          {{ switchService.countdownStatus === 1 ? 'hide' : 'show' }} countdown background
+          {{ switchService.countdownStatus === 1 ? 'hide' : 'show' }} countdown
+          background
         </button>
       </div>
     </div>
@@ -28,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 
 import { useService, declareProviders } from '@src/index';
 
