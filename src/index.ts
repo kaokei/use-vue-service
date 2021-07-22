@@ -1,6 +1,5 @@
-export { Component } from './Component'; // 组件可以注入其他类
-export { declareProviders } from './declareProviders'; // 声明服务提供者
-export { useService } from './useService'; // 获取服务实例
-export { inject } from './fakeInject'; // 获取服务实例
-export * from './constants'; // 获取服务实例
-export * from '@kaokei/di';
+export { Inject, Self, Skip, Optional, Injectable } from '@kaokei/di'; // 导出依赖注入需要的装饰器
+
+export { Component } from './Component'; // 支持类组件
+export { declareProviders } from './declareProviders'; // setup中声明服务提供者
+export { useService } from './useService'; // setup中获取服务实例
