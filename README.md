@@ -89,7 +89,7 @@ npm run release patch 发布新版本
 
 `[Vue warn]: Property "name" was accessed during render but is not defined on instance.`
 
-2. 本来是想实现@Skip 可以指定跳过的次数，后来废弃了这个特性，只是实现了@SkipSelf。
+2. 本来是想实现@Skip 可以指定跳过的次数，后来废弃了这个特性，只是实现了@Skip。
 
 理由是不建议通过@Skip 来实现复杂命名空间的作用，我们可以利用 useClass 指向同一个 Service，但是提供不同的 provide 来实现多个服务。
 

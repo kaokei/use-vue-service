@@ -61,15 +61,15 @@ function createConfig(fileSuffix) {
   let entryFile = `src/index.ts`;
 
   // 强制打包的npm包
-  const inlineDependencies = ['@kaokei/di'];
+  const MUST_INCLUDE_NPM = ['@kaokei/di'];
 
-  // 这样写意味着不会打包任何npm包了
+  // 默认不会打包任何npm包，除了MUST_INCLUDE_NPM
   let external = [
     ...Object.keys(pkg.dependencies || {}),
     ...Object.keys(pkg.devDependencies || {}),
     ...Object.keys(pkg.peerDependencies || {}),
     ...['path', 'url', 'stream', 'fs', 'os'],
-  ].filter(dep => !inlineDependencies.includes(dep));
+  ].filter(dep => !MUST_INCLUDE_NPM.includes(dep));
 
   const minifyPlugins = isProductionBuild
     ? [createMinifyPlugin(isESBuild)]
