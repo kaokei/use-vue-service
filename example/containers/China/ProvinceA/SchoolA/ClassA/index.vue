@@ -11,7 +11,7 @@
       </div>
       <div class="mt5">
         <Counter
-          name="SchoolA Counter @SkipSelf"
+          name="SchoolA Counter @Skip"
           :counter="counterService4SchoolA"
           :bgColor="counterTheme4SchoolA"
         ></Counter>
@@ -58,11 +58,11 @@ export default defineComponent({
     ]);
     const counterService4ClassA = useService(CounterService);
     const counterService4SchoolA = useService(CounterService, {
-      skipSelf: true,
+      skip: true,
     });
 
     const counterTheme4ClassA = useService(COUNTER_THEME);
-    const counterTheme4SchoolA = useService(COUNTER_THEME, { skipSelf: true });
+    const counterTheme4SchoolA = useService(COUNTER_THEME, { skip: true });
 
     const personService = useService(PersonService);
 

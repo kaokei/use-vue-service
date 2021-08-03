@@ -1,4 +1,4 @@
-import { Inject, Injectable, SkipSelf } from '@src/index';
+import { Inject, Injectable, Skip } from '@src/index';
 import Logger from './logger.service';
 import CounterService from './counter.service';
 
@@ -10,8 +10,8 @@ export default class Person {
     @Inject(Logger) public logger3: Logger,
     public counterService11: CounterService,
     @Inject(CounterService) public counterService12: CounterService,
-    @SkipSelf() public counterService21: CounterService,
-    @SkipSelf() @Inject(CounterService) public counterService22: CounterService,
+    @Skip() public counterService21: CounterService,
+    @Skip() @Inject(CounterService) public counterService22: CounterService,
     public counterService31: CounterService,
     @Inject(CounterService)
     public counterService32: CounterService
