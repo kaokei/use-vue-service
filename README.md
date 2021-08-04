@@ -81,19 +81,11 @@ npm run release patch 发布新版本
 
 ## bug 记录
 
-1. vue-class-component 和 vue-test-utils 似乎配合有点问题
-
-观察到的现象是 vue-class-component 定义的组件中，template 中访问到的变量似乎在组件创建之前就访问了，此时访问到的数据还没有定义
-
-单元测试出现了一个 warning，[参考这里](https://github.com/vuejs/vue-cli/issues/5974#issuecomment-711069784)
-
-`[Vue warn]: Property "name" was accessed during render but is not defined on instance.`
-
-2. 本来是想实现@Skip 可以指定跳过的次数，后来废弃了这个特性，只是实现了@Skip。
+1. 本来是想实现@Skip 可以指定跳过的次数，后来废弃了这个特性，只是实现了@Skip。
 
 理由是不建议通过@Skip 来实现复杂命名空间的作用，我们可以利用 useClass 指向同一个 Service，但是提供不同的 provide 来实现多个服务。
 
-3. 服务可能是有状态的
+2. 服务可能是有状态的
 
 如果服务的状态可以直接设置初始值，那么是比较方便的。
 
@@ -101,7 +93,7 @@ npm run release patch 发布新版本
 第一种：使用 rxjs 的 observable 把状态变成流，不确定是否和 reactive 有冲突
 第二种：就在在父组件中判断服务的状态是否已经 ready，如果 ready 了才显示子组件，否则展示 loading
 
-4. injectFromSelf 实际上并不是和它的名字一样
+3. injectFromSelf 实际上并不是和它的名字一样
 
 因为 vue3 自带的 inject 依赖了原型链，并且子组件的 provides 属性默认就是父组件的 provides，从而导致虽然是从当前组件的 provides 开始寻找的服务。但是实际上这个服务有可能是从父组件的 Injector 中获取的。
 

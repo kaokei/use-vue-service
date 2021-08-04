@@ -48,12 +48,11 @@
     "commit": "git-cz"
   },
   "dependencies": {
-    "@kaokei/di": "^1.0.10"
+    "@kaokei/di": "^1.0.12"
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",
-    "vue": "^3.1.2",
-    "vue-class-component": "^8.0.0-rc.1"
+    "vue": "^3.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
@@ -106,7 +105,6 @@
     "tslib": "^2.0.2",
     "typescript": "^4.2.2",
     "vue": "^3.1.2",
-    "vue-class-component": "^8.0.0-rc.1",
     "vue-jest": "^5.0.0-alpha.7",
     "vue-loader": "^16.0.0-beta.4",
     "vue-router": "^4.0.0-alpha.13",
