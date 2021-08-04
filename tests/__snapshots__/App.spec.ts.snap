@@ -65,9 +65,6 @@ exports[`App 组件快照、服务共享 1`] = `
                           <div class="container" style="background: rgb(255, 156, 110);"><span class="title">SchoolA Counter @Skip:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
                         </div>
                         <div class="mt5">
-                          <div class="container" style="background: red;" name="Local Person Counter"><span class="title">defaultName:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>
-                        </div>
-                        <div class="mt5">
                           <div class="container" style="background: rgb(92, 219, 211);"><span class="title">ClassA Countdown:</span><button class="decrementBtn" type="button"> - 10</button><span class="countNum">00:00:00</span><button class="incrementBtn" type="button"> + 10</button></div>
                         </div>
                       </div>
