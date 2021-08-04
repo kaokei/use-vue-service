@@ -44,7 +44,6 @@ function createConfig(fileSuffix) {
     externalLiveBindings: false,
     globals: {
       vue: 'Vue',
-      'vue-class-component': 'VueClassComponent',
     },
   };
 

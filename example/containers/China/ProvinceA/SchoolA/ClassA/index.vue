@@ -17,9 +17,6 @@
         ></Counter>
       </div>
       <div class="mt5">
-        <PersonComp name="Local Person Counter"></PersonComp>
-      </div>
-      <div class="mt5">
         <Countdown name="ClassA Countdown" :minus="10" :add="10"></Countdown>
       </div>
     </div>
@@ -38,14 +35,12 @@ import { COUNTER_THEME } from '@services/service.context';
 
 import Counter from '@components/Counter.vue';
 import Countdown from '@components/Countdown.vue';
-import PersonComp from '@components/Person.vue';
 
 export default defineComponent({
   name: 'ClassA',
   components: {
     Counter,
     Countdown,
-    PersonComp,
   },
   setup() {
     declareProviders([

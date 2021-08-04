@@ -1,4 +1,4 @@
-import { provide, getCurrentInstance } from 'vue';
+import { provide, getCurrentInstance, onUnmounted } from 'vue';
 import { INJECTOR_KEY, DEFAULT_INJECTOR } from './constants';
 
 import { injectFromSelf } from './fakeInject';
@@ -32,6 +32,10 @@ export function declareProviders(providers: any[]) {
   }
   const currentInjector = getInjector(providers, parentInjector);
   (<any>currentInjector).uid = instance.uid;
+
+  onUnmounted(() => {
+    currentInjector.dispose();
+  });
 
   provide(INJECTOR_KEY, currentInjector);
 }
