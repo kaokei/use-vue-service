@@ -41,8 +41,9 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   rules: {
-    'no-debugger': 2,
-    'no-console': 0,
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    'no-console': process.env.NODE_ENV === 'production' ? 2 : 0,
+    'vue/no-unused-vars': process.env.NODE_ENV === 'production' ? 2 : 0,
     'ban-ts-ignore': 0,
     'react/prop-types': 0,
     'react/display-name': 0,
