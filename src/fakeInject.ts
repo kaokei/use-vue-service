@@ -1,5 +1,18 @@
 import { getCurrentInstance } from 'vue';
 
+/**
+ * 主要实现逻辑是粘贴复制与vue中
+ * 在原基础上增加了一个额外的参数selfInject=false
+ * 所以默认行为和原vue的实现一致
+ * 但是当selfInject=true时则与原vue实现不一致
+ *
+ * @export
+ * @param {*} key
+ * @param {*} defaultValue
+ * @param {boolean} [treatDefaultAsFactory=false]
+ * @param {boolean} [selfInject=false]
+ * @return {*}
+ */
 export function inject(
   key: any,
   defaultValue: any,
@@ -37,6 +50,14 @@ export function inject(
   }
 }
 
+/**
+ * 从当前组件开始查找provider
+ *
+ * @export
+ * @param {*} key
+ * @param {*} defaultValue
+ * @return {*}
+ */
 export function injectFromSelf(key: any, defaultValue: any) {
   return inject(key, defaultValue, false, true);
 }

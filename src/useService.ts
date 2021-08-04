@@ -2,14 +2,16 @@ import { injectFromSelf } from './fakeInject';
 
 import { INJECTOR_KEY, DEFAULT_INJECTOR } from './constants';
 
-import { Ref } from 'vue';
+import { Ref, InjectionKey } from 'vue';
 
 type Ret<T> = T extends new (...args: any) => infer S
   ? S
-  : T extends Array<any>
-  ? { [P in keyof T]: Ret<T[P]> }
+  : T extends InjectionKey<infer M>
+  ? Ret<M>
   : T extends string | number | boolean
   ? Ref<T>
+  : T extends Array<any>
+  ? { [P in keyof T]: Ret<T[P]> }
   : T;
 
 export function useService<R, T = unknown>(
