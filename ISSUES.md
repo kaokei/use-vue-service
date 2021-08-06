@@ -21,3 +21,15 @@ watch 功能其实和 useEffect 已经非常相似了。
 ## 生命周期
 
 主要是 destroy，卸载资源
+
+## hooks
+
+post hook
+
+merge hook
+
+需要这两个 hook 才能配置响应式能力
+
+## 支持 vue 插件
+
+在 app 实例上声明 providers
