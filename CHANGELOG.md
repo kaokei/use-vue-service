@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.14](https://github.com/kaokei/use-vue-service/compare/v1.0.13...v1.0.14) (2021-08-06)
+
+
+### Features
+
+* **dispose:** 删除了vue-class-component，并支持了服务的dispose功能 ([cad0454](https://github.com/kaokei/use-vue-service/commit/cad045461b6fd617a85456cc98a45ecf42406341))
+* **example:** 增加__DEV__ ([757b7ef](https://github.com/kaokei/use-vue-service/commit/757b7ef6866ad16d3a77b2d3ec4e0648bcba7369))
+* **plugin:** 支持vue plugin ([a4cee12](https://github.com/kaokei/use-vue-service/commit/a4cee12f1607dbee81dae5f0cf55efdbcae29be1))
+
 ### [1.0.13](https://github.com/kaokei/use-vue-service/compare/v1.0.12...v1.0.13) (2021-06-30)
 
 
