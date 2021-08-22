@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.15](https://github.com/kaokei/use-vue-service/compare/v1.0.14...v1.0.15) (2021-08-22)
+
+
+### Features
+
+* **update:** 升级@kaokei/di ([6064c4e](https://github.com/kaokei/use-vue-service/commit/6064c4e1b7fcd102f287bea03a1984c1621d2884))
+
 ### [1.0.14](https://github.com/kaokei/use-vue-service/compare/v1.0.13...v1.0.14) (2021-08-06)
 
 
