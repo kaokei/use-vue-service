@@ -48,7 +48,7 @@
     "commit": "git-cz"
   },
   "dependencies": {
-    "@kaokei/di": "^1.0.20"
+    "@kaokei/di": "^1.0.22"
   },
   "peerDependencies": {
     "reflect-metadata": "^0.1.13",
