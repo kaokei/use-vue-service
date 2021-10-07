@@ -1,6 +1,6 @@
 {
   "name": "@kaokei/use-vue-service",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Use angular service in vue.",
   "main": "./dist/index.cjs.runtime.min.js",
   "module": "./dist/index.esm.runtime.min.js",
