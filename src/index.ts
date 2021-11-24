@@ -5,11 +5,7 @@ export * from '@kaokei/di';
 export { declareProviders } from './declareProviders';
 
 // setup中获取服务实例
-export { useService } from './useService';
-
-// 在createApp返回的app实例上挂载Injector
-// 就是在根组件上注册服务
-export { createVuePlugin } from './createVuePlugin';
+export { useService, useRootService, declareRootProviders } from './useService';
 
 // 包装createApp的执行环境
 // 从而可以达到所有应用的数据都是来源于service
@@ -18,5 +14,8 @@ export { bootstrap } from './bootstrap';
 
 // 以下导出不是面向普通用户使用的
 // 而是面向第三方库的开发者，比如自己开发的支持类组件的库
-export { INJECTOR_KEY, DEFAULT_INJECTOR } from './constants';
+export { INJECTOR_KEY } from './constants';
+
+export { DEFAULT_INJECTOR } from './defaultInjector';
+
 export { injectFromSelf } from './fakeInject';

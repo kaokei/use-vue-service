@@ -1,6 +1,7 @@
 import { injectFromSelf } from './fakeInject';
 
-import { INJECTOR_KEY, DEFAULT_INJECTOR } from './constants';
+import { INJECTOR_KEY } from './constants';
+import { DEFAULT_INJECTOR } from './defaultInjector';
 
 import { Ref, InjectionKey } from 'vue';
 
@@ -28,4 +29,12 @@ export function useService(Service: any, options?: any, injector?: Injector) {
     return Service.map(s => currentInjector.get(s, options));
   }
   return currentInjector.get(Service, options);
+}
+
+export function useRootService(Service: any, options: any) {
+  return useService(Service, options, DEFAULT_INJECTOR);
+}
+
+export function declareRootProviders(providers: any[]) {
+  providers.forEach(provider => DEFAULT_INJECTOR.addProvider(provider));
 }

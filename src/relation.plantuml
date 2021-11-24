@@ -1,0 +1,27 @@
+@startuml FILE_RELATION
+
+digraph G {
+  bootstrap -> useService
+  bootstrap -> defaultInjector
+  bootstrap -> utils
+  bootstrap -> constants
+
+  declareProviders -> defaultInjector
+  declareProviders -> utils
+  declareProviders -> constants
+  declareProviders -> fakeInject
+
+  defaultInjector -> utils
+
+  useService -> defaultInjector
+  useService -> constants
+  useService -> fakeInject
+
+  index -> declareProviders
+  index -> useService
+  index -> bootstrap
+  index -> constants
+  index -> fakeInject
+}
+
+@enduml

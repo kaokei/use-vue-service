@@ -1,5 +1,6 @@
 import { provide, getCurrentInstance, onUnmounted } from 'vue';
-import { INJECTOR_KEY, DEFAULT_INJECTOR } from './constants';
+import { INJECTOR_KEY } from './constants';
+import { DEFAULT_INJECTOR } from './defaultInjector';
 
 import { injectFromSelf } from './fakeInject';
 import { getInjector } from './utils';
