@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.18](https://github.com/kaokei/use-vue-service/compare/v1.0.17...v1.0.18) (2021-11-24)
+
+
+### Features
+
+* **bootstrap:** 增加bootstrap启动vue应用的入口 ([d7f1fca](https://github.com/kaokei/use-vue-service/commit/d7f1fca7711a7c22e599bdf68278cdc8a66fdad5))
+* **bootstrap:** 重构了bootstrap逻辑 ([9cb1cae](https://github.com/kaokei/use-vue-service/commit/9cb1cae170352ddb26e2451e0b97a2a2015c1b4b))
+
 ### [1.0.17](https://github.com/kaokei/use-vue-service/compare/v1.0.16...v1.0.17) (2021-10-12)
 
 
