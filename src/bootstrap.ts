@@ -1,21 +1,35 @@
 import { useService } from './useService';
-import { DEFAULT_INJECTOR } from './constants';
+
+import { INJECTOR_KEY } from './constants';
+
+import { DEFAULT_INJECTOR } from './defaultInjector';
+
+import { getInjector } from './utils';
+
+import { Injector } from '@kaokei/di';
 
 type UseServiceType = typeof useService;
 
-type DeclareProvidersType = (providers: any[]) => void;
+type DeclareAppProvidersType = (providers: any[], app: any) => void;
 
 interface InitFn {
-  (usFn: UseServiceType, dpFn: DeclareProvidersType): void;
+  (usFn: UseServiceType, dapFn: DeclareAppProvidersType): void;
 }
 
 export function bootstrap(init: InitFn) {
-  const useRootService = (Service: any, options: any) =>
-    useService(Service, options, DEFAULT_INJECTOR);
+  let appInjector: Injector;
 
-  const declareRootProviders = (providers: any[]) => {
-    providers.forEach(provider => DEFAULT_INJECTOR.addProvider(provider));
+  const declareAppProviders: DeclareAppProvidersType = (
+    providers: any[],
+    app: any
+  ) => {
+    appInjector = getInjector(providers, DEFAULT_INJECTOR);
+    app.provide(INJECTOR_KEY, appInjector);
   };
 
-  init(useRootService, declareRootProviders);
+  const useAppService: UseServiceType = (Service: any, options?: any) => {
+    return useService(Service, options, appInjector || DEFAULT_INJECTOR);
+  };
+
+  init(useAppService, declareAppProviders);
 }
