@@ -7,6 +7,13 @@ import { Ref, InjectionKey } from 'vue';
 
 import { Injector } from '@kaokei/di';
 
+function getServiceFromInjector(injector: Injector, token: any, options?: any) {
+  if (Array.isArray(token)) {
+    return token.map(t => injector.get(t, options));
+  }
+  return injector.get(token, options);
+}
+
 type Ret<T> = T extends new (...args: any) => infer S
   ? S
   : T extends InjectionKey<infer M>
@@ -18,23 +25,14 @@ type Ret<T> = T extends new (...args: any) => infer S
   : T;
 
 export function useService<R, T = unknown>(
-  Service: T,
-  options?: any,
-  injector?: Injector
+  token: T,
+  options?: any
 ): T extends R ? Ret<T> : Ret<R>;
-export function useService(Service: any, options?: any, injector?: Injector) {
-  const currentInjector =
-    injector || injectFromSelf(INJECTOR_KEY, DEFAULT_INJECTOR);
-  if (Array.isArray(Service)) {
-    return Service.map(s => currentInjector.get(s, options));
-  }
-  return currentInjector.get(Service, options);
+export function useService(token: any, options?: any) {
+  const currentInjector = injectFromSelf(INJECTOR_KEY, DEFAULT_INJECTOR);
+  return getServiceFromInjector(currentInjector, token, options);
 }
 
-export function useRootService(Service: any, options: any) {
-  return useService(Service, options, DEFAULT_INJECTOR);
-}
-
-export function declareRootProviders(providers: any[]) {
-  providers.forEach(provider => DEFAULT_INJECTOR.addProvider(provider));
+export function useRootService(token: any, options?: any) {
+  return getServiceFromInjector(DEFAULT_INJECTOR, token, options);
 }

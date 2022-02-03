@@ -40,3 +40,7 @@ export function declareProviders(providers: any[]) {
 
   provide(INJECTOR_KEY, currentInjector);
 }
+
+export function declareRootProviders(providers: any[]) {
+  DEFAULT_INJECTOR.addProviders(providers);
+}
