@@ -4,7 +4,8 @@ import { mount } from '@vue/test-utils';
 
 import TestTreeScope from '@containers/TestTreeScope.vue';
 
-import { DESIGN_PARAM_TYPES, SERVICE_PARAM_TYPES } from '@kaokei/di';
+import { DECORATOR_KEYS } from '@kaokei/di';
+const { DESIGN_PARAM_TYPES, SERVICE_PARAM_TYPES } = DECORATOR_KEYS;
 
 import Logger from '@services/logger.service';
 import Counter from '@services/counter.service';

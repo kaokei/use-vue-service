@@ -1,10 +1,10 @@
 // 导出依赖注入需要的装饰器
 export * from '@kaokei/di';
 
-// setup中声明服务提供者
+// 声明服务提供者
 export { declareProviders, declareRootProviders } from './declareProviders';
 
-// setup中获取服务实例
+// 获取服务实例
 export { useService, useRootService } from './useService';
 
 // 以下导出不是面向普通用户使用的
@@ -15,4 +15,4 @@ export { DEFAULT_INJECTOR } from './defaultInjector';
 
 export { inject, injectFromSelf } from './fakeInject';
 
-export { getInjector } from './utils';
+export { getInjector, getServiceFromInjector } from './utils';

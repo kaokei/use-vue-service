@@ -3,16 +3,9 @@ import { injectFromSelf } from './fakeInject';
 import { INJECTOR_KEY } from './constants';
 import { DEFAULT_INJECTOR } from './defaultInjector';
 
+import { getServiceFromInjector } from './utils';
+
 import { Ref, InjectionKey } from 'vue';
-
-import { Injector } from '@kaokei/di';
-
-function getServiceFromInjector(injector: Injector, token: any, options?: any) {
-  if (Array.isArray(token)) {
-    return token.map(t => injector.get(t, options));
-  }
-  return injector.get(token, options);
-}
 
 type Ret<T> = T extends new (...args: any) => infer S
   ? S
