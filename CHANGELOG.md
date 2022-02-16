@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/kaokei/use-vue-service/compare/v1.0.18...v1.1.0) (2022-02-16)
+
+
+### Features
+
+* **bootstrap:** 删除bootstrap功能 ([de43690](https://github.com/kaokei/use-vue-service/commit/de43690c532209859b94f53652e248a455a56eb1))
+* **di:** 基于新版di重新重构了一般，并完善了单元测试用例 ([845c8f9](https://github.com/kaokei/use-vue-service/commit/845c8f9e2df5de19f7cef2b7035770a8070870be))
+
 ### [1.0.18](https://github.com/kaokei/use-vue-service/compare/v1.0.17...v1.0.18) (2021-11-24)
 
 
