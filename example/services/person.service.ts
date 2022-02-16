@@ -4,6 +4,12 @@ import CounterService from './counter.service';
 
 @Injectable()
 export default class Person {
+  @Inject()
+  public logger11!: Logger;
+
+  @Inject(Logger)
+  public logger21!: Logger;
+
   constructor(
     public logger1: Logger,
     public logger2: Logger,

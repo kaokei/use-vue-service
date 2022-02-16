@@ -93,7 +93,7 @@ npm run release patch 发布新版本
 第一种：使用 rxjs 的 observable 把状态变成流，不确定是否和 reactive 有冲突
 第二种：就在在父组件中判断服务的状态是否已经 ready，如果 ready 了才显示子组件，否则展示 loading
 
-3. injectFromSelf 实际上并不是和它的名字一样
+3. 本库的 inject 和 vue 提供的 inject 不一样，本库的 inject 是从当前组件开始寻找数据的
 
 因为 vue3 自带的 inject 依赖了原型链，并且子组件的 provides 属性默认就是父组件的 provides，从而导致虽然是从当前组件的 provides 开始寻找的服务。但是实际上这个服务有可能是从父组件的 Injector 中获取的。
 

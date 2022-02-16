@@ -4,14 +4,14 @@ import { mount } from '@vue/test-utils';
 
 import TestTreeScope from '@containers/TestTreeScope.vue';
 
-import { DECORATOR_KEYS } from '@kaokei/di';
+import { DECORATOR_KEYS } from '@src/index';
 const { DESIGN_PARAM_TYPES, SERVICE_PARAM_TYPES } = DECORATOR_KEYS;
 
 import Logger from '@services/logger.service';
 import Counter from '@services/counter.service';
 import Person from '@services/person.service';
 
-describe('App', () => {
+describe('TestTreeScope Component', () => {
   test('渲染组件、获取服务数据', async () => {
     const wrapper = mount(TestTreeScope);
     const Earth = wrapper.findComponent({ name: 'Earth' });

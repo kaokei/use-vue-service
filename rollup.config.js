@@ -44,6 +44,7 @@ function createConfig(fileSuffix) {
     externalLiveBindings: false,
     globals: {
       vue: 'Vue',
+      '@kaokei/di': 'DI',
     },
   };
 

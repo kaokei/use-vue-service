@@ -2,7 +2,7 @@ import { provide, getCurrentInstance, onUnmounted } from 'vue';
 import { INJECTOR_KEY } from './constants';
 import { DEFAULT_INJECTOR } from './defaultInjector';
 
-import { injectFromSelf } from './fakeInject';
+import { inject } from './fakeInject';
 import { getInjector } from './utils';
 
 /**
@@ -25,11 +25,11 @@ import { getInjector } from './utils';
 export function declareProviders(providers: any[]) {
   const instance = getCurrentInstance();
   if (!instance) {
-    throw new Error('declareProviders 只能在setup内部使用');
+    throw new Error('declareProviders can only be used inside setup function.');
   }
-  const parentInjector = injectFromSelf(INJECTOR_KEY, DEFAULT_INJECTOR);
+  const parentInjector = inject(INJECTOR_KEY, DEFAULT_INJECTOR);
   if (parentInjector.uid === instance.uid) {
-    throw new Error('禁止重复调用declareProviders');
+    throw new Error('declareProviders repeatedly call.');
   }
   const currentInjector = getInjector(providers, parentInjector);
   (<any>currentInjector).uid = instance.uid;
@@ -37,6 +37,10 @@ export function declareProviders(providers: any[]) {
   onUnmounted(() => {
     currentInjector.dispose();
   });
+
+  console.log('declareProviders after onUnmounted');
+
+  console.log(INJECTOR_KEY, providers, currentInjector, currentInjector.parent);
 
   provide(INJECTOR_KEY, currentInjector);
 }

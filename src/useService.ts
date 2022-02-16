@@ -1,4 +1,4 @@
-import { injectFromSelf } from './fakeInject';
+import { inject } from './fakeInject';
 
 import { INJECTOR_KEY } from './constants';
 import { DEFAULT_INJECTOR } from './defaultInjector';
@@ -22,10 +22,14 @@ export function useService<R, T = unknown>(
   options?: any
 ): T extends R ? Ret<T> : Ret<R>;
 export function useService(token: any, options?: any) {
-  const currentInjector = injectFromSelf(INJECTOR_KEY, DEFAULT_INJECTOR);
+  const currentInjector = inject(INJECTOR_KEY, DEFAULT_INJECTOR);
   return getServiceFromInjector(currentInjector, token, options);
 }
 
+export function useRootService<R, T = unknown>(
+  token: T,
+  options?: any
+): T extends R ? Ret<T> : Ret<R>;
 export function useRootService(token: any, options?: any) {
   return getServiceFromInjector(DEFAULT_INJECTOR, token, options);
 }

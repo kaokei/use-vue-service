@@ -13,6 +13,6 @@ export { INJECTOR_KEY } from './constants';
 
 export { DEFAULT_INJECTOR } from './defaultInjector';
 
-export { inject, injectFromSelf } from './fakeInject';
+export { inject } from './fakeInject';
 
 export { getInjector, getServiceFromInjector } from './utils';

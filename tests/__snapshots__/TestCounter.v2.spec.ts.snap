@@ -1,3 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Component 组件快照、服务共享 1`] = `<div class="container" style="background: rgb(105, 192, 255);"><span class="title">counter2:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>`;
+exports[`Component 声明了服务CounterService 组件快照、服务不共享 1`] = `<div class="container" style="background: rgb(105, 192, 255);"><span class="title">counter2:</span><button class="decrementBtn" type="button"> - </button><span class="countNum">0</span><button class="incrementBtn" type="button"> + </button></div>`;

@@ -33,7 +33,7 @@ const TestApp = defineComponent({
   },
 });
 
-describe('Component', () => {
+describe('Component 没有声明服务CounterService', () => {
   test('渲染组件、获取服务数据', async () => {
     const wrapper = mount(TestApp, {
       props: {
