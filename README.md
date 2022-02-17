@@ -9,6 +9,8 @@
 
 [online playground](https://kaokei.com/project/use-vue-service/)
 
+[online demo](https://use-vue-service.vercel.app/)
+
 ```bash
 npm install @kaokei/use-vue-service @kaokei/di reflect-metadata
 ```
@@ -39,4 +41,4 @@ npm install @kaokei/use-vue-service @kaokei/di reflect-metadata
 - 使用 eslint 配合 husky 以及 lint-stage 自动格式化提交的代码，保证 git 仓库代码的规范性
 - 使用 rollup 打包源码
 
-## [MIT LICENSE](https://github.com/kaokei/use-vue-service/blob/main/LICENSE)
+## MIT LICENSE
