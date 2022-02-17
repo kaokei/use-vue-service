@@ -5,11 +5,9 @@
 
 </div>
 
-[documentation](https://kaokei.com/project/use-vue-service/)
-
-[online playground](https://kaokei.com/project/use-vue-service/)
-
-[online demo](https://use-vue-service.vercel.app/)
+- [documentation](https://kaokei.com/project/use-vue-service/)
+- [online playground](https://kaokei.com/project/use-vue-service/)
+- [online demo](https://use-vue-service.vercel.app/)
 
 ```bash
 npm install @kaokei/use-vue-service @kaokei/di reflect-metadata
