@@ -38,10 +38,6 @@ export function declareProviders(providers: any[]) {
     currentInjector.dispose();
   });
 
-  console.log('declareProviders after onUnmounted');
-
-  console.log(INJECTOR_KEY, providers, currentInjector, currentInjector.parent);
-
   provide(INJECTOR_KEY, currentInjector);
 }
 

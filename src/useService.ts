@@ -1,11 +1,14 @@
 import { inject } from './fakeInject';
 
 import { INJECTOR_KEY } from './constants';
+
 import { DEFAULT_INJECTOR } from './defaultInjector';
 
 import { getServiceFromInjector } from './utils';
 
-import { Ref, InjectionKey } from 'vue';
+import { Ref } from 'vue';
+
+import { InjectionKey } from '@kaokei/di';
 
 type Ret<T> = T extends new (...args: any) => infer S
   ? S

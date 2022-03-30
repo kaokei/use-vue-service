@@ -1,9 +1,8 @@
-import { Math } from '../src/index';
+import CounterService from '../example/services/counter.service';
+import { InjectionKey, useService } from '../src';
 
-const sum = Math.add(1, 2);
+const key: InjectionKey<number> = Symbol();
 
-console.log('sum :>> ', sum);
+const abc = useService(key);
 
-const message = 'hello world';
-
-console.log('message :>> ', message);
+const abc1 = useService(CounterService);
