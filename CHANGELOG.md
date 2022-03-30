@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/kaokei/use-vue-service/compare/v1.1.0...v1.1.1) (2022-03-30)
+
+
+### Bug Fixes
+
+* **useservice:** 支持InjectionKey ([17313cd](https://github.com/kaokei/use-vue-service/commit/17313cd116176b8e4a45aaf05e4901514c3125b8))
+
 ## [1.1.0](https://github.com/kaokei/use-vue-service/compare/v1.0.18...v1.1.0) (2022-02-16)
 
 
