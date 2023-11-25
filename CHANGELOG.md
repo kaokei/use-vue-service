@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/kaokei/use-vue-service/compare/v1.1.1...v2.0.0) (2023-11-25)
+
+
+### Features
+
+* 优化了Injector的逻辑 ([266c8ca](https://github.com/kaokei/use-vue-service/commit/266c8ca4bb323067cf20897dec5d086175a13b4b))
+
 ### [1.1.1](https://github.com/kaokei/use-vue-service/compare/v1.1.0...v1.1.1) (2022-03-30)
 
 
