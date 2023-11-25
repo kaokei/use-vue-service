@@ -3,7 +3,7 @@ import { INJECTOR_KEY } from './constants';
 import { DEFAULT_INJECTOR } from './defaultInjector';
 
 import { inject } from './fakeInject';
-import { getInjector } from './utils';
+import { createInjector } from './utils';
 
 /**
  * 类组件可以通过装饰器声明providers，内部实际上也是调用的declareProviders方法
@@ -29,9 +29,9 @@ export function declareProviders(providers: any[]) {
   }
   const parentInjector = inject(INJECTOR_KEY, DEFAULT_INJECTOR);
   if (parentInjector.uid === instance.uid) {
-    throw new Error('declareProviders repeatedly call.');
+    throw new Error('declareProviders can only be called once.');
   }
-  const currentInjector = getInjector(providers, parentInjector);
+  const currentInjector = createInjector(providers, parentInjector);
   (<any>currentInjector).uid = instance.uid;
 
   onUnmounted(() => {
@@ -41,6 +41,12 @@ export function declareProviders(providers: any[]) {
   provide(INJECTOR_KEY, currentInjector);
 }
 
+/**
+ * 实际上所有Injectable的Class都是兜底到root injector中
+ * 不需要特意调用declareRootProviders声明
+ * 这个方法是用于声明不是Injectable的Class的其他类型的Provider
+ * @param providers
+ */
 export function declareRootProviders(providers: any[]) {
   DEFAULT_INJECTOR.addProviders(providers);
 }

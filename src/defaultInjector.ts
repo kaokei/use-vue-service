@@ -1,3 +1,3 @@
-import { getInjector } from './utils';
+import { createInjector } from './utils';
 
-export const DEFAULT_INJECTOR = getInjector();
+export const DEFAULT_INJECTOR = createInjector();

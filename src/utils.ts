@@ -18,7 +18,7 @@ function DEFAULT_MERGE_PROPERTY_HOOK(target: any, source: any) {
   return target;
 }
 
-export function getInjector(
+export function createInjector(
   provides?: any[],
   parentInjector?: Injector,
   options: any = {}

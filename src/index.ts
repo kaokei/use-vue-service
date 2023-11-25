@@ -15,4 +15,4 @@ export { DEFAULT_INJECTOR } from './defaultInjector';
 
 export { inject } from './fakeInject';
 
-export { getInjector, getServiceFromInjector } from './utils';
+export { createInjector, getServiceFromInjector } from './utils';
