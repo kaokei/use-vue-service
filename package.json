@@ -1,6 +1,6 @@
 {
   "name": "@kaokei/use-vue-service",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Use angular service in vue.",
   "main": "./dist/index.cjs.runtime.min.js",
   "module": "./dist/index.esm.runtime.min.js",
@@ -47,10 +47,8 @@
     "coverage": "open ./coverage/lcov-report/index.html",
     "commit": "git-cz"
   },
-  "dependencies": {
-    "@kaokei/di": "^2.0.0"
-  },
   "peerDependencies": {
+    "@kaokei/di": "^2.0.1",
     "reflect-metadata": "^0.1.13",
     "vue": "^3.2.0"
   },
