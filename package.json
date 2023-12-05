@@ -10,6 +10,27 @@
   "files": [
     "dist/**/*"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "browser": "./dist/index.iife.js",
+      "node": {
+        "import": {
+          "production": "./dist/index.esm.runtime.min.js",
+          "development": "./dist/index.esm.js",
+          "default": "./dist/index.esm.js"
+        },
+        "require": {
+          "production": "./dist/index.cjs.runtime.min.js",
+          "development": "./dist/index.cjs.js",
+          "default": "./dist/index.cjs.js"
+        }
+      }
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
   "browserVariableName": "UseVueService",
   "sideEffects": false,
   "homepage": "https://github.com/kaokei/use-vue-service",
@@ -48,7 +69,7 @@
     "commit": "git-cz"
   },
   "peerDependencies": {
-    "@kaokei/di": "^2.0.1",
+    "@kaokei/di": "^2.0.2",
     "reflect-metadata": "^0.1.13",
     "vue": "^3.2.0"
   },
