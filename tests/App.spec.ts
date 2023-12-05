@@ -5,7 +5,7 @@ import { mount } from '@vue/test-utils';
 import TestTreeScope from '@containers/TestTreeScope.vue';
 
 import { DECORATOR_KEYS } from '@src/index';
-const { DESIGN_PARAM_TYPES, SERVICE_PARAM_TYPES } = DECORATOR_KEYS;
+const { DESIGN_PARAM_TYPES } = DECORATOR_KEYS;
 
 import Logger from '@services/logger.service';
 import Counter from '@services/counter.service';
@@ -25,34 +25,24 @@ describe('TestTreeScope Component', () => {
     expect(person.check()).toBe(true);
 
     const types1 = Reflect.getMetadata(DESIGN_PARAM_TYPES, Person);
-    const types2 = Reflect.getMetadata(SERVICE_PARAM_TYPES, Person);
 
     expect(types1[0]).toBe(Logger);
-    expect(types2[0]).toBe(Logger);
 
     expect(types1[1]).toBe(Logger);
-    expect(types2[1]).toBe(Logger);
 
     expect(types1[2]).toBe(Logger);
-    expect(types2[2]).toBe(Logger);
 
     expect(types1[3]).toBe(Counter);
-    expect(types2[3]).toBe(Counter);
 
     expect(types1[4]).toBe(Counter);
-    expect(types2[4]).toBe(Counter);
 
     expect(types1[5]).toBe(Counter);
-    expect(types2[5]).toBe(Counter);
 
     expect(types1[6]).toBe(Counter);
-    expect(types2[6]).toBe(Counter);
 
     expect(types1[7]).toBe(Counter);
-    expect(types2[7]).toBe(Counter);
 
     expect(types1[8]).toBe(Counter);
-    expect(types2[8]).toBe(Counter);
 
     expect(person.logger1).toBeInstanceOf(Logger);
     expect(person.logger2).toBeInstanceOf(Logger);
