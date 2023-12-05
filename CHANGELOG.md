@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://github.com/kaokei/use-vue-service/compare/v2.0.0...v2.0.2) (2023-12-05)
+
+
+### Features
+
+* 增加exports ([0e32856](https://github.com/kaokei/use-vue-service/commit/0e32856380bdec38e9fdceb15fd7cd0103b06a13))
+* 适配不支持emitDecoratorMetadata的场景 ([a62f3d2](https://github.com/kaokei/use-vue-service/commit/a62f3d274628f61e8a49c207bd6aa5e748b7ed56))
+
 ## [2.0.0](https://github.com/kaokei/use-vue-service/compare/v1.1.1...v2.0.0) (2023-11-25)
 
 
