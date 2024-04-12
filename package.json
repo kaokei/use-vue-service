@@ -69,8 +69,8 @@
     "commit": "git-cz"
   },
   "peerDependencies": {
-    "@kaokei/di": "^2.0.2",
-    "reflect-metadata": "^0.1.13",
+    "@kaokei/di": "^2.0.6",
+    "reflect-metadata": "^0.2.2",
     "vue": "^3.2.0"
   },
   "devDependencies": {
