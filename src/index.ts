@@ -10,3 +10,7 @@ export const otest: ITest = {
   name: 'test',
   age: 123,
 };
+
+export function add(a: any, b: any) {
+  return a + b;
+}
