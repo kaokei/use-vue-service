@@ -1,37 +1,24 @@
 {
   "name": "@kaokei/use-vue-service",
   "version": "3.0.0",
+  "type": "module",
   "description": "Use angular service in vue.",
-  "main": "./dist/index.cjs.runtime.min.js",
-  "module": "./dist/index.esm.runtime.min.js",
-  "types": "./dist/src/index.d.ts",
-  "unpkg": "dist/index.iife.min.js",
-  "jsdelivr": "dist/index.iife.min.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/index.cjs",
+  "jsdelivr": "./dist/index.cjs",
   "files": [
     "dist/**/*"
   ],
   "exports": {
     ".": {
-      "types": "./dist/src/index.d.ts",
-      "import": "./dist/index.esm.js",
-      "browser": "./dist/index.iife.js",
-      "node": {
-        "import": {
-          "production": "./dist/index.esm.runtime.min.js",
-          "development": "./dist/index.esm.js",
-          "default": "./dist/index.esm.js"
-        },
-        "require": {
-          "production": "./dist/index.cjs.runtime.min.js",
-          "development": "./dist/index.cjs.js",
-          "default": "./dist/index.cjs.js"
-        }
-      }
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./dist/*": "./dist/*",
     "./package.json": "./package.json"
   },
-  "browserVariableName": "UseVueService",
   "sideEffects": false,
   "homepage": "https://github.com/kaokei/use-vue-service",
   "author": "kaokei",
@@ -52,100 +39,20 @@
     "Dependency injection"
   ],
   "scripts": {
-    "check": "tsc -p tsconfig.app.json --noEmit",
-    "rp": "rollup -c rollup.config.js",
-    "unit": "jest",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint --fix --ext js,ts,jsx,tsx,vue src tests playground example typings",
-    "dev": "webpack serve --config ./example/webpack.config.js",
-    "build:example": "webpack build --config ./example/webpack.config.js",
-    "build": "npm run check && npm run rp",
-    "clean": "rm -rf dist/*",
-    "postpublish": "git push origin --follow-tags",
-    "prepublishOnly": "npm run clean && npm run build",
-    "release": "standard-version -r",
-    "release:first": "standard-version --first-release",
-    "coverage": "open ./coverage/lcov-report/index.html",
-    "commit": "git-cz"
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.5.12"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.2",
-    "@babel/plugin-transform-runtime": "^7.14.3",
-    "@babel/preset-env": "^7.12.1",
-    "@babel/types": "^7.12.0",
-    "@commitlint/cli": "^12.1.4",
-    "@commitlint/config-conventional": "^12.1.4",
-    "@kaokei/di": "^2.0.9",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-commonjs": "^15.1.0",
-    "@rollup/plugin-json": "^4.0.0",
-    "@rollup/plugin-node-resolve": "^9.0.0",
-    "@rollup/plugin-replace": "^2.4.2",
-    "@types/jest": "^26.0.20",
-    "@types/node": "^14.18.11",
-    "@typescript-eslint/eslint-plugin": "^5.11.0",
-    "@typescript-eslint/parser": "^5.11.0",
-    "@vue/compiler-sfc": "^3.2.30",
-    "@vue/test-utils": "^2.0.0-rc.17",
-    "@webpack-cli/serve": "^1.0.1",
-    "babel-jest": "^26.6.3",
-    "babel-loader": "^8.1.0",
-    "commitizen": "^4.2.4",
-    "css-loader": "^5.0.0",
-    "cz-conventional-changelog": "^3.2.0",
-    "eslint": "^7.11.0",
-    "eslint-config-prettier": "^6.13.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-vue": "^7.2.0",
-    "file-loader": "^6.1.1",
-    "fs-extra": "^9.0.1",
-    "git-cz": "^4.7.6",
-    "html-webpack-plugin": "^5.0.0-beta.6",
-    "jest": "^26.6.3",
-    "jest-environment-jsdom": "^26.6.2",
-    "jest-serializer-vue": "^2.0.2",
-    "lint-staged": "^10.4.2",
-    "prettier": "^2.1.2",
-    "reflect-metadata": "^0.2.2",
-    "rollup": "^2.67.2",
-    "rollup-plugin-node-builtins": "^2.1.2",
-    "rollup-plugin-node-globals": "^1.4.0",
-    "rollup-plugin-polyfill-node": "^0.6.2",
-    "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript2": "^0.27.2",
-    "standard-version": "^9.0.0",
-    "style-loader": "^2.0.0",
-    "ts-jest": "^26.4.4",
-    "ts-loader": "^8.0.5",
-    "tslib": "^2.0.2",
-    "typescript": "^4.5.5",
-    "vue": "^3.2.30",
-    "vue-jest": "^5.0.0-alpha.7",
-    "vue-loader": "^16.0.0-beta.4",
-    "vue-router": "^4.0.0-alpha.13",
-    "vue-style-loader": "^4.1.3",
-    "webpack": "^5.1.3",
-    "webpack-cli": "^4.1.0",
-    "webpack-dev-server": "^3.11.0",
-    "yorkie": "^2.0.0"
+    "@types/node": "^22.9.0",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "typescript": "~5.6.2",
+    "vite": "^5.4.10",
+    "vite-plugin-dts": "^4.3.0",
+    "vue-tsc": "^2.1.8"
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged",
-    "commit-msg": "commitlint -e $GIT_PARAMS"
-  },
-  "lint-staged": {
-    "*.{ts,js,tsx,jsx,vue}": [
-      "eslint --fix"
-    ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "node_modules/cz-conventional-changelog"
-    }
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  }
+  "packageManager": "pnpm@9.9.0+sha512.60c18acd138bff695d339be6ad13f7e936eea6745660d4cc4a776d5247c540d0edee1a563695c183a66eb917ef88f2b4feb1fc25f32a7adcadc7aaf3438e99c1"
 }

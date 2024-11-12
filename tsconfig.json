@@ -1,42 +1,7 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "dist",
-    "declaration": true,
-    "sourceMap": true,
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "allowJs": false,
-    "strict": true,
-    "noUnusedLocals": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "removeComments": false,
-    "jsx": "preserve",
-    "lib": ["esnext", "dom"],
-    "types": ["jest", "node"],
-    "rootDir": ".",
-    "paths": {
-      "@services/*": ["example/services/*"],
-      "@components/*": ["example/components/*"],
-      "@containers/*": ["example/containers/*"],
-      "@src/*": ["src/*"],
-      "@/*": ["example/*"]
-    }
-  },
-  "include": ["src", "tests", "playground", "example", "typings"],
-  "exclude": [
-    "node_modules",
-    "asset",
-    "assets",
-    "public",
-    "app/public",
-    "app/views",
-    "dist",
-    "lib",
-    "example/webpack.config.js"
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
   ]
 }
