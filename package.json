@@ -43,16 +43,21 @@
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview"
   },
-  "dependencies": {
-    "vue": "^3.5.12"
-  },
   "devDependencies": {
     "@types/node": "^22.9.0",
     "@vitejs/plugin-vue": "^5.1.4",
+    "inversify": "^6.1.1",
+    "reflect-metadata": "^0.2.2",
     "typescript": "~5.6.2",
     "vite": "^5.4.10",
     "vite-plugin-dts": "^4.3.0",
+    "vue": "^3.5.12",
     "vue-tsc": "^2.1.8"
+  },
+  "peerDependencies": {
+    "inversify": "^6.1.1",
+    "reflect-metadata": "^0.2.2",
+    "vue": "^3.5.12"
   },
   "packageManager": "pnpm@9.9.0+sha512.60c18acd138bff695d339be6ad13f7e936eea6745660d4cc4a776d5247c540d0edee1a563695c183a66eb917ef88f2b4feb1fc25f32a7adcadc7aaf3438e99c1"
 }

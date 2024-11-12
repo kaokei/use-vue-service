@@ -1,3 +1,8 @@
+// 参考：https://innei.in/posts/tech/write-a-universally-compatible-js-library-with-fully-types
+// 参考：https://arethetypeswrong.github.io/
+// 作为library是没有必要压缩的，除非需要输出umd格式给浏览器端使用
+// 当前库因为依赖inversify，所以没有输出给浏览器使用的umd版本
+// 注意inversify，reflect-metadata，vue等库都是peerDependencies，不应该打包到当前库中
 import { resolve } from 'path';
 import { writeFileSync } from 'fs';
 import { defineConfig } from 'vite';
