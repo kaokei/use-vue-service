@@ -1,3 +1,5 @@
+/// <reference types="vitest/config" />
+
 // 参考：https://innei.in/posts/tech/write-a-universally-compatible-js-library-with-fully-types
 // 参考：https://arethetypeswrong.github.io/
 // 作为library是没有必要压缩的，除非需要输出umd格式给浏览器端使用
@@ -43,5 +45,9 @@ export default defineConfig({
         },
       },
     },
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
   },
 });

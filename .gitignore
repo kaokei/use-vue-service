@@ -33,3 +33,4 @@ storybook-static
 
 .vercel
 *.tgz
+*.ignore.ts
