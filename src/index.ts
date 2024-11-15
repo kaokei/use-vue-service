@@ -119,7 +119,7 @@ function getContextContainer() {
   }
 }
 
-const DEFAULT_CONTAINER = createContainer();
+export const DEFAULT_CONTAINER = createContainer();
 export function useService<T>(token: interfaces.ServiceIdentifier<T>) {
   const container = getContextContainer();
   return getServiceFromContainer(container, token);
