@@ -1,3 +1,4 @@
+import { Container, ContainerModule, interfaces } from 'inversify';
 import {
   provide,
   inject,
@@ -6,9 +7,8 @@ import {
   reactive,
   ref,
   hasInjectionContext,
-  type Component,
+  Component,
 } from 'vue';
-import { Container, ContainerModule, type interfaces } from 'inversify';
 
 const CONTAINER_TOKEN = 'USE_VUE_SERVICE_CONTAINER_TOKEN';
 export function createToken<T>(desc: string): interfaces.ServiceIdentifier<T> {
@@ -18,7 +18,6 @@ export const COMPONENT_TOKEN = createToken<Component>(
   'USE_VUE_SERVICE_COMPONENT_TOKEN'
 );
 const DEFAULT_CONTAINER_OPTIONS = {
-  reactive: true,
   autoBindInjectable: false,
   defaultScope: 'Singleton',
   skipBaseClassChecks: false,
@@ -44,16 +43,14 @@ function createContainer(parent?: Container, opts?: any) {
   if (opts?.instance) {
     container.bind(COMPONENT_TOKEN).toConstantValue(opts.instance);
   }
-  return options?.reactive ? reactiveContainer(container) : container;
+  return reactiveContainer(container);
 }
 function reactiveContainer(container: Container) {
   const originalBind = container.bind;
   const newBind = (serviceIdentifier: any) => {
     const bindingToSyntax = originalBind.call(container, serviceIdentifier);
     const protos = Object.getPrototypeOf(bindingToSyntax);
-    const methods = Object.getOwnPropertyNames(protos).filter(
-      p => typeof protos[p] === 'function' && p.indexOf('to') === 0
-    );
+    const methods = ['to', 'toSelf'];
     for (let i = 0; i < methods.length; i++) {
       const method = methods[i];
       const originalMethod = (protos as any)[method];
@@ -93,7 +90,7 @@ function getCurrentContainer() {
   if (instance) {
     const token = CONTAINER_TOKEN;
     const provides = instance.provides;
-    if (provides.hasOwnProperty(token)) {
+    if (provides?.hasOwnProperty && provides.hasOwnProperty(token)) {
       return provides[token];
     }
   } else {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { getCurrentInstance, ref } from 'vue';
 import { declareProviders, useService } from '../../../src/index';
 import { DemoService } from './DemoService';
 
@@ -10,6 +10,14 @@ declareProviders([DemoService]);
 const count = ref(0);
 
 const service = useService(DemoService);
+
+const inst = getCurrentInstance();
+
+defineExpose({
+  count,
+  service,
+  inst,
+});
 </script>
 
 <template>
