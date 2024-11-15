@@ -7,22 +7,25 @@ import {
   reactive,
   ref,
   hasInjectionContext,
-  Component,
+  ComponentInternalInstance,
 } from 'vue';
 
 const CONTAINER_TOKEN = 'USE_VUE_SERVICE_CONTAINER_TOKEN';
 export function createToken<T>(desc: string): interfaces.ServiceIdentifier<T> {
   return Symbol.for(desc);
 }
-export const COMPONENT_TOKEN = createToken<Component>(
+export const CURRENT_COMPONENT = createToken<ComponentInternalInstance>(
   'USE_VUE_SERVICE_COMPONENT_TOKEN'
 );
-const DEFAULT_CONTAINER_OPTIONS = {
+interface ContainerOptions extends interfaces.ContainerOptions {
+  instance?: ComponentInternalInstance | null;
+}
+const DEFAULT_CONTAINER_OPTIONS: ContainerOptions = {
   autoBindInjectable: false,
   defaultScope: 'Singleton',
   skipBaseClassChecks: false,
 };
-function getOptions(options: any) {
+function getOptions(options?: ContainerOptions) {
   return Object.assign({}, DEFAULT_CONTAINER_OPTIONS, options);
 }
 function makeReactiveObject(_: any, obj: any) {
@@ -32,7 +35,7 @@ function makeReactiveObject(_: any, obj: any) {
     return ref(obj);
   }
 }
-function createContainer(parent?: Container, opts?: any) {
+function createContainer(parent?: Container, opts?: ContainerOptions) {
   let container: Container;
   const options = getOptions(opts);
   if (parent) {
@@ -41,7 +44,7 @@ function createContainer(parent?: Container, opts?: any) {
     container = new Container(options);
   }
   if (opts?.instance) {
-    container.bind(COMPONENT_TOKEN).toConstantValue(opts.instance);
+    container.bind(CURRENT_COMPONENT).toConstantValue(opts.instance);
   }
   return reactiveContainer(container);
 }
@@ -49,13 +52,12 @@ function reactiveContainer(container: Container) {
   const originalBind = container.bind;
   const newBind = (serviceIdentifier: any) => {
     const bindingToSyntax = originalBind.call(container, serviceIdentifier);
-    const protos = Object.getPrototypeOf(bindingToSyntax);
     const methods = ['to', 'toSelf'];
     for (let i = 0; i < methods.length; i++) {
       const method = methods[i];
-      const originalMethod = (protos as any)[method];
+      const originalMethod = (bindingToSyntax as any)[method];
       (bindingToSyntax as any)[method] = (...args: any[]) => {
-        const result = originalMethod.call(bindingToSyntax, ...args);
+        const result = originalMethod.apply(bindingToSyntax, args);
         if (result?.onActivation) {
           result.onActivation(makeReactiveObject);
         }
@@ -112,7 +114,7 @@ function getContextContainer() {
     }
   } else {
     console.warn(
-      `declareProviders and useService can only be used inside setup() or functional components.`
+      `declareAppProviders|declareProviders|useService can only be used inside setup() or functional components.`
     );
   }
 }
@@ -125,7 +127,20 @@ export function useService<T>(token: interfaces.ServiceIdentifier<T>) {
 export function useRootService<T>(token: interfaces.ServiceIdentifier<T>) {
   return getServiceFromContainer(DEFAULT_CONTAINER, token);
 }
-export function declareProviders(providers: any, options?: any) {
+
+export function declareProviders(
+  providers: ContainerModule,
+  options?: ContainerOptions
+): void;
+export function declareProviders(
+  providers: (c: Container) => void,
+  options?: ContainerOptions
+): void;
+export function declareProviders(
+  providers: interfaces.Newable<any>[],
+  options?: ContainerOptions
+): void;
+export function declareProviders(providers: any, options?: ContainerOptions) {
   const currentContainer = getCurrentContainer();
   if (currentContainer) {
     bindContainer(currentContainer, providers);
@@ -142,10 +157,30 @@ export function declareProviders(providers: any, options?: any) {
     }
   }
 }
+export function declareRootProviders(providers: ContainerModule): void;
+export function declareRootProviders(providers: (c: Container) => void): void;
+export function declareRootProviders(
+  providers: interfaces.Newable<any>[]
+): void;
 export function declareRootProviders(providers: any) {
   bindContainer(DEFAULT_CONTAINER, providers);
 }
-export function declareAppProviders(providers: any, options?: any) {
+export function declareAppProviders(
+  providers: ContainerModule,
+  options?: ContainerOptions
+): void;
+export function declareAppProviders(
+  providers: (c: Container) => void,
+  options?: ContainerOptions
+): void;
+export function declareAppProviders(
+  providers: interfaces.Newable<any>[],
+  options?: ContainerOptions
+): void;
+export function declareAppProviders(
+  providers: any,
+  options?: ContainerOptions
+) {
   return (app: any) => {
     const appContainer = getContextContainer();
     if (appContainer) {
