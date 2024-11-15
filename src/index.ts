@@ -1,23 +1,79 @@
-import { provide, getCurrentInstance, onUnmounted, reactive, ref } from 'vue';
+import {
+  provide,
+  inject,
+  getCurrentInstance,
+  onUnmounted,
+  reactive,
+  ref,
+  hasInjectionContext,
+  type Component,
+} from 'vue';
+import { Container, ContainerModule, type interfaces } from 'inversify';
 
-import { Container } from 'inversify';
-
-const CONTAINER_KEY = 'USE_VUE_SERVICE_CONTAINER_KEY';
-
+const CONTAINER_TOKEN = 'USE_VUE_SERVICE_CONTAINER_TOKEN';
+export function createToken<T>(desc: string): interfaces.ServiceIdentifier<T> {
+  return Symbol.for(desc);
+}
+export const COMPONENT_TOKEN = createToken<Component>(
+  'USE_VUE_SERVICE_COMPONENT_TOKEN'
+);
 const DEFAULT_CONTAINER_OPTIONS = {
+  reactive: true,
   autoBindInjectable: false,
   defaultScope: 'Singleton',
   skipBaseClassChecks: false,
 };
-
-function createContainer(parent?: Container, options?: any) {
-  if (parent) {
-    return parent.createChild(options);
+function getOptions(options: any) {
+  return Object.assign({}, DEFAULT_CONTAINER_OPTIONS, options);
+}
+function makeReactiveObject(_: any, obj: any) {
+  if (typeof obj === 'object') {
+    return reactive(obj);
+  } else {
+    return ref(obj);
   }
-  return new Container(options);
+}
+function createContainer(parent?: Container, opts?: any) {
+  let container: Container;
+  const options = getOptions(opts);
+  if (parent) {
+    container = parent.createChild(options);
+  } else {
+    container = new Container(options);
+  }
+  if (opts?.instance) {
+    container.bind(COMPONENT_TOKEN).toConstantValue(opts.instance);
+  }
+  return options?.reactive ? reactiveContainer(container) : container;
+}
+function reactiveContainer(container: Container) {
+  const originalBind = container.bind;
+  const newBind = (serviceIdentifier: any) => {
+    const bindingToSyntax = originalBind.call(container, serviceIdentifier);
+    const protos = Object.getPrototypeOf(bindingToSyntax);
+    const methods = Object.getOwnPropertyNames(protos).filter(
+      p => typeof protos[p] === 'function' && p.indexOf('to') === 0
+    );
+    for (let i = 0; i < methods.length; i++) {
+      const method = methods[i];
+      const originalMethod = (protos as any)[method];
+      (bindingToSyntax as any)[method] = (...args: any[]) => {
+        const result = originalMethod.call(bindingToSyntax, ...args);
+        if (result?.onActivation) {
+          result.onActivation(makeReactiveObject);
+        }
+        return result;
+      };
+    }
+    return bindingToSyntax;
+  };
+  container.bind = newBind as any;
+  return container;
 }
 function bindContainer(container: Container, providers: any) {
-  if (typeof providers === 'function') {
+  if (providers instanceof ContainerModule) {
+    container.load(providers);
+  } else if (typeof providers === 'function') {
     providers(container);
   } else {
     for (let i = 0; i < providers.length; i++) {
@@ -25,58 +81,85 @@ function bindContainer(container: Container, providers: any) {
       container.bind(s).toSelf();
     }
   }
-  container.onActivation('_', (_: any, instance: any) => {
-    return typeof instance === 'object' ? reactive(instance) : ref(instance);
-  });
 }
-
-const DEFAULT_CONTAINER = createContainer();
-
-function getServiceFromContainer(container: Container, token: any) {
+function getServiceFromContainer<T>(
+  container: Container,
+  token: interfaces.ServiceIdentifier<T>
+) {
   return container.get(token);
 }
-
-function injectFromSelf(key: any, defaultValue: any) {
+function getCurrentContainer() {
   const instance: any = getCurrentInstance();
   if (instance) {
+    const token = CONTAINER_TOKEN;
     const provides = instance.provides;
-    return provides[key] || defaultValue;
+    if (provides.hasOwnProperty(token)) {
+      return provides[token];
+    }
   } else {
     console.warn(
-      `inject() can only be used inside setup() or functional components.`
+      `declareProviders can only be used inside setup() or functional components.`
+    );
+  }
+}
+function getContextContainer() {
+  if (hasInjectionContext()) {
+    const token = CONTAINER_TOKEN;
+    const defaultValue = DEFAULT_CONTAINER;
+    const instance: any = getCurrentInstance();
+    if (instance) {
+      const provides = instance.provides;
+      return provides[token] || defaultValue;
+    } else {
+      return inject(token, defaultValue);
+    }
+  } else {
+    console.warn(
+      `declareProviders and useService can only be used inside setup() or functional components.`
     );
   }
 }
 
-export function useService(token: any) {
-  const currentContainer = injectFromSelf(CONTAINER_KEY, DEFAULT_CONTAINER);
-  return getServiceFromContainer(currentContainer, token);
+const DEFAULT_CONTAINER = createContainer();
+export function useService<T>(token: interfaces.ServiceIdentifier<T>) {
+  const container = getContextContainer();
+  return getServiceFromContainer(container, token);
 }
-export function useRootService(token: any) {
+export function useRootService<T>(token: interfaces.ServiceIdentifier<T>) {
   return getServiceFromContainer(DEFAULT_CONTAINER, token);
 }
-
 export function declareProviders(providers: any, options?: any) {
-  const instance = getCurrentInstance();
-  if (!instance) {
-    throw new Error('declareProviders can only be used inside setup function.');
+  const currentContainer = getCurrentContainer();
+  if (currentContainer) {
+    bindContainer(currentContainer, providers);
+  } else {
+    const parent = getContextContainer();
+    if (parent) {
+      const instance = getCurrentInstance();
+      const container = createContainer(parent, { instance, ...options });
+      bindContainer(container, providers);
+      onUnmounted(() => {
+        container.unbindAll();
+      });
+      provide(CONTAINER_TOKEN, container);
+    }
   }
-  const parentContainer = injectFromSelf(CONTAINER_KEY, DEFAULT_CONTAINER);
-  if (parentContainer.uid === instance.uid) {
-    throw new Error('declareProviders can only be called once.');
-  }
-  const finalOptions = Object.assign({}, DEFAULT_CONTAINER_OPTIONS, options);
-  const currentContainer = createContainer(parentContainer, finalOptions);
-  bindContainer(currentContainer, providers);
-
-  onUnmounted(() => {
-    currentContainer.unbindAll();
-  });
-
-  (currentContainer as any).uid = instance.uid;
-  provide(CONTAINER_KEY, currentContainer);
 }
-
 export function declareRootProviders(providers: any) {
   bindContainer(DEFAULT_CONTAINER, providers);
+}
+export function declareAppProviders(providers: any, options?: any) {
+  return (app: any) => {
+    const appContainer = getContextContainer();
+    if (appContainer) {
+      bindContainer(appContainer, providers);
+    } else {
+      const container = createContainer(DEFAULT_CONTAINER, options);
+      bindContainer(container, providers);
+      app.onUnmounted(() => {
+        container.unbindAll();
+      });
+      app.provide(CONTAINER_TOKEN, container);
+    }
+  };
 }
