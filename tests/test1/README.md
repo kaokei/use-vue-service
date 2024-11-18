@@ -1,4 +1,4 @@
-## 测试功能
+## 测试场景-当前组件访问当前组件的服务
 
 主要测试了 declareProviders 和 useService 可以互相配合。
 

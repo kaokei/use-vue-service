@@ -1,4 +1,4 @@
-## 测试功能
+## 测试场景-当前组件的服务访问当前组件
 
 ```
 @inject(CURRENT_COMPONENT)

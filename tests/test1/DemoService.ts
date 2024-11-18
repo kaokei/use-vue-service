@@ -1,8 +1,6 @@
-import { injectable } from 'inversify';
 import { computed } from 'vue';
 import { postReactive } from '../../src/index';
 
-@injectable()
 export class DemoService {
   public count = 1;
   public age = 100;

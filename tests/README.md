@@ -42,3 +42,4 @@
 15. 验证declareRootProviders不同参数的结果
 16. 验证declareAppProviders多次调用结果
 17. 验证declareAppProviders不同参数的结果
+17. 全局provide路由变量-route和router
