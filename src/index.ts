@@ -10,7 +10,37 @@ import {
   ComponentInternalInstance,
 } from 'vue';
 
-const CONTAINER_TOKEN = 'USE_VUE_SERVICE_CONTAINER_TOKEN';
+export const POST_REACTIVE = 'METADATA_KEY_POST_REACTIVE';
+export const MULTIPLE_POST_REACTIVE =
+  'Cannot apply @postReactive decorator multiple times in the same class';
+export const POST_REACTIVE_ERROR = (
+  clazz: string,
+  errorMessage: string
+): string => `@postReactive error in class ${clazz}: ${errorMessage}`;
+export function postReactive() {
+  return (target: { constructor: NewableFunction }, propertyKey: string) => {
+    const metadata = { key: POST_REACTIVE, value: propertyKey };
+    if (Reflect.hasOwnMetadata(POST_REACTIVE, target.constructor)) {
+      throw new Error(MULTIPLE_POST_REACTIVE);
+    }
+    Reflect.defineMetadata(POST_REACTIVE, metadata, target.constructor);
+  };
+}
+function _postReactive<T extends NewableFunction>(instance: T) {
+  const constr = instance.constructor;
+  if (Reflect.hasMetadata(POST_REACTIVE, constr)) {
+    const data = Reflect.getMetadata(POST_REACTIVE, constr) as any;
+    try {
+      return (instance as interfaces.Instance<T>)[data.value as string]?.();
+    } catch (e) {
+      if (e instanceof Error) {
+        throw new Error(POST_REACTIVE_ERROR(constr.name, e.message));
+      }
+    }
+  }
+}
+
+export const CONTAINER_TOKEN = 'USE_VUE_SERVICE_CONTAINER_TOKEN';
 export function createToken<T>(desc: string): interfaces.ServiceIdentifier<T> {
   return Symbol.for(desc);
 }
@@ -29,11 +59,14 @@ function getOptions(options?: ContainerOptions) {
   return Object.assign({}, DEFAULT_CONTAINER_OPTIONS, options);
 }
 function makeReactiveObject(_: any, obj: any) {
+  let res = obj;
   if (typeof obj === 'object') {
-    return reactive(obj);
+    res = reactive(obj);
   } else {
-    return ref(obj);
+    res = ref(obj);
   }
+  _postReactive(res);
+  return res;
 }
 function createContainer(parent?: Container, opts?: ContainerOptions) {
   let container: Container;

@@ -8,7 +8,7 @@ defineProps({
 
 declareProviders([DemoService]);
 
-const service: any = useService(DemoService);
+const service = useService(DemoService);
 
 console.log('DemoService => ', service);
 </script>
