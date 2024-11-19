@@ -4,7 +4,7 @@ import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
 import { OtherService } from './OtherService';
 
-describe('test1', () => {
+describe('test3', () => {
   it('get DemoService instance', async () => {
     const wrapper = mount(DemoComp);
 
