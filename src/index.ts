@@ -1,11 +1,10 @@
-import { Container, ContainerModule, interfaces } from 'inversify';
+import { Container, interfaces } from 'inversify';
 import {
   provide,
   inject,
   getCurrentInstance,
   onUnmounted,
   reactive,
-  ref,
   hasInjectionContext,
   ComponentInternalInstance,
 } from 'vue';
@@ -59,12 +58,10 @@ function getOptions(options?: ContainerOptions) {
   return Object.assign({}, DEFAULT_CONTAINER_OPTIONS, options);
 }
 function makeReactiveObject(_: any, obj: any) {
-  let res = obj;
-  if (typeof obj === 'object') {
-    res = reactive(obj);
-  } else {
-    res = ref(obj);
-  }
+  // 这里默认obj是一个对象
+  // 因为当前库只是劫持了to/toSelf方法，所以obj一定是类的实例
+  // 虽然通过特殊构造函数可以返回非对象的实例，但是这里不考虑这种特殊情况
+  const res = reactive(obj);
   _postReactive(res);
   return res;
 }
@@ -103,9 +100,7 @@ function reactiveContainer(container: Container) {
   return container;
 }
 function bindContainer(container: Container, providers: any) {
-  if (providers instanceof ContainerModule) {
-    container.load(providers);
-  } else if (typeof providers === 'function') {
+  if (typeof providers === 'function') {
     providers(container);
   } else {
     for (let i = 0; i < providers.length; i++) {
@@ -162,10 +157,6 @@ export function useRootService<T>(token: interfaces.ServiceIdentifier<T>) {
 }
 
 export function declareProviders(
-  providers: ContainerModule,
-  options?: ContainerOptions
-): void;
-export function declareProviders(
   providers: (c: Container) => void,
   options?: ContainerOptions
 ): void;
@@ -181,16 +172,17 @@ export function declareProviders(providers: any, options?: ContainerOptions) {
     const parent = getContextContainer();
     if (parent) {
       const instance = getCurrentInstance();
-      const container = createContainer(parent, { instance, ...options });
+      let container = createContainer(parent, { instance, ...options });
       bindContainer(container, providers);
       onUnmounted(() => {
         container.unbindAll();
+        container = null as any;
       });
       provide(CONTAINER_TOKEN, container);
     }
   }
 }
-export function declareRootProviders(providers: ContainerModule): void;
+
 export function declareRootProviders(providers: (c: Container) => void): void;
 export function declareRootProviders(
   providers: interfaces.Newable<any>[]
@@ -198,10 +190,7 @@ export function declareRootProviders(
 export function declareRootProviders(providers: any) {
   bindContainer(DEFAULT_CONTAINER, providers);
 }
-export function declareAppProviders(
-  providers: ContainerModule,
-  options?: ContainerOptions
-): void;
+
 export function declareAppProviders(
   providers: (c: Container) => void,
   options?: ContainerOptions
@@ -219,10 +208,11 @@ export function declareAppProviders(
     if (appContainer) {
       bindContainer(appContainer, providers);
     } else {
-      const container = createContainer(DEFAULT_CONTAINER, options);
+      let container = createContainer(DEFAULT_CONTAINER, options);
       bindContainer(container, providers);
       app.onUnmounted(() => {
         container.unbindAll();
+        container = null as any;
       });
       app.provide(CONTAINER_TOKEN, container);
     }
