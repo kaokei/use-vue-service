@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { postReactive } from '../../src/index';
+import { postReactive, ExtractToken } from '../../src/index';
 import { TYPES } from './token';
 import { inject } from 'inversify';
 
@@ -10,7 +10,7 @@ export class DemoService {
   public computedName: any;
 
   @inject(TYPES.OtherService)
-  public otherService: any;
+  public otherService!: ExtractToken<typeof TYPES.OtherService>;
 
   public increaseOtherCount() {
     this.otherService.increaseCount();

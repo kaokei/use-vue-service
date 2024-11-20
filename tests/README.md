@@ -45,9 +45,9 @@
     12. 不提供useContainer和inject(CURRENT_CONTAINER)，原因是暂时没有想到暴露container的使用场景
     13. https://github.com/vuejs/test-utils/blob/9c9659441c59de557f5844e5f9b7fee00b3938e0/src/baseWrapper.ts#L154
 ```
-2. createToken创建的token --> todo
-  1. 是否可以在useService自动推导类型
-  1. 是否可以在inject中自动推导类型
+2. createToken创建的token --> test5
+  1. 是否可以在useService自动推导类型-可以
+  1. 是否可以在inject中自动推导类型-不能直接支持，可以通过ExtractToken获取类型
 4. to方法和toSelf方法验证
 5. bindContainer多次调用验证
 6. 验证默认容器DEFAULT_CONTAINER

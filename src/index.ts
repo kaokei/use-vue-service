@@ -46,9 +46,12 @@ export function createToken<T>(desc: string): interfaces.ServiceIdentifier<T> {
 export const CURRENT_COMPONENT = createToken<ComponentInternalInstance>(
   'USE_VUE_SERVICE_COMPONENT_TOKEN'
 );
+
 interface ContainerOptions extends interfaces.ContainerOptions {
   instance?: ComponentInternalInstance | null;
 }
+export type ExtractToken<T> = T extends interfaces.Newable<infer U> ? U : never;
+
 const DEFAULT_CONTAINER_OPTIONS: ContainerOptions = {
   autoBindInjectable: false,
   defaultScope: 'Singleton',
