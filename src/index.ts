@@ -212,7 +212,7 @@ export function declareAppProviders(
 ) {
   return (app: App) => {
     app.runWithContext(() => {
-      const appContainer = inject(CONTAINER_TOKEN) as Container | undefined;
+      const appContainer = inject(CONTAINER_TOKEN, void 0) as Container | undefined;
       if (appContainer) {
         bindContainer(appContainer, providers);
       } else {

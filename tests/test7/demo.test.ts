@@ -4,7 +4,11 @@ import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
 import { AppService } from './AppService';
 import { RootService } from './RootService';
-import { declareAppProviders, declareRootProviders } from '../../src';
+import {
+  declareAppProviders,
+  declareRootProviders,
+  useRootService,
+} from '../../src';
 
 describe('test7', () => {
   it('get DemoService instance', async () => {
@@ -19,9 +23,13 @@ describe('test7', () => {
       },
     });
 
+    const rootService = useRootService(RootService);
+
     expect(wrapper.vm.service).toBeInstanceOf(DemoService);
     expect(wrapper.vm.appService).toBeInstanceOf(AppService);
     expect(wrapper.vm.rootService).toBeInstanceOf(RootService);
+    expect(rootService).toBeInstanceOf(RootService);
+    expect(wrapper.vm.rootService).toBe(rootService);
 
     expect(wrapper.get('.msg').text()).toBe(msg);
     expect(wrapper.get('.demo-count').text()).toBe('10');
