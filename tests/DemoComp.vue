@@ -9,8 +9,6 @@ defineProps({
 declareProviders([DemoService]);
 
 const service = useService(DemoService);
-
-console.log('DemoService => ', service);
 </script>
 
 <template>

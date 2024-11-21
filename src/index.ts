@@ -81,6 +81,9 @@ function createContainer(parent?: Container, opts?: ContainerOptions) {
   }
   return reactiveContainer(container);
 }
+
+export const DEFAULT_CONTAINER = createContainer();
+
 function reactiveContainer(container: Container) {
   const originalBind = container.bind;
   const newBind = (serviceIdentifier: any) => {
@@ -150,7 +153,6 @@ function getContextContainer() {
   }
 }
 
-export const DEFAULT_CONTAINER = createContainer();
 export function useService<T>(token: interfaces.ServiceIdentifier<T>) {
   const container = getContextContainer();
   return getServiceFromContainer(container, token);
