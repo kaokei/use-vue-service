@@ -47,23 +47,28 @@
 ```
 2. createToken创建的token --> test5
   1. 是否可以在useService自动推导类型-可以
-  1. 是否可以在inject中自动推导类型-不能直接支持，可以通过ExtractToken获取类型
+  2. 是否可以在inject中自动推导类型-不能直接支持，可以通过ExtractToken获取类型
 3. to方法和toSelf方法验证 --> test6
-5. 验证useService多次调用结果
-6. 验证useService在组件外调用场景
-7. 验证useRootService多次调用结果
-8. 验证useRootService在组件内/外调用的结果
-9. 验证declareProviders多次调用结果
+4. 验证declareProviders多次调用结果
   1. bindContainer多次调用验证
   2. 验证默认容器DEFAULT_CONTAINER
-10. 验证declareProviders不同参数的结果
-11. 验证declareRootProviders多次调用结果
+  3. 验证useService多次调用结果
+5. 验证declareRootProviders多次调用结果
   1. bindContainer多次调用验证
   2. 验证默认容器DEFAULT_CONTAINER
-12. 验证declareRootProviders不同参数的结果
-13. 验证declareAppProviders多次调用结果
+  3. 验证useRootService多次调用结果
+  4. 验证useRootService在组件内/外调用的结果
+  5. 全局provide路由变量-route和router
+6. 验证declareAppProviders多次调用结果
   1. bindContainer多次调用验证
   2. 验证默认容器DEFAULT_CONTAINER
-14. 验证declareAppProviders不同参数的结果
-15. 全局provide路由变量-route和router
-16. ContainerOptions不同场景验证
+  3. 验证useService多次调用结果
+7. ContainerOptions不同场景验证
+  1. 验证declareProviders不同参数的结果
+  2. 验证declareRootProviders不同参数的结果
+  3. 验证declareAppProviders不同参数的结果
+8. 异常场景
+  1. 验证useService在组件外调用场景
+  2. 多次调用postReactive
+  3. 循环依赖
+  4. 验证token是否可以解决循环依赖

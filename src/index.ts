@@ -7,6 +7,8 @@ import {
   reactive,
   hasInjectionContext,
   ComponentInternalInstance,
+  Plugin,
+  App,
 } from 'vue';
 
 export const POST_REACTIVE = 'METADATA_KEY_POST_REACTIVE';
@@ -199,27 +201,29 @@ export function declareRootProviders(providers: any) {
 export function declareAppProviders(
   providers: (c: Container) => void,
   options?: ContainerOptions
-): void;
+): Plugin;
 export function declareAppProviders(
   providers: interfaces.Newable<any>[],
   options?: ContainerOptions
-): void;
+): Plugin;
 export function declareAppProviders(
   providers: any,
   options?: ContainerOptions
 ) {
-  return (app: any) => {
-    const appContainer = getContextContainer();
-    if (appContainer) {
-      bindContainer(appContainer, providers);
-    } else {
-      let container = createContainer(DEFAULT_CONTAINER, options);
-      bindContainer(container, providers);
-      app.onUnmounted(() => {
-        container.unbindAll();
-        container = null as any;
-      });
-      app.provide(CONTAINER_TOKEN, container);
-    }
+  return (app: App) => {
+    app.runWithContext(() => {
+      const appContainer = inject(CONTAINER_TOKEN) as Container | undefined;
+      if (appContainer) {
+        bindContainer(appContainer, providers);
+      } else {
+        let container = createContainer(DEFAULT_CONTAINER, options);
+        bindContainer(container, providers);
+        app.onUnmount(() => {
+          container.unbindAll();
+          container = null as any;
+        });
+        app.provide(CONTAINER_TOKEN, container);
+      }
+    });
   };
 }
