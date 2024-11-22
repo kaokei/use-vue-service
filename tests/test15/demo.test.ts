@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { postConstruct } from 'inversify';
 import { postReactive, declareAppProviders, declareProviders } from '../../src';
 import DemoComp from './DemoComp.vue';
-import { DemoService } from '../DemoService';
+import { DemoService } from './DemoService';
 
 describe('test15', () => {
   it('get DemoService instance', async () => {
