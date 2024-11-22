@@ -51,6 +51,7 @@ export default defineConfig({
     environment: 'jsdom',
     coverage: {
       include: ['src/**/*.ts'],
+      reporter: ['text', 'lcov'],
     },
   },
 });
