@@ -61,7 +61,7 @@
   1. bindContainer多次调用验证
   3. 验证useRootService多次调用结果
   4. 验证useRootService在组件内/外调用的结果
-  5. 全局provide路由变量-route和router // todo
+  5. 全局provide路由变量-route和router --> test11
 9. ContainerOptions不同场景验证
   1. 验证declareProviders不同参数的结果
   2. 验证declareRootProviders不同参数的结果
