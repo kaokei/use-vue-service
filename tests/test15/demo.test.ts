@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { mount } from '@vue/test-utils';
 import { postConstruct } from 'inversify';
-import { postReactive, declareAppProviders, declareProviders } from '../../src';
+import { postReactive, declareProviders } from '../../src';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
 

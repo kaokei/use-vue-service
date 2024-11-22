@@ -11,7 +11,7 @@ const handleAddCount = () => {
   ref.value?.service.increaseCount();
 };
 
-const handleUpdateCount = (count: number) => {
+const handleUpdateCount = () => {
   // ignore
 };
 </script>

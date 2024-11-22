@@ -52,7 +52,7 @@ export const CURRENT_COMPONENT = createToken<ComponentInternalInstance>(
 interface ContainerOptions extends interfaces.ContainerOptions {
   instance?: ComponentInternalInstance | null;
 }
-export type ExtractToken<T> = T extends interfaces.Newable<infer U> ? U : T;
+export type ExtractToken<T> = T extends interfaces.Newable<infer U> ? U : never;
 
 const DEFAULT_CONTAINER_OPTIONS: ContainerOptions = {
   autoBindInjectable: false,
