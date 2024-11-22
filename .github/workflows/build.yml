@@ -4,11 +4,17 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: '20.x'
+          version: 9
+          run_install: false
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
       - run: pnpm install
       - run: pnpm run coverage
       - name: Coveralls
@@ -19,11 +25,17 @@ jobs:
     needs: unit-test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: '20.x'
+          version: 9
+          run_install: false
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
       - run: pnpm install
       - run: pnpm run build
       - uses: actions/upload-artifact@v2
@@ -35,11 +47,17 @@ jobs:
     runs-on: ubuntu-latest
     environment: manually
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: '20.x'
+          version: 9
+          run_install: false
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
       - uses: actions/download-artifact@v2
         with:
           name: my-artifact
