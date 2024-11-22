@@ -1,3 +1,3 @@
 ## 测试场景
 
-useService 在 app.runWithContext 中执行
+卸载组件或者卸载app时，会调用unbindAll方法
