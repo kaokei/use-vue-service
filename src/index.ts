@@ -128,7 +128,7 @@ function getCurrentContainer() {
   if (instance) {
     const token = CONTAINER_TOKEN;
     const provides = instance.provides;
-    if (provides?.hasOwnProperty && provides.hasOwnProperty(token)) {
+    if (provides && Object.prototype.hasOwnProperty.call(provides, token)) {
       return provides[token];
     }
   } else {
@@ -212,7 +212,9 @@ export function declareAppProviders(
 ) {
   return (app: App) => {
     app.runWithContext(() => {
-      const appContainer = inject(CONTAINER_TOKEN, void 0) as Container | undefined;
+      const appContainer = inject(CONTAINER_TOKEN, void 0) as
+        | Container
+        | undefined;
       if (appContainer) {
         bindContainer(appContainer, providers);
       } else {
