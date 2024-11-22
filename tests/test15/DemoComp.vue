@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { DemoService } from './DemoService';
-import { useService } from '../../src/index';
+import { declareProviders, useService } from '../../src/index';
 
-defineProps({
-  msg: String,
-});
-
+declareProviders([DemoService]);
 const service = useService(DemoService);
 
 defineExpose({
@@ -15,7 +12,6 @@ defineExpose({
 
 <template>
   <div>
-    <div class="msg">{{ msg }}</div>
     <div class="count">{{ service.count }}</div>
 
     <button type="button" class="btn-count" @click="service.increaseCount()">
