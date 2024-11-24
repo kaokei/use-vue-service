@@ -10,6 +10,7 @@ import {
   Plugin,
   App,
 } from 'vue';
+export { findService } from './utils';
 
 export const POST_REACTIVE = 'METADATA_KEY_POST_REACTIVE';
 export const MULTIPLE_POST_REACTIVE =
@@ -128,7 +129,12 @@ function getCurrentContainer() {
   if (instance) {
     const token = CONTAINER_TOKEN;
     const provides = instance.provides;
-    if (provides && Object.prototype.hasOwnProperty.call(provides, token)) {
+    const parentProvides = instance.parent && instance.parent.provides;
+    if (
+      provides &&
+      provides !== parentProvides &&
+      Object.prototype.hasOwnProperty.call(provides, token)
+    ) {
       return provides[token];
     }
   } else {
