@@ -1,5 +1,12 @@
 import { interfaces } from 'inversify';
-import { ComponentInternalInstance } from 'vue';
+import {
+  VNode,
+  VNodeChild,
+  VNodeArrayChildren,
+  VNodeNormalizedChildren,
+  ComponentInternalInstance,
+} from 'vue';
+import { getContainer } from './component-container';
 
 /**
  * useService是从当前组件开始像父组件以及祖先组件查找服务实例
@@ -9,26 +16,82 @@ import { ComponentInternalInstance } from 'vue';
  * 如果有绑定则通过container.get(token)来获取服务实例
  * 注意component.subTree.children是当前组件的子组件
  * 整个过程是一个递归的过程，因为子组件还有子组件，所以需要递归查找
+ * vnode.children
+ * vnode.component [node.component.subTree]
+ * vnode.suspense [node.suspense.activeBranch]
+ * vnode 判断所有vnode是否符合条件
+ */
+
+function nodesAsObject(
+  value: VNodeChild | VNodeArrayChildren
+): value is VNodeArrayChildren | VNode {
+  return !!value && typeof value === 'object';
+}
+
+function walk<T>(
+  vnode: VNode,
+  token: interfaces.ServiceIdentifier<T>,
+  results: T[]
+): T[] {
+  if (vnode.component) {
+    const container = getContainer(vnode.component);
+    if (container && container.isCurrentBound(token)) {
+      results.push(container.get(token));
+    }
+  }
+  // 优先遍历当前组件的子组件树
+  walkChildren(vnode.children, token, results);
+  if (vnode.component) {
+    walk(vnode.component.subTree, token, results);
+  }
+  if (vnode.suspense && vnode.suspense.activeBranch) {
+    walk(vnode.suspense.activeBranch, token, results);
+  }
+  return results;
+}
+
+function walkChildren<T>(
+  children: VNodeNormalizedChildren,
+  token: interfaces.ServiceIdentifier<T>,
+  results: T[]
+): T[] {
+  if (children && Array.isArray(children)) {
+    const filteredNodes = children.filter(nodesAsObject);
+    filteredNodes.forEach((node: VNodeArrayChildren | VNode) => {
+      if (Array.isArray(node)) {
+        walkChildren(node, token, results);
+      } else {
+        walk(node, token, results);
+      }
+    });
+  }
+  return results;
+}
+
+/**
  * @param component ComponentInternalInstance 当前组件
  * @param token interfaces.ServiceIdentifier<T>  服务标识
+ * @returns T | undefined 是从当前组件【不包含当前组件】的子组件以及后代组件中查找服务实例，返回第一个找到的服务实例
  */
 export function findService<T>(
   component: ComponentInternalInstance,
   token: interfaces.ServiceIdentifier<T>
 ): T | undefined {
-  return (component as any);
-  // const children = component.subTree.children;
-  // if (children && Array.isArray(children)) {
-  //   for (let i = 0; i < children.length; i++) {
-  //     const child = children[i];
-  //     if (child && child.component) {
-  //       const container = child.component.container;
-  //       if (container && container.isBound(token)) {
-  //         return container.get(token);
-  //       } else {
-  //         return findService(child, token);
-  //       }
-  //     }
-  //   }
-  // }
+  const results: T[] = [];
+  walk(component.subTree, token, results);
+  return results[0];
+}
+
+/**
+ * @param component ComponentInternalInstance 当前组件
+ * @param token interfaces.ServiceIdentifier<T>  服务标识
+ * @returns T[] 是从当前组件【不包含当前组件】的子组件以及后代组件中查找服务实例，返回所有找到的服务实例
+ */
+export function findAllServices<T>(
+  component: ComponentInternalInstance,
+  token: interfaces.ServiceIdentifier<T>
+): T[] {
+  const results: T[] = [];
+  walk(component.subTree, token, results);
+  return results;
 }

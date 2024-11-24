@@ -36,7 +36,11 @@ defineExpose({
 
   <div class="child-1-container">
     <div class="child-1-wrapper">
-      <ChildComp />
+      <ChildComp>
+        <p>001</p>
+        <p>002</p>
+        <p>003</p>
+      </ChildComp>
     </div>
   </div>
 
@@ -46,5 +50,15 @@ defineExpose({
         <ChildComp />
       </div>
     </div>
+  </div>
+
+  <div class="child-3-container">
+    <Suspense>
+      <!-- 具有深层异步依赖的组件 -->
+      <ChildComp />
+
+      <!-- 在 #fallback 插槽中显示 “正在加载中” -->
+      <template #fallback> Loading... </template>
+    </Suspense>
   </div>
 </template>

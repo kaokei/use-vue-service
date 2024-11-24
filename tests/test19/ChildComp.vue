@@ -21,5 +21,9 @@ defineExpose({
     >
       Add count child
     </button>
+
+    <div>
+      <slot>default content</slot>
+    </div>
   </div>
 </template>

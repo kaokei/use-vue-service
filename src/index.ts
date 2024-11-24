@@ -10,7 +10,8 @@ import {
   Plugin,
   App,
 } from 'vue';
-export { findService } from './utils';
+import { setContainer } from './component-container';
+export { findService, findAllServices } from './utils';
 
 export const POST_REACTIVE = 'METADATA_KEY_POST_REACTIVE';
 export const MULTIPLE_POST_REACTIVE =
@@ -80,6 +81,9 @@ function createContainer(parent?: Container, opts?: ContainerOptions) {
     container = new Container(options);
   }
   if (opts?.instance) {
+    // 组件实例绑定容器
+    setContainer(opts.instance, container);
+    // 容器绑定组件实例
     container.bind(CURRENT_COMPONENT).toConstantValue(opts.instance);
   }
   return reactiveContainer(container);
