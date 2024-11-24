@@ -16,6 +16,7 @@ export default defineConfig({
   plugins: [
     vue(),
     dts({
+      // rollupTypes: true,
       tsconfigPath: './tsconfig.app.json',
       beforeWriteFile: (filePath, content) => {
         writeFileSync(filePath.replace('.d.ts', '.d.cts'), content);
@@ -35,7 +36,7 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['vue'],
+      external: ['vue', 'reflect-metadata', 'inversify'],
       output: {
         compact: true,
         // Provide global variables to use in the UMD build
