@@ -9,3 +9,9 @@
 ```
 ref.value === this.component.exposeProxy
 ```
+
+## 发布命令
+
+```
+npm publish --access public
+```
