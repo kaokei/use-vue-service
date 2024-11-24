@@ -1,6 +1,6 @@
 {
   "name": "@kaokei/use-vue-service",
-  "version": "3.0.0",
+  "version": "2.0.5",
   "type": "module",
   "description": "Use angular service in vue.",
   "main": "./dist/index.cjs",
@@ -43,7 +43,12 @@
     "coverage": "vitest run --coverage",
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "clean": "rm -rf dist/*",
+    "postpublish": "git push origin --follow-tags",
+    "prepublishOnly": "npm run clean && npm run build",
+    "release": "standard-version -r",
+    "release:first": "standard-version --first-release"
   },
   "devDependencies": {
     "@types/node": "^22.9.1",
@@ -53,6 +58,7 @@
     "inversify": "^6.1.4",
     "jsdom": "^25.0.1",
     "reflect-metadata": "^0.2.2",
+    "standard-version": "^9.5.0",
     "typescript": "~5.6.3",
     "vite": "^5.4.11",
     "vite-plugin-dts": "^4.3.0",
