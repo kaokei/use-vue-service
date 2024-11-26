@@ -6,7 +6,7 @@
 // 当前库因为依赖inversify，所以没有输出给浏览器使用的umd版本
 // 注意inversify，reflect-metadata，vue等库都是peerDependencies，不应该打包到当前库中
 import { resolve } from 'path';
-import { writeFileSync } from 'fs';
+import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import dts from 'vite-plugin-dts';
@@ -19,6 +19,9 @@ export default defineConfig({
       // rollupTypes: true,
       tsconfigPath: './tsconfig.app.json',
       beforeWriteFile: (filePath, content) => {
+        if (!existsSync('./dist/inversify')) {
+          mkdirSync('./dist/inversify');
+        }
         writeFileSync(filePath.replace('.d.ts', '.d.cts'), content);
         return { filePath, content };
       },
@@ -27,10 +30,13 @@ export default defineConfig({
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: {
+        'index': resolve(__dirname, 'src/index.ts'),
+        'inversify/index': resolve(__dirname, 'src/inversify/index.ts'),
+      },
       name: 'UseVueService',
       // the proper extensions will be added
-      fileName: 'index',
+      // fileName: (format, entryName) => `${entryName}.${format}.js`,
       formats: ['cjs', 'es'],
     },
     rollupOptions: {

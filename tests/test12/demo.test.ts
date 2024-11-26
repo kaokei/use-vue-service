@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { mount } from '@vue/test-utils';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
-import { useService } from '../../src';
+import { useService } from '../../src/inversify';
 
 describe('test12', () => {
   it('get DemoService instance', async () => {

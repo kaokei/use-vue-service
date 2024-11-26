@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { postReactive } from '../../src/index';
+import { postReactive } from '../../src/inversify';
 import { inject } from 'inversify';
 import { OtherService } from './OtherService';
 

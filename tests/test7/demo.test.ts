@@ -8,7 +8,7 @@ import {
   declareAppProviders,
   declareRootProviders,
   useRootService,
-} from '../../src';
+} from '../../src/inversify';
 
 describe('test7', () => {
   it('get DemoService instance', async () => {

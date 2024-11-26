@@ -8,7 +8,7 @@ import {
   RouteLocationNormalizedLoaded,
 } from 'vue-router';
 import { DemoService } from './DemoService';
-import { declareProviders, useService } from '../../src/index';
+import { declareProviders, useService } from '../../src/inversify';
 import { TYPES } from './router';
 
 defineProps({

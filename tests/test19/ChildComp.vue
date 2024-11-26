@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { declareProviders, useService } from '../../src/index';
+import { declareProviders, useService } from '../../src/inversify';
 import { ChildService } from './ChildService';
 
 declareProviders([ChildService]);

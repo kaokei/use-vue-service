@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
 import { OtherService } from './OtherService';
-import { declareRootProviders, useRootService } from '../../src';
+import { declareRootProviders, useRootService } from '../../src/inversify';
 
 describe('test10', () => {
   it('get DemoService instance', async () => {

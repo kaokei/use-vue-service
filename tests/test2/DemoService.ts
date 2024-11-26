@@ -1,6 +1,6 @@
 import { inject } from 'inversify';
 import { computed, ComponentInternalInstance } from 'vue';
-import { postReactive, CURRENT_COMPONENT } from '../../src/index';
+import { postReactive, CURRENT_COMPONENT } from '../../src/inversify';
 
 export class DemoService {
   public count = 1;

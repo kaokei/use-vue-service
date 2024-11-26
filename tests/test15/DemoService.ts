@@ -1,4 +1,4 @@
-import { postReactive } from '../../src';
+import { postReactive } from '../../src/inversify';
 
 export class DemoService {
   public count = 1;

@@ -3,7 +3,7 @@ import { flushPromises, mount } from '@vue/test-utils';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
 import { router, TYPES } from './router';
-import { declareRootProviders, useRootService } from '../../src';
+import { declareRootProviders, useRootService } from '../../src/inversify';
 import { markRaw, App } from 'vue';
 import { useRoute } from 'vue-router';
 

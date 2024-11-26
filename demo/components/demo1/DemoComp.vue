@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getCurrentInstance, ref } from 'vue';
-import { declareProviders, useService } from '../../../src/index';
+import { declareProviders, useService } from '../../../src/inversify';
 import { DemoService } from './DemoService';
 
 defineProps<{ msg: string }>();

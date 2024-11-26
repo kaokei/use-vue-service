@@ -1,6 +1,6 @@
 import { inject, LazyServiceIdentifier } from 'inversify';
 import { TYPES } from './token';
-import { ExtractToken } from '../../src';
+import { ExtractToken } from '../../src/inversify';
 
 export class DemoService {
   public count = 1;

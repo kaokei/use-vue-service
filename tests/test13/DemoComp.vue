@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { DemoService } from './DemoService';
-import { useService } from '../../src/index';
+import { useService } from '../../src/inversify';
 
 defineProps({
   msg: String,

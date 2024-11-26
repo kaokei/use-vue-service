@@ -4,7 +4,7 @@ import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
 import { OtherService } from './OtherService';
 import { App } from 'vue';
-import { declareAppProviders } from '../../src';
+import { declareAppProviders } from '../../src/inversify';
 
 describe('test17', () => {
   it('get DemoService instance', async () => {

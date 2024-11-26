@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { postReactive, ExtractToken } from '../../src/index';
+import { postReactive, ExtractToken } from '../../src/inversify';
 import { TYPES } from './token';
 import { inject } from 'inversify';
 
