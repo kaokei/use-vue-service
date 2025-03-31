@@ -1,8 +1,7 @@
-import 'reflect-metadata';
 import { mount } from '@vue/test-utils';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
-import { useRootService } from '../../src/inversify';
+import { useRootService } from '@/index';
 
 describe('test14', () => {
   it('get DemoService instance', async () => {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { declareProviders, useService } from '../../src/inversify';
+import { declareProviders, useService } from '@/index';
 import { DemoService } from './DemoService';
 import { ParentService } from './ParentService';
 import ChildComp from './ChildComp.vue';

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useService } from '../../src/inversify';
+import { useService } from '@/index';
 import { DemoService } from './DemoService';
 import { OtherService } from './OtherService';
 

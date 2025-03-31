@@ -1,6 +1,6 @@
 import { computed } from 'vue';
-import { postReactive } from '../../src/inversify';
-import { inject } from 'inversify';
+import { postReactive } from '@/index';
+import { Inject } from '@kaokei/di';
 import { OtherService } from './OtherService';
 
 export class DemoService {
@@ -9,7 +9,7 @@ export class DemoService {
   private _name = 'DemoService';
   public computedName: any;
 
-  @inject(OtherService)
+  @Inject(OtherService)
   public otherService!: OtherService;
 
   public increaseOtherCount() {

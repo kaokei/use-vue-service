@@ -1,4 +1,4 @@
-import { inject } from 'inversify';
+import { Inject } from '@kaokei/di';
 import { TYPES } from './router';
 
 export class DemoService {
@@ -8,9 +8,9 @@ export class DemoService {
     this.count++;
   }
 
-  @inject(TYPES.route)
+  @Inject(TYPES.route)
   public route: any;
 
-  @inject(TYPES.router)
+  @Inject(TYPES.router)
   public router: any;
 }

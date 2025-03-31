@@ -1,4 +1,4 @@
-import { inject, LazyServiceIdentifier } from 'inversify';
+import { inject, LazyServiceIdentifier } from '@kaokei/di';
 import { OtherService } from './OtherService';
 
 export class DemoService {

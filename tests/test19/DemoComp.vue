@@ -3,7 +3,7 @@ import {
   declareProviders,
   useService,
   CURRENT_COMPONENT,
-} from '../../src/inversify';
+} from '@/index';
 import { DemoService } from './DemoService';
 import ChildComp from './ChildComp.vue';
 import { getCurrentInstance } from 'vue';

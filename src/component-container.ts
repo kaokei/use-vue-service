@@ -1,5 +1,5 @@
 import { ComponentInternalInstance } from 'vue';
-import { Container } from 'inversify';
+import { Container } from '@kaokei/di';
 
 const key = Symbol('container');
 

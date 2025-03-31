@@ -1,4 +1,4 @@
-import { interfaces } from 'inversify';
+import type { CommonToken } from '@kaokei/di';
 import {
   VNode,
   VNodeChild,
@@ -28,11 +28,7 @@ function nodesAsObject(
   return !!value && typeof value === 'object';
 }
 
-function walk<T>(
-  vnode: VNode,
-  token: interfaces.ServiceIdentifier<T>,
-  results: T[]
-): T[] {
+function walk<T>(vnode: VNode, token: CommonToken<T>, results: T[]): T[] {
   if (vnode.component) {
     const container = getContainer(vnode.component);
     if (container && container.isCurrentBound(token)) {
@@ -52,7 +48,7 @@ function walk<T>(
 
 function walkChildren<T>(
   children: VNodeNormalizedChildren,
-  token: interfaces.ServiceIdentifier<T>,
+  token: CommonToken<T>,
   results: T[]
 ): T[] {
   if (children && Array.isArray(children)) {
@@ -70,12 +66,12 @@ function walkChildren<T>(
 
 /**
  * @param component ComponentInternalInstance 当前组件
- * @param token interfaces.ServiceIdentifier<T>  服务标识
+ * @param token CommonToken<T>  服务标识
  * @returns T | undefined 是从当前组件【不包含当前组件】的子组件以及后代组件中查找服务实例，返回第一个找到的服务实例
  */
 export function findService<T>(
   component: ComponentInternalInstance,
-  token: interfaces.ServiceIdentifier<T>
+  token: CommonToken<T>
 ): T | undefined {
   const results: T[] = [];
   walk(component.subTree, token, results);
@@ -84,12 +80,12 @@ export function findService<T>(
 
 /**
  * @param component ComponentInternalInstance 当前组件
- * @param token interfaces.ServiceIdentifier<T>  服务标识
+ * @param token CommonToken<T> 服务标识
  * @returns T[] 是从当前组件【不包含当前组件】的子组件以及后代组件中查找服务实例，返回所有找到的服务实例
  */
 export function findAllServices<T>(
   component: ComponentInternalInstance,
-  token: interfaces.ServiceIdentifier<T>
+  token: CommonToken<T>
 ): T[] {
   const results: T[] = [];
   walk(component.subTree, token, results);

@@ -10,7 +10,7 @@
 - [online demo](https://use-vue-service.vercel.app/)
 
 ```bash
-npm install @kaokei/use-vue-service @kaokei/di reflect-metadata
+npm install @kaokei/use-vue-service @kaokei/di
 ```
 
 ## 简介

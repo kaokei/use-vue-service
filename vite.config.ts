@@ -31,8 +31,7 @@ export default defineConfig({
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: {
-        'index': resolve(__dirname, 'src/index.ts'),
-        'inversify/index': resolve(__dirname, 'src/inversify/index.ts'),
+        index: resolve(__dirname, 'src/index.ts'),
       },
       name: 'UseVueService',
       // the proper extensions will be added
@@ -42,7 +41,7 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['vue', 'reflect-metadata', 'inversify'],
+      external: ['vue', '@kaokei/di'],
       output: {
         compact: true,
         // Provide global variables to use in the UMD build
@@ -59,6 +58,12 @@ export default defineConfig({
     coverage: {
       include: ['src/**/*.ts'],
       reporter: ['text', 'lcov'],
+    },
+  },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+      '@tests': resolve(__dirname, './tests'),
     },
   },
 });

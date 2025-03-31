@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { mount } from '@vue/test-utils';
 import ParentDemo from './ParentComp.vue';
 import DemoComp from './DemoComp.vue';

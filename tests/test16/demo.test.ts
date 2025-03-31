@@ -1,6 +1,9 @@
-import 'reflect-metadata';
 import { mount } from '@vue/test-utils';
-import { declareRootProviders, useService, useRootService } from '../../src/inversify';
+import {
+  declareRootProviders,
+  useService,
+  useRootService,
+} from '@/index';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
 import { App } from 'vue';

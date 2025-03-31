@@ -2,7 +2,7 @@
 import { DemoService } from './DemoService';
 import { AppService } from './AppService';
 import { RootService } from './RootService';
-import { declareProviders, useService } from '../../src/inversify';
+import { declareProviders, useService } from '@/index';
 
 defineProps({
   msg: String,

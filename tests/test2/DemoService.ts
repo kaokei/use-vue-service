@@ -1,13 +1,13 @@
-import { inject } from 'inversify';
+import { Inject } from '@kaokei/di';
 import { computed, ComponentInternalInstance } from 'vue';
-import { postReactive, CURRENT_COMPONENT } from '../../src/inversify';
+import { postReactive, CURRENT_COMPONENT } from '@/index';
 
 export class DemoService {
   public count = 1;
   public age = 100;
   private _name = 'DemoService';
   public computedName: any;
-  @inject(CURRENT_COMPONENT)
+  @Inject(CURRENT_COMPONENT)
   public component: ComponentInternalInstance | null = null;
 
   public increaseCount() {

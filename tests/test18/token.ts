@@ -1,8 +1,8 @@
 import { DemoService } from './DemoService';
 import { OtherService } from './OtherService';
-import { createToken } from '../../src/inversify';
+import { Token } from '@kaokei/di';
 
 export const TYPES = {
-  DemoService: createToken<DemoService>('DemoService'),
-  OtherService: createToken<OtherService>('OtherService'),
+  DemoService: new Token<DemoService>('DemoService'),
+  OtherService: new Token<OtherService>('OtherService'),
 };

@@ -1,6 +1,6 @@
-import { inject, LazyServiceIdentifier } from 'inversify';
+import { Inject, LazyToken } from '@kaokei/di';
 import { TYPES } from './token';
-import { ExtractToken } from '../../src/inversify';
+import type { TokenType } from '@/index';
 
 export class DemoService {
   public count = 1;
@@ -9,6 +9,6 @@ export class DemoService {
     this.count++;
   }
 
-  @inject(new LazyServiceIdentifier(() => TYPES.OtherService))
-  public otherService!: ExtractToken<typeof TYPES.OtherService>;
+  @Inject(new LazyToken(() => TYPES.OtherService))
+  public otherService!: TokenType<typeof TYPES.OtherService>;
 }

@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { mount } from '@vue/test-utils';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
@@ -8,7 +7,7 @@ import {
   declareAppProviders,
   declareRootProviders,
   useRootService,
-} from '../../src/inversify';
+} from '@/index';
 
 describe('test7', () => {
   it('get DemoService instance', async () => {

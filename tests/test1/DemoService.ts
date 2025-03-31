@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { postReactive } from '../../src/inversify';
+import { postReactive } from '@/index';
 
 export class DemoService {
   public count = 1;

@@ -1,10 +1,10 @@
-import { inject } from 'inversify';
+import { Inject } from '@kaokei/di';
 import { DemoService } from './DemoService';
 
 export class ParentService {
   public count = 200;
 
-  @inject(DemoService)
+  @Inject(DemoService)
   public demoService!: DemoService;
 
   public increaseCount() {

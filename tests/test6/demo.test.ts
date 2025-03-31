@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { mount } from '@vue/test-utils';
 import DemoCompTo from './DemoCompTo.vue';
 import DemoCompToSelf from './DemoCompToSelf.vue';

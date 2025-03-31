@@ -1,8 +1,7 @@
-import 'reflect-metadata';
 import { mount } from '@vue/test-utils';
 import DemoComp from './DemoComp.vue';
 import { ChildService } from './ChildService';
-import { findService, findAllServices } from '../../src/inversify';
+import { findService, findAllServices } from '@/index';
 
 describe('test19', () => {
   it('get DemoService instance', async () => {

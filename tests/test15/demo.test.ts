@@ -1,7 +1,6 @@
-import 'reflect-metadata';
 import { mount } from '@vue/test-utils';
-import { postConstruct } from 'inversify';
-import { postReactive, declareProviders } from '../../src/inversify';
+import { postConstruct } from '@kaokei/di';
+import { postReactive, declareProviders } from '@/index';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
 

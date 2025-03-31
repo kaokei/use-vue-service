@@ -2,4 +2,4 @@
 
 useService可以自动识别token对应的服务的类型
 
-@inject(token)中可以借助ExtractToken获取实际服务的类型
+@inject(token)中可以借助TokenType获取实际服务的类型
