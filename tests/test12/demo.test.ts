@@ -16,6 +16,6 @@ describe('test12', () => {
 
     expect(() => {
       useService(DemoService);
-    }).toThrow("Cannot read properties of undefined (reading 'get')");
+    }).toThrow("getProvideContainer 只能在setup中使用");
   });
 });

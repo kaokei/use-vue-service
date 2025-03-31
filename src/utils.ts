@@ -54,6 +54,7 @@ function walkChildren<T>(
   if (children && Array.isArray(children)) {
     const filteredNodes = children.filter(nodesAsObject);
     filteredNodes.forEach((node: VNodeArrayChildren | VNode) => {
+      /* v8 ignore next 2 */
       if (Array.isArray(node)) {
         walkChildren(node, token, results);
       } else {

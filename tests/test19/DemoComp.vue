@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import {
-  declareProviders,
-  useService,
-  CURRENT_COMPONENT,
-} from '@/index';
+import { declareProviders, useService, CURRENT_COMPONENT } from '@/index';
 import { DemoService } from './DemoService';
 import ChildComp from './ChildComp.vue';
 import { getCurrentInstance } from 'vue';

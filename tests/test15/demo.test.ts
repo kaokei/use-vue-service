@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import { postConstruct } from '@kaokei/di';
-import { postReactive, declareProviders } from '@/index';
+import { PostConstruct } from '@kaokei/di';
+import { declareProviders } from '@/index';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
 
@@ -14,7 +14,7 @@ describe('test15', () => {
           this.count++;
         }
 
-        @postConstruct()
+        @PostConstruct()
         public test1() {
           this.increaseCount();
         }
@@ -32,19 +32,19 @@ describe('test15', () => {
           this.count++;
         }
 
-        @postConstruct()
+        @PostConstruct()
         public test1() {
           this.increaseCount();
         }
 
-        @postConstruct()
+        @PostConstruct()
         public test2() {
           this.increaseCount();
         }
       }
       new DemoService();
-    }).toThrow(
-      'Cannot apply @postConstruct decorator multiple times in the same class'
+    }).toThrowError(
+      'Cannot apply @PostConstruct decorator multiple times in the same class'
     );
   });
 
@@ -57,7 +57,7 @@ describe('test15', () => {
           this.count++;
         }
 
-        @postReactive()
+        @PostConstruct()
         public test1() {
           this.increaseCount();
         }
@@ -75,26 +75,26 @@ describe('test15', () => {
           this.count++;
         }
 
-        @postReactive()
+        @PostConstruct()
         public test1() {
           this.increaseCount();
         }
 
-        @postReactive()
+        @PostConstruct()
         public test2() {
           this.increaseCount();
         }
       }
       new DemoService();
     }).toThrow(
-      'Cannot apply @postReactive decorator multiple times in the same class'
+      'Cannot apply @PostConstruct decorator multiple times in the same class'
     );
   });
 
   it('get DemoService instance', async () => {
     expect(() => {
       mount(DemoComp);
-    }).toThrow('@postReactive error in class DemoService: something wrong');
+    }).toThrow('something wrong');
   });
 });
 
@@ -113,19 +113,8 @@ describe('declareProviders', () => {
   });
 
   it('should call console.warn with the expected message when condition is true', () => {
-    declareProviders([DemoService]);
-
-    // 断言 console.warn 被调用了2次
-    expect(consoleWarnSpy).toHaveBeenCalledTimes(2);
-
-    // 断言 console.warn 被调用时的参数
-    expect(consoleWarnSpy).toHaveBeenNthCalledWith(
-      1,
-      'declareProviders can only be used inside setup() or functional components.'
-    );
-    expect(consoleWarnSpy).toHaveBeenNthCalledWith(
-      2,
-      'declareAppProviders|declareProviders|useService can only be used inside setup() or functional components.'
-    );
+    expect(() => {
+      declareProviders([DemoService]);
+    }).toThrowError('getProvideContainer 只能在setup中使用');
   });
 });

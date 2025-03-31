@@ -1,4 +1,4 @@
-import { postReactive } from '@/index';
+import { PostConstruct } from '@kaokei/di';
 
 export class DemoService {
   public count = 1;
@@ -7,7 +7,7 @@ export class DemoService {
     this.count++;
   }
 
-  @postReactive()
+  @PostConstruct()
   public test1() {
     throw new Error('something wrong');
   }

@@ -1,6 +1,6 @@
-import { Inject } from '@kaokei/di';
+import { Inject, PostConstruct } from '@kaokei/di';
 import { computed, ComponentInternalInstance } from 'vue';
-import { postReactive, CURRENT_COMPONENT } from '@/index';
+import { CURRENT_COMPONENT } from '@/index';
 
 export class DemoService {
   public count = 1;
@@ -23,7 +23,7 @@ export class DemoService {
     return `${this.component?.props.msg}-${this._name}-${this.age}`;
   }
 
-  @postReactive()
+  @PostConstruct()
   public init() {
     this.computedName = computed(() => {
       return `${this.component?.props.msg}-${this._name}-${this.age}`;

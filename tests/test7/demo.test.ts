@@ -12,13 +12,14 @@ import {
 describe('test7', () => {
   it('get DemoService instance', async () => {
     declareRootProviders([RootService]);
+    const plugin = (app: any) => declareAppProviders([AppService], app);
     const msg = 'Hello world';
     const wrapper = mount(DemoComp, {
       props: {
         msg,
       },
       global: {
-        plugins: [declareAppProviders([AppService])],
+        plugins: [plugin],
       },
     });
 

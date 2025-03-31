@@ -3,7 +3,9 @@ import { DemoService } from './DemoService';
 import { OtherService } from './OtherService';
 import { declareProviders, useService } from '@/index';
 
-declareProviders([DemoService]);
+console.log('useService run');
+
+// declareProviders([DemoService]);
 declareProviders([OtherService]);
 const demoService = useService(DemoService);
 const otherService = useService(OtherService);

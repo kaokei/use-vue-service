@@ -6,12 +6,11 @@ import { declareAppProviders } from '@/index';
 
 describe('test9', () => {
   it('get DemoService instance', async () => {
+    const plugin1 = (app: any) => declareAppProviders([DemoService], app);
+    const plugin2 = (app: any) => declareAppProviders([OtherService], app);
     const wrapper = mount(DemoComp, {
       global: {
-        plugins: [
-          declareAppProviders([DemoService]),
-          declareAppProviders([OtherService]),
-        ],
+        plugins: [plugin1, plugin2],
       },
     });
 

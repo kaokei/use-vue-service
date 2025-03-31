@@ -1,10 +1,10 @@
-import { inject, LazyServiceIdentifier } from '@kaokei/di';
+import { Inject, LazyToken } from '@kaokei/di';
 import { OtherService } from './OtherService';
 
 export class DemoService {
   public count = 100;
 
-  @inject(new LazyServiceIdentifier(() => OtherService))
+  @Inject(new LazyToken(() => OtherService))
   public otherService!: OtherService;
 
   public get sum() {

@@ -11,6 +11,6 @@ describe('test13', () => {
           msg,
         },
       });
-    }).toThrow('No matching bindings found for serviceIdentifier: DemoService');
+    }).toThrow('No matching binding found for token: DemoService');
   });
 });

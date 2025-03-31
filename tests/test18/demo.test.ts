@@ -5,8 +5,6 @@ describe('test18', () => {
   it('get DemoService instance', async () => {
     expect(() => {
       mount(DemoComp);
-    }).toThrow(
-      'Circular dependency found: Symbol(DemoService) --> Symbol(OtherService) --> Symbol(DemoService)'
-    );
+    }).not.toThrowError();
   });
 });

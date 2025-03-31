@@ -1,7 +1,7 @@
 import { computed } from 'vue';
-import { postReactive, TokenType } from '@/index';
+import { TokenType } from '@/index';
 import { TYPES } from './token';
-import { Inject } from '@kaokei/di';
+import { Inject, PostConstruct } from '@kaokei/di';
 
 export class DemoService {
   public count = 1;
@@ -28,7 +28,7 @@ export class DemoService {
     return `${this._name}-${this.age}`;
   }
 
-  @postReactive()
+  @PostConstruct()
   public init() {
     this.computedName = computed(() => {
       return `${this._name}-${this.age}`;

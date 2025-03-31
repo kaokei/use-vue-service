@@ -16,6 +16,6 @@ describe('test14', () => {
 
     expect(() => {
       useRootService(DemoService);
-    }).toThrow('No matching bindings found for serviceIdentifier: DemoService');
+    }).toThrow('No matching binding found for token: DemoService');
   });
 });
