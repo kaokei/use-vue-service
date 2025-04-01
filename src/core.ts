@@ -16,20 +16,20 @@ import { setContainer } from './component-container';
 type NewableProvider = Newable[];
 type FunctionProvider = (container: Container) => void;
 type Provider = NewableProvider | FunctionProvider;
-export type TokenType<T> = T extends CommonToken<infer U> ? U : never;
 
-// 给vue的provide/inject使用的token
-export const CONTAINER_TOKEN = 'USE_VUE_SERVICE_CONTAINER_TOKEN';
 // 给依赖注入库使用的token
 export const CURRENT_COMPONENT = new Token<ComponentInternalInstance>(
-  'USE_VUE_SERVICE_COMPONENT_TOKEN'
+  'USE_VUE_SERVICE_CURRENT_COMPONENT'
 );
 // 给依赖注入库使用的token
 export const CURRENT_CONTAINER = new Token<Container>(
-  'USE_VUE_SERVICE_CONTAINER_TOKEN'
+  'USE_VUE_SERVICE_CURRENT_CONTAINER'
 );
+
+// 给vue的provide/inject使用的token
+const CONTAINER_TOKEN = 'USE_VUE_SERVICE_CONTAINER_TOKEN';
 // 默认Container，对应declareRootProviders/useRootService
-export const DEFAULT_CONTAINER = createContainer();
+const DEFAULT_CONTAINER = createContainer();
 
 function makeReactiveObject(_: any, obj: any) {
   // 这里默认obj是一个对象
@@ -104,7 +104,7 @@ function getProvideContainer(): Container {
     const defaultValue = DEFAULT_CONTAINER;
     return inject(token, defaultValue);
   } else {
-    throw new Error('getProvideContainer 只能在setup中使用');
+    throw new Error('getProvideContainer 只能在 setup 中使用');
   }
 }
 
@@ -151,6 +151,7 @@ export function declareAppProviders(
   app: App
 ): void;
 export function declareAppProviders(providers: NewableProvider, app: App): void;
+export function declareAppProviders(providers: Provider, app: App): void;
 export function declareAppProviders(providers: Provider, app: App) {
   app.runWithContext(() => {
     const appContainer = inject<Container>(CONTAINER_TOKEN);
@@ -166,4 +167,8 @@ export function declareAppProviders(providers: Provider, app: App) {
       });
     }
   });
+}
+
+export function declareAppProvidersPlugin(providers: Provider) {
+  return (app: App) => declareAppProviders(providers, app);
 }

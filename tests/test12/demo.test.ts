@@ -16,6 +16,6 @@ describe('test12', () => {
 
     expect(() => {
       useService(DemoService);
-    }).toThrow("getProvideContainer 只能在setup中使用");
+    }).toThrow("getProvideContainer 只能在 setup 中使用");
   });
 });

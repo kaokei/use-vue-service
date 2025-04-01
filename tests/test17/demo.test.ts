@@ -3,7 +3,7 @@ import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
 import { OtherService } from './OtherService';
 import { App } from 'vue';
-import { declareAppProviders, useAppService } from '@/index';
+import { useAppService, declareAppProvidersPlugin } from '@/index';
 
 describe('test17', () => {
   it('get DemoService instance', async () => {
@@ -15,18 +15,13 @@ describe('test17', () => {
   it('get DemoService instance', async () => {
     let rootApp!: App;
 
-    const plugin = (app: any) => {
-      console.log('declareAppProviders plugin run');
-      declareAppProviders([DemoService, OtherService], app);
-    };
-
     const wrapper = mount(DemoComp, {
       global: {
         plugins: [
           (app: App) => {
             rootApp = app;
           },
-          plugin,
+          declareAppProvidersPlugin([DemoService, OtherService]),
         ],
       },
     });

@@ -4,7 +4,7 @@ import { DemoService } from './DemoService';
 import { AppService } from './AppService';
 import { RootService } from './RootService';
 import {
-  declareAppProviders,
+  declareAppProvidersPlugin,
   declareRootProviders,
   useRootService,
 } from '@/index';
@@ -12,14 +12,13 @@ import {
 describe('test7', () => {
   it('get DemoService instance', async () => {
     declareRootProviders([RootService]);
-    const plugin = (app: any) => declareAppProviders([AppService], app);
     const msg = 'Hello world';
     const wrapper = mount(DemoComp, {
       props: {
         msg,
       },
       global: {
-        plugins: [plugin],
+        plugins: [declareAppProvidersPlugin([AppService])],
       },
     });
 

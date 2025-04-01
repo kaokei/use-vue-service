@@ -2,15 +2,16 @@ import { mount } from '@vue/test-utils';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
 import { OtherService } from './OtherService';
-import { declareAppProviders } from '@/index';
+import { declareAppProvidersPlugin } from '@/index';
 
 describe('test9', () => {
   it('get DemoService instance', async () => {
-    const plugin1 = (app: any) => declareAppProviders([DemoService], app);
-    const plugin2 = (app: any) => declareAppProviders([OtherService], app);
     const wrapper = mount(DemoComp, {
       global: {
-        plugins: [plugin1, plugin2],
+        plugins: [
+          declareAppProvidersPlugin([DemoService]),
+          declareAppProvidersPlugin([OtherService]),
+        ],
       },
     });
 

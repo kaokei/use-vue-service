@@ -52,7 +52,7 @@
     "release:first": "standard-version --first-release"
   },
   "devDependencies": {
-    "@kaokei/di": "^3.0.3",
+    "@kaokei/di": "^3.0.4",
     "@types/node": "^22.9.1",
     "@vitejs/plugin-vue": "^5.2.0",
     "@vitest/coverage-v8": "^2.1.5",
