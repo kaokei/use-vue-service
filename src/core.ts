@@ -1,63 +1,19 @@
-import { Container, Token } from '@kaokei/di';
-import type { Newable, CommonToken } from '@kaokei/di';
 import {
   provide,
   inject,
   getCurrentInstance,
   onUnmounted,
-  reactive,
   hasInjectionContext,
-  ComponentInternalInstance,
   App,
-  markRaw,
 } from 'vue';
-import { setContainer } from './component-container';
+import { Container } from '@kaokei/di';
+import type { Newable, CommonToken } from '@kaokei/di';
+import { createContainer } from './utils';
+import { CONTAINER_TOKEN, DEFAULT_CONTAINER } from './constants';
 
 type NewableProvider = Newable[];
 type FunctionProvider = (container: Container) => void;
 type Provider = NewableProvider | FunctionProvider;
-
-// 给依赖注入库使用的token
-export const CURRENT_COMPONENT = new Token<ComponentInternalInstance>(
-  'USE_VUE_SERVICE_CURRENT_COMPONENT'
-);
-// 给依赖注入库使用的token
-export const CURRENT_CONTAINER = new Token<Container>(
-  'USE_VUE_SERVICE_CURRENT_CONTAINER'
-);
-
-// 给vue的provide/inject使用的token
-const CONTAINER_TOKEN = 'USE_VUE_SERVICE_CONTAINER_TOKEN';
-// 默认Container，对应declareRootProviders/useRootService
-const DEFAULT_CONTAINER = createContainer();
-
-function makeReactiveObject(_: any, obj: any) {
-  // 这里默认obj是一个对象
-  return reactive(obj);
-}
-
-function createContainer(
-  parent?: Container,
-  instance?: ComponentInternalInstance | null
-) {
-  let container: Container;
-  if (parent) {
-    container = parent.createChild();
-  } else {
-    container = new Container();
-  }
-  if (instance) {
-    // 组件实例绑定容器-方便后续通过组件实例获取容器对象
-    setContainer(instance, container);
-    // 容器绑定组件实例-方便后续通过依赖注入获取当前组件实例
-    container.bind(CURRENT_COMPONENT).toConstantValue(markRaw(instance));
-    // 容器绑定容器对象-方便后续通过依赖注入获取当前容器对象
-    container.bind(CURRENT_CONTAINER).toConstantValue(markRaw(container));
-  }
-  // 通过onActivation钩子使得所有实例变成响应式对象
-  container.onActivation(makeReactiveObject);
-  return container;
-}
 
 function bindProviders(container: Container, providers: FunctionProvider): void;
 function bindProviders(container: Container, providers: NewableProvider): void;

@@ -1,0 +1,187 @@
+## DeepSeek 的流程设计
+
+#### ​ 服务端渲染时
+
+1. 创建独立上下文存储状态
+2. 每次初始化 Store 时记录状态
+3. 渲染结束后将状态注入 HTML
+
+#### ​ 客户端水合时
+
+1. 从 HTML 中提取序列化状态
+2. 在初始化 Store 前注入保存的状态
+
+## 关键实现步骤
+
+#### 服务端状态收集
+
+```js
+// 服务端入口
+import { createSSRApp } from 'vue';
+import { createStore, serializeState } from 'your-store';
+
+export async function render(url) {
+  const ctx = {}; // 用于存储 SSR 上下文的空对象
+  const app = createSSRApp(App);
+
+  // 创建 Store 时绑定到上下文
+  const store = createStore({ ssrContext: ctx });
+
+  // 渲染组件（收集期间所有 Store 的状态会被记录到 ctx）
+  const html = await renderToString(app);
+
+  // 将状态序列化到 HTML
+  const initialState = serializeState(ctx);
+  return `
+    <html>
+      <head>
+        <script>window.__INITIAL_STATE__ = ${JSON.stringify(
+          initialState
+        )}</script>
+      </head>
+      <body>${html}</body>
+    </html>
+  `;
+}
+```
+
+#### 客户端水合逻辑
+
+```js
+// 客户端入口
+import { createStore, hydrateStores } from 'your-store';
+
+// 从全局变量读取服务端注入的状态
+const initialState = window.__INITIAL_STATE__;
+
+// 初始化 Store 前先水合
+hydrateStores(initialState);
+
+const store = createStore();
+const app = createApp(App);
+app.use(store);
+app.mount('#app');
+```
+
+## 核心 API 实现
+
+#### 状态序列化（服务端）
+
+```js
+// 序列化所有 Store 状态
+export function serializeState(ssrContext) {
+  const state = {};
+  for (const storeId in ssrContext.stores) {
+    state[storeId] = toRaw(ssrContext.stores[storeId].$state);
+  }
+  return state;
+}
+```
+
+#### 水合函数（客户端）
+
+```js
+// 将状态注入到 Store 实例
+let isHydrated = false;
+
+export function hydrateStores(initialState) {
+  if (isHydrated) return;
+  for (const storeId in initialState) {
+    const store = getStoreById(storeId);
+    if (store) {
+      store.$state = reactive(initialState[storeId]);
+    }
+  }
+  isHydrated = true;
+}
+```
+
+#### 改造 Store 构造函数
+
+```js
+class Store {
+  constructor(id, options, ssrContext) {
+    this.$id = id;
+    // 服务端渲染时记录状态
+    if (ssrContext && !ssrContext.stores) {
+      ssrContext.stores = {};
+    }
+    if (ssrContext) {
+      ssrContext.stores[id] = this;
+    }
+  }
+}
+```
+
+#### 创建 Store 的工厂函数
+
+```js
+export function createStore(options, ssrContext) {
+  return new Store(generateUniqueId(), options, ssrContext);
+}
+```
+
+## 总结
+
+1. 创建独立上下文存储状态，也就是针对每个请求创建独立的 vue app 实例，可以使用 createSSRApp 这个 API。
+
+自然每个 vue app 都有对应的 ssr context，可以使用 useSSRContext 这个 API。
+然后基于 ssr context 创建关联的 store 对象，其实就是把 store 对象绑定到 ssr context 上，方便后续序列化操作。
+
+2. createSSRApp 和 createStore 是并行的。
+
+renderToString 负责把 app 转化为 html，serializeState 负责把 store 序列化为 store 字符串。
+最终返回内容是把 app html 和 store 字符串拼接后一起返回。
+需要注意的是把 store 对象序列化属于业务逻辑的一部分，并不属于状态管理库的逻辑。
+状态管理库只需要提供 serializeState 方法即可。
+
+3. 服务端返回 html 时，生成关键代码如下：
+
+`<script>window.__INITIAL_STATE__=${JSON.stringify(initialState)}</script>`
+客户端在初始化时，就可以直接通过`window.__INITIAL_STATE__`获取服务器端所有状态数据。
+
+4. 客户端通过`window.__INITIAL_STATE__`拿到数据后，调用`hydrateStores`进行数据水合。
+
+关键在于`getStoreById`可以更具 ID 拿到对应的 store 对象，然后初始化 store.$state 属性。
+
+5. 不管是`serializeState`还是`hydrateStores`方法，都是针对 store.$state 属性进行的操作。
+
+这意味着 store 的其他属性是不支持 ssr 的，也就是不能保证前后端一致性。当然这属于约定的一部分。
+我理解把需要处理的属性都放到$state 属性中，比较方便读取和设置。如果没有这么一个确定的属性名，那么就需要遍历 store 的全部属性。
+
+6. 状态管理库的额外工作
+
+正常状态管理库只需要提供 Store 类和 createStore 方法即可。为了支持 SSR，需要额外提供`serializeState`和`hydrateStores`方法。
+
+7. 我理解 Store 是不需要进行数据水合的。
+
+因为创建 Store 时，不管是服务端创建，还是客户端创建，Store 的默认数据都是一样的。
+服务端因为执行渲染逻辑，会依次创建组件实例，并执行组件的相应钩子方法，在这些过程中可能会修改到 Store 的数据，所以需要把修改后的数据传递到客户端。
+但是客户端也是会执行这些操作的，所以仍然会实例化组件以及执行组件的相应的钩子方法，最终得到相同的 Store 对象。所以是不需要依赖后端传递过来的数据。
+我能想到的就是如果在服务器端渲染时请求了某些接口，通过接口获取的数据。为了在客户端执行相同逻辑时避免再次请求相同的接口，需要把请求接口的逻辑进行缓存。
+也就是在服务器端请求一次接口，客户端在此请求时应该只需要返回缓存中的数据，而不是再次发送 API 请求。
+当然这个缓存就是需要服务器端渲染时通过 html 传递到客户端了。
+但是这不影响我认为 Store 本身是不需要进行数据水合的。
+除非有些逻辑代码是只在服务器端执行，并修改了 Store 数据。因为在客户端不再执行这段代码，所以最终导致数据不一致。但是我不确定是否存在这样的逻辑。
+
+8. pinia 在 nuxt 插件中实现方案-https://github.com/vuejs/pinia/blob/d8ea789bf71b5e5f94d1073c1886f8e2f1eeb996/packages/nuxt/src/runtime/plugin.vue3.ts#L6
+
+pinia 本身并没有提供`serializeState`和`hydrateStores`方法。我理解这是因为 pinia 的数据只需要操作`pinia.state.value`属性即可。
+关键需要理解`pinia.state.value`为什么会包含所有 store 的数据，以及赋值给`pinia.state.value`为什么就可以初始化所有 store 的数据。
+
+```ts
+if (import.meta.server) {
+  nuxtApp.payload.pinia = toRaw(pinia.state.value);
+} else if (nuxtApp.payload && nuxtApp.payload.pinia) {
+  pinia.state.value = nuxtApp.payload.pinia as any;
+}
+```
+
+> https://nuxt.com/blog/v3-4  
+> Note: this only affects payloads of the Nuxt app, that is, data stored within useState, returned from useAsyncData or manually injected via nuxtApp.payload. It does not affect data fetched from Nitro server routes via $fetch or useFetch although this is one area I am keen to explore further.
+
+也就是说在 nuxt 中，目前只有 useState，useAsyncData，nuxtApp.payload 这些数据会自动被序列化到客户端。
+
+9. 需要研究container.snapshort是否容易实现，以及是否包含子容器的snapshort
+
+10. 需要研究angular是怎么支持ssr的

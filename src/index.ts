@@ -1,6 +1,8 @@
+export { CURRENT_COMPONENT, CURRENT_CONTAINER } from './constants';
+
+export { findService, findAllServices } from './find-service';
+
 export {
-  CURRENT_COMPONENT,
-  CURRENT_CONTAINER,
   declareProviders,
   declareAppProviders,
   declareAppProvidersPlugin,
@@ -9,5 +11,3 @@ export {
   useAppService,
   useRootService,
 } from './core';
-
-export { findService, findAllServices } from './utils';

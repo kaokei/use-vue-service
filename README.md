@@ -40,3 +40,7 @@ npm install @kaokei/use-vue-service @kaokei/di
 - 使用 rollup 打包源码
 
 ## MIT LICENSE
+
+## todo
+
+支持ssr功能 https://pinia.vuejs.org/zh/ssr/
