@@ -6,7 +6,7 @@
 // 当前库因为依赖inversify，所以没有输出给浏览器使用的umd版本
 // 注意inversify，reflect-metadata，vue等库都是peerDependencies，不应该打包到当前库中
 import { resolve } from 'path';
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import { writeFileSync } from 'fs';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import dts from 'vite-plugin-dts';
@@ -19,9 +19,6 @@ export default defineConfig({
       // rollupTypes: true,
       tsconfigPath: './tsconfig.app.json',
       beforeWriteFile: (filePath, content) => {
-        if (!existsSync('./dist/inversify')) {
-          mkdirSync('./dist/inversify');
-        }
         writeFileSync(filePath.replace('.d.ts', '.d.cts'), content);
         return { filePath, content };
       },

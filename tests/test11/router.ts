@@ -1,4 +1,10 @@
-import { createWebHistory, createRouter } from 'vue-router';
+import {
+  createWebHistory,
+  createRouter,
+  Router,
+  RouteLocationNormalizedLoaded,
+} from 'vue-router';
+import { Token } from '@kaokei/di';
 
 import HomeView from './HomeView.vue';
 import AboutView from './AboutView.vue';
@@ -14,6 +20,6 @@ export const router = createRouter({
 });
 
 export const TYPES = {
-  route: Symbol('route001'),
-  router: Symbol('router001'),
+  route: new Token<RouteLocationNormalizedLoaded>('route001'),
+  router: new Token<Router>('router001'),
 };
