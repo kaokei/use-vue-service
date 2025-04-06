@@ -43,4 +43,19 @@ npm install @kaokei/use-vue-service @kaokei/di
 
 ## todo
 
-支持ssr功能 https://pinia.vuejs.org/zh/ssr/
+1. 支持ssr功能 https://pinia.vuejs.org/zh/ssr/
+
+1. getter支持缓存，使用computed支持缓存
+
+应该在use-vue-service中实现
+
+https://yuanbao.tencent.com/bot/app/share/chat/tUbGmhHdY1Ta
+
+2. 优化 https://github.com/kaokei/utils/blob/main/src/index.ts 的文档
+
+
+```ts
+function useAppService<T>(token: interfaces.ServiceIdentifier<T>, app: any) {
+  return app.runWithContext(() => useService(token));
+}
+```

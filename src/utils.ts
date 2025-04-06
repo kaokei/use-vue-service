@@ -1,5 +1,5 @@
 import { Container } from '@kaokei/di';
-import { reactive, ComponentInternalInstance, markRaw } from 'vue';
+import { reactive, type ComponentInternalInstance, markRaw } from 'vue';
 import { setContainer } from './component-container';
 import { CURRENT_COMPONENT, CURRENT_CONTAINER } from './constants';
 
@@ -20,6 +20,7 @@ export function createContainer(
   }
   if (instance) {
     // 组件实例绑定容器-方便后续通过组件实例获取容器对象
+    // 目前只是提供给findService使用
     setContainer(instance, container);
     // 容器绑定组件实例-方便后续通过依赖注入获取当前组件实例
     container.bind(CURRENT_COMPONENT).toConstantValue(markRaw(instance));

@@ -11,3 +11,5 @@ export {
   useAppService,
   useRootService,
 } from './core';
+
+export { Computed } from './computed';

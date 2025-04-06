@@ -1,15 +1,15 @@
-import { ComponentInternalInstance } from 'vue';
-import { Container } from '@kaokei/di';
+import type { ComponentInternalInstance } from 'vue';
+import type { Container } from '@kaokei/di';
 
-const key = Symbol('container');
+const map = new WeakMap<ComponentInternalInstance, Container>();
 
 export function setContainer(
   component: ComponentInternalInstance,
   container: Container
 ) {
-  (component as any)[key] = container;
+  map.set(component, container);
 }
 
 export function getContainer(component: ComponentInternalInstance) {
-  return (component as any)[key];
+  return map.get(component);
 }

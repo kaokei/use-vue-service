@@ -1,5 +1,5 @@
-import { Container, Token } from '@kaokei/di';
-import { ComponentInternalInstance } from 'vue';
+import { type Container, Token } from '@kaokei/di';
+import type { ComponentInternalInstance } from 'vue';
 import { createContainer } from './utils';
 
 // 给依赖注入库使用的token

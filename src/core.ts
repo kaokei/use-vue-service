@@ -6,7 +6,7 @@ import {
   hasInjectionContext,
   App,
 } from 'vue';
-import { Container } from '@kaokei/di';
+import type { Container } from '@kaokei/di';
 import type { Newable, CommonToken } from '@kaokei/di';
 import { createContainer } from './utils';
 import { CONTAINER_TOKEN, DEFAULT_CONTAINER } from './constants';
@@ -23,8 +23,7 @@ function bindProviders(container: Container, providers: Provider) {
     providers(container);
   } else {
     for (let i = 0; i < providers.length; i++) {
-      const s = providers[i];
-      container.bind(s).toSelf();
+      container.bind(providers[i]).toSelf();
     }
   }
 }
@@ -56,9 +55,7 @@ function getCurrentContainer(): Container | undefined {
 // 直接借助vue的inject方法
 function getProvideContainer(): Container {
   if (hasInjectionContext()) {
-    const token = CONTAINER_TOKEN;
-    const defaultValue = DEFAULT_CONTAINER;
-    return inject(token, defaultValue);
+    return inject(CONTAINER_TOKEN, DEFAULT_CONTAINER);
   } else {
     throw new Error('getProvideContainer 只能在 setup 中使用');
   }
@@ -74,7 +71,7 @@ export function useRootService<T>(token: CommonToken<T>) {
 }
 
 export function useAppService<T>(token: CommonToken<T>, app: App) {
-  return app.runWithContext(() => useService(token));
+  return app.runWithContext(() => getProvideContainer().get(token));
 }
 
 export function declareProviders(providers: FunctionProvider): void;

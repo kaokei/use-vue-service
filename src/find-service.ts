@@ -1,5 +1,5 @@
 import type { CommonToken } from '@kaokei/di';
-import {
+import type {
   VNode,
   VNodeChild,
   VNodeArrayChildren,

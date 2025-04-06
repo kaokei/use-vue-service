@@ -185,3 +185,9 @@ if (import.meta.server) {
 9. 需要研究container.snapshort是否容易实现，以及是否包含子容器的snapshort
 
 10. 需要研究angular是怎么支持ssr的
+
+11. container需要有一个唯一ID，binding需要一个唯一ID。
+需要提供一个serializeState方法，可以序列化所有的container-binding-cache对象。
+需要在useService方法中根据容器唯一ID，binding唯一ID，从水合数据中找到对应的初始化数据。
+可能需要在useService/useRootService中向ssr context中注册cache对象，ssr context --> container id --> binding id --> cache
+通过这样的结构，方便序列化和反序列化
