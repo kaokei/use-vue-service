@@ -71,8 +71,8 @@ function walkChildren<T>(
  * @returns T | undefined 是从当前组件【不包含当前组件】的子组件以及后代组件中查找服务实例，返回第一个找到的服务实例
  */
 export function findService<T>(
-  component: ComponentInternalInstance,
-  token: CommonToken<T>
+  token: CommonToken<T>,
+  component: ComponentInternalInstance
 ): T | undefined {
   const results: T[] = [];
   walk(component.subTree, token, results);
@@ -85,8 +85,8 @@ export function findService<T>(
  * @returns T[] 是从当前组件【不包含当前组件】的子组件以及后代组件中查找服务实例，返回所有找到的服务实例
  */
 export function findAllServices<T>(
-  component: ComponentInternalInstance,
-  token: CommonToken<T>
+  token: CommonToken<T>,
+  component: ComponentInternalInstance
 ): T[] {
   const results: T[] = [];
   walk(component.subTree, token, results);

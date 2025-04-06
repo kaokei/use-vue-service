@@ -7,11 +7,11 @@ describe('test19', () => {
   it('get DemoService instance', async () => {
     const wrapper = mount(DemoComp);
 
-    const childService = findService(wrapper.vm.component1, ChildService);
+    const childService = findService(ChildService, wrapper.vm.component1);
 
     const childServiceList = findAllServices(
-      wrapper.vm.component1,
-      ChildService
+      ChildService,
+      wrapper.vm.component1
     );
 
     expect(childService).toBeInstanceOf(ChildService);
