@@ -2,10 +2,18 @@ import { Container } from '@kaokei/di';
 import { reactive, type ComponentInternalInstance, markRaw } from 'vue';
 import { setContainer } from './component-container';
 import { CURRENT_COMPONENT, CURRENT_CONTAINER } from './constants';
+import { defineMarkRawProperties } from './markraw';
+
+function isObject(val: object) {
+  return val !== null && typeof val === 'object';
+}
 
 function makeReactiveObject(_: any, obj: any) {
-  // 这里默认obj是一个对象
-  return reactive(obj);
+  if (isObject(obj)) {
+    defineMarkRawProperties(obj);
+    return reactive(obj);
+  }
+  return obj;
 }
 
 export function createContainer(

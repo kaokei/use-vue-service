@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@kaokei/di':
-        specifier: ^3.0.4
-        version: 3.0.4
+        specifier: ^3.0.5
+        version: 3.0.5
       '@types/node':
         specifier: ^22.9.1
         version: 22.9.1
@@ -252,8 +252,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@kaokei/di@3.0.4':
-    resolution: {integrity: sha512-bM7ja9/mnRllaT7z9+Yi25d8zICHNhZ8/5U6um7n78W9iJwEwU/ZQv0skmAS0xdkZonrrsBi2O5RYff9eZChIw==}
+  '@kaokei/di@3.0.5':
+    resolution: {integrity: sha512-d3a0+K3bYAlnm8c9oQ7ZApBZdyi/j2k4KxiStBUnN6e8UcXSRGEkYQ+jNwIQS/egCPR9akmFgR4824Cqv0SYgQ==}
 
   '@microsoft/api-extractor-model@7.29.8':
     resolution: {integrity: sha512-t3Z/xcO6TRbMcnKGVMs4uMzv/gd5j0NhMiJIGjD4cJMeFJ1Hf8wnLSx37vxlRlL0GWlGJhnFgxvnaL6JlS+73g==}
@@ -1996,7 +1996,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@kaokei/di@3.0.4': {}
+  '@kaokei/di@3.0.5': {}
 
   '@microsoft/api-extractor-model@7.29.8(@types/node@22.9.1)':
     dependencies:

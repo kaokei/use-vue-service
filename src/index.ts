@@ -15,3 +15,5 @@ export {
 } from './core';
 
 export { Computed } from './computed';
+
+export { MarkRaw } from './markraw';
