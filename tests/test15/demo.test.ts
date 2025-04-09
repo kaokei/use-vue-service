@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { PostConstruct } from '@kaokei/di';
+import { PostConstruct } from '@/index';
 import { declareProviders } from '@/index';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';

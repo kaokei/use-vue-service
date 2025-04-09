@@ -4,7 +4,7 @@ import {
   Router,
   RouteLocationNormalizedLoaded,
 } from 'vue-router';
-import { Token } from '@kaokei/di';
+import { Token } from '@/index';
 
 import HomeView from './HomeView.vue';
 import AboutView from './AboutView.vue';

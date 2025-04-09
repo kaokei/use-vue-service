@@ -1,7 +1,7 @@
 ## 测试场景-当前组件的服务访问当前组件
 
 ```
-@inject(CURRENT_COMPONENT)
+@Inject(CURRENT_COMPONENT)
 public component: ComponentInternalInstance | null = null;
 ```
 

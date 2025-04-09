@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { Inject, PostConstruct } from '@kaokei/di';
+import { Inject, PostConstruct } from '@/index';
 import { OtherService } from './OtherService';
 
 export class DemoService {

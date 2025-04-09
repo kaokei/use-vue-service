@@ -1,4 +1,4 @@
-import { Inject } from '@kaokei/di';
+import { Inject } from '@/index';
 import { TYPES } from './router';
 
 export class DemoService {

@@ -1,6 +1,6 @@
 import { DemoService } from './DemoService';
 import { OtherService } from './OtherService';
-import { Token } from '@kaokei/di';
+import { Token } from '@/index';
 
 export const TYPES = {
   DemoService: new Token<DemoService>('DemoService'),

@@ -1,4 +1,4 @@
-import { Inject, PostConstruct } from '@kaokei/di';
+import { Inject, PostConstruct } from '@/index';
 import { computed, ComponentInternalInstance } from 'vue';
 import { CURRENT_COMPONENT } from '@/index';
 

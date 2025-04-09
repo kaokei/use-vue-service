@@ -1,4 +1,4 @@
-import { Inject, LazyToken, TokenType } from '@kaokei/di';
+import { Inject, LazyToken, TokenType } from '@/index';
 import { TYPES } from './token';
 
 export class DemoService {

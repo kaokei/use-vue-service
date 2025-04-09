@@ -1,4 +1,4 @@
-import { PostConstruct } from '@kaokei/di';
+import { PostConstruct } from '@/index';
 
 export class DemoService {
   public count = 1;

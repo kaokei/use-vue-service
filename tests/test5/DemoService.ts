@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 import { TYPES } from './token';
-import { Inject, PostConstruct, TokenType } from '@kaokei/di';
+import { Inject, PostConstruct, TokenType } from '@/index';
 
 export class DemoService {
   public count = 1;

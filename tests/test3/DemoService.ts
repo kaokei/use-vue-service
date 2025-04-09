@@ -1,4 +1,4 @@
-import { Inject, LazyToken } from '@kaokei/di';
+import { Inject, LazyToken } from '@/index';
 import { OtherService } from './OtherService';
 
 export class DemoService {
