@@ -87,7 +87,7 @@ export function declareProviders(providers: Provider) {
     bindProviders(container, providers);
     provide(CONTAINER_TOKEN, container);
     onUnmounted(() => {
-      container.unbindAll();
+      container.destroy();
       container = null as any;
     });
   }
@@ -115,7 +115,7 @@ export function declareAppProviders(providers: Provider, app: App) {
       bindProviders(container, providers);
       app.provide(CONTAINER_TOKEN, container);
       app.onUnmount(() => {
-        container.unbindAll();
+        container.destroy();
         container = null as any;
       });
     }
