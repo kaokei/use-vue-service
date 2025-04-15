@@ -7,13 +7,10 @@ import {
   App,
 } from 'vue';
 import type { Container } from '@kaokei/di';
-import type { Newable, CommonToken } from '@kaokei/di';
+import type { CommonToken } from '@kaokei/di';
 import { createContainer } from './utils';
 import { CONTAINER_TOKEN, DEFAULT_CONTAINER } from './constants';
-
-type NewableProvider = Newable[];
-type FunctionProvider = (container: Container) => void;
-type Provider = NewableProvider | FunctionProvider;
+import type { NewableProvider, FunctionProvider, Provider } from './interface';
 
 function bindProviders(container: Container, providers: FunctionProvider): void;
 function bindProviders(container: Container, providers: NewableProvider): void;
