@@ -18,7 +18,7 @@ function walk<T>(
   return results;
 }
 
-export function findService<T>(
+export function findChildService<T>(
   token: CommonToken<T>,
   container: Container
 ): T | undefined {
@@ -27,7 +27,7 @@ export function findService<T>(
   return results[0];
 }
 
-export function findAllServices<T>(
+export function findChildrenServices<T>(
   token: CommonToken<T>,
   container: Container
 ): T[] {

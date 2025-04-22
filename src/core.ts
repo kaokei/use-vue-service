@@ -6,11 +6,14 @@ import {
   hasInjectionContext,
   App,
 } from 'vue';
-import type { Container } from '@kaokei/di';
-import type { CommonToken } from '@kaokei/di';
-import { createContainer } from './utils';
-import { CONTAINER_TOKEN, DEFAULT_CONTAINER } from './constants';
-import type { NewableProvider, FunctionProvider, Provider } from './interface';
+import type { Container, CommonToken } from '@kaokei/di';
+import { createContainer } from './utils.ts';
+import { CONTAINER_TOKEN, DEFAULT_CONTAINER } from './constants.ts';
+import type {
+  NewableProvider,
+  FunctionProvider,
+  Provider,
+} from './interface.ts';
 
 function bindProviders(container: Container, providers: FunctionProvider): void;
 function bindProviders(container: Container, providers: NewableProvider): void;

@@ -2,18 +2,14 @@ import { computed, reactive } from 'vue';
 
 const map = new WeakMap<object, Map<string, any>>();
 
-export function Computed(
-  _target: any,
-  key: string,
-  descriptor: PropertyDescriptor
-) {
+export function Computed(_: any, key: string, descriptor: PropertyDescriptor) {
   const originalGet = descriptor.get!;
   const originalSet = descriptor.set;
 
   return {
     configurable: true,
     enumerable: true,
-    get<T, S = T>() {
+    get<T, S = T>(): T {
       const that = reactive(this);
 
       if (!map.has(that)) {

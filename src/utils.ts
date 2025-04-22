@@ -1,14 +1,15 @@
-import { Container, type Context, type CommonToken } from '@kaokei/di';
+import { Container, type Context } from '@kaokei/di';
 import { reactive, type ComponentInternalInstance, markRaw } from 'vue';
 import {
   CURRENT_COMPONENT,
   CURRENT_CONTAINER,
-  FIND_SERVICE,
-  FIND_ALL_SERVICES,
+  FIND_CHILD_SERVICE,
+  FIND_CHILDREN_SERVICES,
 } from './constants';
-import { findService, findAllServices } from './find-service.ts';
+import { findChildService, findChildrenServices } from './find-service.ts';
+import type { FindChildService, FindChildrenServices } from './interface.ts';
 
-export function isObject(val: object) {
+function isObject(val: object) {
   return val !== null && typeof val === 'object';
 }
 
@@ -16,12 +17,14 @@ function makeReactiveObject(_: any, obj: any) {
   return isObject(obj) ? reactive(obj) : obj;
 }
 
-function makeFindService({ container }: Context) {
-  return <T>(token: CommonToken<T>) => findService<T>(token, container);
+function findChildServiceFactory({ container }: Context): FindChildService {
+  return (token: any) => findChildService(token, container);
 }
 
-function makeFindAllServices({ container }: Context) {
-  return <T>(token: CommonToken<T>) => findAllServices<T>(token, container);
+function findChildrenServicesFactory({
+  container,
+}: Context): FindChildrenServices {
+  return (token: any) => findChildrenServices(token, container);
 }
 
 export function createContainer(
@@ -42,8 +45,10 @@ export function createContainer(
   }
   // 容器绑定容器对象-方便后续通过依赖注入获取当前容器对象
   container.bind(CURRENT_CONTAINER).toConstantValue(markRaw(container));
-  container.bind(FIND_SERVICE).toDynamicValue(makeFindService);
-  container.bind(FIND_ALL_SERVICES).toDynamicValue(makeFindAllServices);
+  container.bind(FIND_CHILD_SERVICE).toDynamicValue(findChildServiceFactory);
+  container
+    .bind(FIND_CHILDREN_SERVICES)
+    .toDynamicValue(findChildrenServicesFactory);
 
   // 通过onActivation钩子使得所有实例变成响应式对象
   container.onActivation(makeReactiveObject);
