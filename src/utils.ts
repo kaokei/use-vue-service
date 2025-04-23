@@ -4,7 +4,7 @@ import {
   CURRENT_COMPONENT,
   FIND_CHILD_SERVICE,
   FIND_CHILDREN_SERVICES,
-} from './constants';
+} from './constants.ts';
 import { findChildService, findChildrenServices } from './find-service.ts';
 import type { FindChildService, FindChildrenServices } from './interface.ts';
 import { removeScope } from './scope.ts';
