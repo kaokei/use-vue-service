@@ -2,7 +2,6 @@ import { Container, type Context } from '@kaokei/di';
 import { reactive, type ComponentInternalInstance, markRaw } from 'vue';
 import {
   CURRENT_COMPONENT,
-  CURRENT_CONTAINER,
   FIND_CHILD_SERVICE,
   FIND_CHILDREN_SERVICES,
 } from './constants';
@@ -48,8 +47,6 @@ export function createContainer(
     // 容器绑定组件实例-方便后续通过依赖注入获取当前组件实例
     container.bind(CURRENT_COMPONENT).toConstantValue(markRaw(instance));
   }
-  // 容器绑定容器对象-方便后续通过依赖注入获取当前容器对象
-  container.bind(CURRENT_CONTAINER).toConstantValue(markRaw(container));
   container.bind(FIND_CHILD_SERVICE).toDynamicValue(findChildServiceFactory);
   container
     .bind(FIND_CHILDREN_SERVICES)
@@ -57,6 +54,7 @@ export function createContainer(
 
   // 通过onActivation钩子使得所有实例变成响应式对象
   container.onActivation(activationHandle);
+  // 通过onDeactivation钩子删除所有scope
   container.onDeactivation(deactivationHandle);
   return container;
 }

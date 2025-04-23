@@ -153,23 +153,6 @@ class DemoService {
 用于获取当前组件的实例对象，实际山和`getCurrentInstance`方法的返回值是一样的。
 本意是用于场景 2 中，也就是 findService 需要提供当前组件作为参数。
 
-## CURRENT_CONTAINER
-
-```ts
-// 使用场景1
-const container = useService(CURRENT_CONTAINER);
-```
-
-```ts
-// 使用场景2
-class DemoService {
-  @Inject(CURRENT_CONTAINER)
-  public container!: Container;
-}
-```
-
-暂时没有想到使用场景，功能和`CURRENT_COMPONENT`类似，可以获取到当前绑定的 container 对象。
-
 ## findService
 
 ```ts

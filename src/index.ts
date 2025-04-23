@@ -2,7 +2,6 @@ export * from '@kaokei/di';
 
 export {
   CURRENT_COMPONENT,
-  CURRENT_CONTAINER,
   FIND_CHILD_SERVICE,
   FIND_CHILDREN_SERVICES,
 } from './constants.ts';

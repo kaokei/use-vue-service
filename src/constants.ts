@@ -1,4 +1,4 @@
-import { type Container, Token } from '@kaokei/di';
+import { Token } from '@kaokei/di';
 import type { ComponentInternalInstance } from 'vue';
 import { createContainer } from './utils.ts';
 import type { FindChildService, FindChildrenServices } from './interface.ts';
@@ -6,11 +6,6 @@ import type { FindChildService, FindChildrenServices } from './interface.ts';
 // 给依赖注入库使用的token
 export const CURRENT_COMPONENT = new Token<ComponentInternalInstance>(
   'USE_VUE_SERVICE_CURRENT_COMPONENT'
-);
-
-// 给依赖注入库使用的token
-export const CURRENT_CONTAINER = new Token<Container>(
-  'USE_VUE_SERVICE_CURRENT_CONTAINER'
 );
 
 // 给依赖注入库使用的token
