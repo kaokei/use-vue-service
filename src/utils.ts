@@ -8,13 +8,18 @@ import {
 } from './constants';
 import { findChildService, findChildrenServices } from './find-service.ts';
 import type { FindChildService, FindChildrenServices } from './interface.ts';
+import { removeScope } from './scope.ts';
 
 function isObject(val: object) {
   return val !== null && typeof val === 'object';
 }
 
-function makeReactiveObject(_: any, obj: any) {
+function activationHandle(_: any, obj: any) {
   return isObject(obj) ? reactive(obj) : obj;
+}
+
+function deactivationHandle(obj: any) {
+  return removeScope(obj);
 }
 
 function findChildServiceFactory({ container }: Context): FindChildService {
@@ -51,6 +56,7 @@ export function createContainer(
     .toDynamicValue(findChildrenServicesFactory);
 
   // 通过onActivation钩子使得所有实例变成响应式对象
-  container.onActivation(makeReactiveObject);
+  container.onActivation(activationHandle);
+  container.onDeactivation(deactivationHandle);
   return container;
 }

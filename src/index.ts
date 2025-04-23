@@ -5,7 +5,7 @@ export {
   CURRENT_CONTAINER,
   FIND_CHILD_SERVICE,
   FIND_CHILDREN_SERVICES,
-} from './constants';
+} from './constants.ts';
 
 export {
   declareProviders,
@@ -15,6 +15,8 @@ export {
   useService,
   useAppService,
   useRootService,
-} from './core';
+} from './core.ts';
 
-export { Computed } from './computed';
+export { Computed } from './computed.ts';
+
+export { getEffectScope } from './scope.ts';
