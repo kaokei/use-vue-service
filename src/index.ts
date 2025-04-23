@@ -7,13 +7,13 @@ export {
 } from './constants.ts';
 
 export {
+  useService,
   declareProviders,
+  useRootService,
+  declareRootProviders,
+  useAppService,
   declareAppProviders,
   declareAppProvidersPlugin,
-  declareRootProviders,
-  useService,
-  useAppService,
-  useRootService,
 } from './core.ts';
 
 export { Computed } from './computed.ts';
