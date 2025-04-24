@@ -18,11 +18,11 @@ export const FIND_CHILDREN_SERVICES = new Token<FindChildrenServices>(
   'USE_REACT_SERVICE_FIND_CHILDREN_SERVICES'
 );
 
-// 给vue的provide/inject使用的token
-export const CONTAINER_TOKEN = 'USE_VUE_SERVICE_CONTAINER_TOKEN';
-
 // 每个实例对象自身维护的effectScope的key
 export const SCOPE_KEY = Symbol();
+
+// 给vue的provide/inject使用的token
+export const CONTAINER_TOKEN = 'USE_VUE_SERVICE_CONTAINER_TOKEN';
 
 // 默认Container，对应declareRootProviders/useRootService
 export const DEFAULT_CONTAINER = createContainer();
