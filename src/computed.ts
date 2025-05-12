@@ -1,4 +1,4 @@
-import { computed, reactive } from 'vue';
+import { computed, markRaw, reactive } from 'vue';
 import { getEffectScope } from './scope.ts';
 
 export function Computed(_: any, key: string, descriptor: PropertyDescriptor) {
@@ -11,10 +11,10 @@ export function Computed(_: any, key: string, descriptor: PropertyDescriptor) {
     get<T, S = T>(): T {
       const that: any = reactive(this);
       const sym = Symbol.for(key);
-      let computedRef = that[sym];
-      if (!computedRef) {
+      let computedRefObj = that[sym];
+      if (!computedRefObj) {
         const scope = getEffectScope(that);
-        computedRef = scope.run(() => {
+        const computedRef = scope.run(() => {
           if (originalSet) {
             return computed({
               get: () => originalGet.call(that) as T,
@@ -24,16 +24,17 @@ export function Computed(_: any, key: string, descriptor: PropertyDescriptor) {
             return computed<T>(() => originalGet.call(that));
           }
         });
-        that[sym] = computedRef;
+        computedRefObj = markRaw({ value: computedRef });
+        that[sym] = computedRefObj;
       }
-      return computedRef.value;
+      return computedRefObj.value.value;
     },
     set<T>(value: T) {
       const that: any = reactive(this);
       const sym = Symbol.for(key);
-      const computedRef = that[sym];
-      if (computedRef && originalSet) {
-        computedRef.value = value;
+      const computedRefObj = that[sym];
+      if (computedRefObj && originalSet) {
+        computedRefObj.value.value = value;
       }
     },
   } as PropertyDescriptor;

@@ -1,18 +1,22 @@
 import { mount } from '@vue/test-utils';
 import DemoComp from './DemoComp.vue';
 import { ChildService } from './ChildService';
-import { findService, findAllServices } from '@/index';
+import {
+  FIND_CHILDREN_SERVICES,
+  FIND_CHILD_SERVICE,
+  useRootService,
+} from '@/index';
 
 describe('test19', () => {
   it('get DemoService instance', async () => {
     const wrapper = mount(DemoComp);
 
-    const childService = findService(ChildService, wrapper.vm.component1);
+    const findChildService = useRootService(FIND_CHILD_SERVICE);
+    const findChildrenServices = useRootService(FIND_CHILDREN_SERVICES);
 
-    const childServiceList = findAllServices(
-      ChildService,
-      wrapper.vm.component1
-    );
+    const childService = findChildService(ChildService);
+
+    const childServiceList = findChildrenServices(ChildService);
 
     expect(childService).toBeInstanceOf(ChildService);
 
