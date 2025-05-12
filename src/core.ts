@@ -107,7 +107,10 @@ export function declareAppProviders(providers: NewableProvider, app: App): void;
 export function declareAppProviders(providers: Provider, app: App): void;
 export function declareAppProviders(providers: Provider, app: App) {
   app.runWithContext(() => {
-    const appContainer = inject<Container>(CONTAINER_TOKEN);
+    const appContainer = inject<Container>(
+      CONTAINER_TOKEN,
+      null as unknown as Container
+    );
     if (appContainer) {
       bindProviders(appContainer, providers);
     } else {
