@@ -1,6 +1,6 @@
 {
   "name": "@kaokei/use-vue-service",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "type": "module",
   "description": "Lightweight Vue 3 state management with dependency injection, inspired by Angular services.",
   "main": "./dist/index.cjs",
