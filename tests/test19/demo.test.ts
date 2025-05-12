@@ -9,7 +9,7 @@ import {
 
 describe('test19', () => {
   it('get DemoService instance', async () => {
-    const wrapper = mount(DemoComp);
+    mount(DemoComp);
 
     const findChildService = useRootService(FIND_CHILD_SERVICE);
     const findChildrenServices = useRootService(FIND_CHILDREN_SERVICES);
