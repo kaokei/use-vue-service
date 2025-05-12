@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import DemoComp1 from './components/demo1/DemoComp.vue';
+import Demo1Comp from './components/demo1/DemoComp.vue';
 
 const dcRef = ref();
 
 onMounted(() => {
   console.log(
     'dcRef.value.inst.type === DemoComp1 => ',
-    dcRef.value.inst.type === DemoComp1
+    dcRef.value.inst.type === Demo1Comp
   );
   console.log('dcRef.value => ', dcRef.value);
   console.log('dcRef.value.inst => ', dcRef.value.inst);
-  console.log('DemoComp1 => ', DemoComp1);
+  console.log('DemoComp1 => ', Demo1Comp);
 });
 </script>
 
 <template>
-  <DemoComp1 ref="dcRef" msg="Vite + Vue" />
+  <Demo1Comp ref="dcRef" msg="Vite + Vue" />
 </template>

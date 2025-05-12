@@ -38,6 +38,8 @@ defineExpose({
       <button type="button" @click="service.increaseAge">
         service age is {{ service.age }}
       </button>
+      <div>sumage => {{service.sumage}}</div>
+      <div>computedsumage => {{service.computedsumage}}</div>
     </div>
   </div>
 </template>
