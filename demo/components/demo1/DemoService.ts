@@ -14,10 +14,12 @@ export class DemoService {
   }
 
   public increaseAge() {
+    console.log('increaseAge => ', this)
     this.age++;
   }
 
   public changeName() {
+    console.log('changeName => ', this)
     this.name = `${this.name}-${this.age}`;
   }
 }

@@ -1,9 +1,9 @@
+import { reactive } from 'vue';
 import { Container, type Context } from '@kaokei/di';
-import { reactive, type ComponentInternalInstance, markRaw } from 'vue';
-import { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES } from './constants.ts';
-import { findChildService, findChildrenServices } from './find-service.ts';
-import type { FindChildService, FindChildrenServices } from './interface.ts';
 import { removeScope } from './scope.ts';
+import { findChildService, findChildrenServices } from './find-service.ts';
+import { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES } from './constants.ts';
+import type { FindChildService, FindChildrenServices } from './interface.ts';
 
 function isObject(val: object) {
   return val !== null && typeof val === 'object';

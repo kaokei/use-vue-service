@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getCurrentInstance, ref } from 'vue';
+import { ref } from 'vue';
 import { declareProviders, useService } from '@/index';
 import { DemoService } from './DemoService';
 
@@ -10,14 +10,6 @@ declareProviders([DemoService]);
 const count = ref(0);
 
 const service = useService(DemoService);
-
-const inst = getCurrentInstance();
-
-defineExpose({
-  count,
-  service,
-  inst,
-});
 </script>
 
 <template>
@@ -28,18 +20,24 @@ defineExpose({
       <button type="button" @click="count++">count is {{ count }}</button>
     </div>
 
-    <div>
+    <div class="my-4">
+      <button type="button" @click="service.increaseAge">
+        service age is {{ service.age }}
+      </button>
+      <div>sumage => {{ service.sumage }}</div>
+      <div>computedsumage => {{ service.computedsumage }}</div>
+    </div>
+
+    <div class="my-4">
       <button type="button" @click="service.changeName">
         service name is {{ service.name }}
       </button>
     </div>
-
-    <div>
-      <button type="button" @click="service.increaseAge">
-        service age is {{ service.age }}
-      </button>
-      <div>sumage => {{service.sumage}}</div>
-      <div>computedsumage => {{service.computedsumage}}</div>
-    </div>
   </div>
 </template>
+
+<style scoped>
+.my-4 {
+  margin: 24px 0;
+}
+</style>

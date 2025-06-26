@@ -13,14 +13,6 @@ export function getScope(obj: object): EffectScope | undefined {
   return that[SCOPE_KEY];
 }
 
-export function getEffectScope(obj: object): EffectScope {
-  const scope = getScope(obj);
-  if (!scope) {
-    return createScope(obj);
-  }
-  return scope;
-}
-
 export function removeScope(obj: object): void {
   const that = obj as any;
   if (that) {
@@ -30,4 +22,12 @@ export function removeScope(obj: object): void {
       delete that[SCOPE_KEY];
     }
   }
+}
+
+export function getEffectScope(obj: object): EffectScope {
+  const scope = getScope(obj);
+  if (!scope) {
+    return createScope(obj);
+  }
+  return scope;
 }

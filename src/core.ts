@@ -82,8 +82,7 @@ export function declareProviders(providers: Provider) {
     bindProviders(currentContainer, providers);
   } else {
     const parent = getProvideContainer();
-    const instance = getCurrentInstance();
-    let container = createContainer(parent, instance);
+    let container = createContainer(parent);
     bindProviders(container, providers);
     provide(CONTAINER_TOKEN, container);
     onUnmounted(() => {
