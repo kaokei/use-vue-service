@@ -4,15 +4,15 @@ import { ChildService } from './ChildService';
 import {
   FIND_CHILDREN_SERVICES,
   FIND_CHILD_SERVICE,
-  useRootService,
+  getRootService,
 } from '@/index';
 
 describe('test19', () => {
   it('get DemoService instance', async () => {
     mount(DemoComp);
 
-    const findChildService = useRootService(FIND_CHILD_SERVICE);
-    const findChildrenServices = useRootService(FIND_CHILDREN_SERVICES);
+    const findChildService = getRootService(FIND_CHILD_SERVICE);
+    const findChildrenServices = getRootService(FIND_CHILDREN_SERVICES);
 
     const childService = findChildService(ChildService);
 

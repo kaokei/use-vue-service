@@ -1,12 +1,6 @@
 import { Token } from '@kaokei/di';
-import type { ComponentInternalInstance } from 'vue';
 import { createContainer } from './utils.ts';
 import type { FindChildService, FindChildrenServices } from './interface.ts';
-
-// 给依赖注入库使用的token
-export const CURRENT_COMPONENT = new Token<ComponentInternalInstance>(
-  'USE_VUE_SERVICE_CURRENT_COMPONENT'
-);
 
 // 给依赖注入库使用的token
 export const FIND_CHILD_SERVICE = new Token<FindChildService>(
@@ -24,5 +18,5 @@ export const SCOPE_KEY = Symbol();
 // 给vue的provide/inject使用的token
 export const CONTAINER_TOKEN = 'USE_VUE_SERVICE_CONTAINER_TOKEN';
 
-// 默认Container，对应declareRootProviders/useRootService
+// 默认Container，对应declareRootProviders/getRootService
 export const DEFAULT_CONTAINER = createContainer();

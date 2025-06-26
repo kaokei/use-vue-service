@@ -58,16 +58,16 @@ function declareRootProviders(providers: NewableProvider): void;
 root_container.bind(ClassName).toSelf();
 ```
 
-## useRootService
+## getRootService
 
 ```ts
-function useRootService<T>(token: CommonToken<T>): T;
+function getRootService<T>(token: CommonToken<T>): T;
 ```
 
-`useRootService`方法和`declareRootProviders`方法是一对。
-也就是`declareRootProviders`方法声明的服务，需要通过`useRootService`来获取。
+`getRootService`方法和`declareRootProviders`方法是一对。
+也就是`declareRootProviders`方法声明的服务，需要通过`getRootService`来获取。
 
-`useRootService`的伪代码如下：
+`getRootService`的伪代码如下：
 
 ```ts
 // 直接通过root_container.get获取对应的服务
@@ -82,7 +82,7 @@ function declareAppProviders(providers: NewableProvider, app: App): void;
 ```
 
 参考`declareProviders`方法是用于组件内部声明绑定服务，后续通过`useService`获取对应的服务。
-`declareRootProviders`方法是全局声明绑定服务，后续通过`useRootService`获取对应的服务。
+`declareRootProviders`方法是全局声明绑定服务，后续通过`getRootService`获取对应的服务。
 
 `declareAppProviders`则是在 vue app 上声明绑定服务，后续通过`useAppService`获取对应的服务。
 观察下方的伪代码就能知道这里使用的是`app.provide`方法代替了`provide`方法。
@@ -129,29 +129,6 @@ app.runWithContext(() => {
   return container.get(token);
 });
 ```
-
-## CURRENT_COMPONENT
-
-```ts
-// 使用场景1
-const component = useService(CURRENT_COMPONENT);
-```
-
-```ts
-// 使用场景2
-class DemoService {
-  @Inject(CURRENT_COMPONENT)
-  public component!: ComponentInternalInstance;
-
-  public handleClickEvent() {
-    const service = findService(token, this.component);
-    service.doSomething();
-  }
-}
-```
-
-用于获取当前组件的实例对象，实际山和`getCurrentInstance`方法的返回值是一样的。
-本意是用于场景 2 中，也就是 findService 需要提供当前组件作为参数。
 
 ## findService
 

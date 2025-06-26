@@ -1,18 +1,20 @@
-import { Inject, PostConstruct } from '@/index';
-import { computed, ComponentInternalInstance } from 'vue';
-import { CURRENT_COMPONENT } from '@/index';
+import { PostConstruct } from '@/index';
+import { computed } from 'vue';
 
 export class DemoService {
   public count = 1;
   public age = 100;
   private _name = 'DemoService';
   public computedName: any;
-  @Inject(CURRENT_COMPONENT)
-  public component: ComponentInternalInstance | null = null;
+
+  private componentMsg = '';
+
+  public setComponentMsg(msg: string) {
+    this.componentMsg = msg;
+  }
 
   public increaseCount() {
     this.count++;
-    this.component?.emit('count', this.count);
   }
 
   public increaseAge() {
@@ -20,13 +22,13 @@ export class DemoService {
   }
 
   public get name() {
-    return `${this.component?.props.msg}-${this._name}-${this.age}`;
+    return `${this.componentMsg}-${this._name}-${this.age}`;
   }
 
   @PostConstruct()
   public init() {
     this.computedName = computed(() => {
-      return `${this.component?.props.msg}-${this._name}-${this.age}`;
+      return `${this.componentMsg}-${this._name}-${this.age}`;
     });
   }
 }

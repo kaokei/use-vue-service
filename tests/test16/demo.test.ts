@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import {
   declareRootProviders,
   useService,
-  useRootService,
+  getRootService,
 } from '@/index';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
@@ -11,7 +11,7 @@ import { App } from 'vue';
 describe('test16', () => {
   it('get DemoService instance', async () => {
     declareRootProviders([DemoService]);
-    const rootDemoService = useRootService(DemoService);
+    const rootDemoService = getRootService(DemoService);
     let appDemoService: DemoService | undefined = undefined;
     const wrapper = mount(DemoComp, {
       global: {

@@ -1,10 +1,6 @@
 import { Container, type Context } from '@kaokei/di';
 import { reactive, type ComponentInternalInstance, markRaw } from 'vue';
-import {
-  CURRENT_COMPONENT,
-  FIND_CHILD_SERVICE,
-  FIND_CHILDREN_SERVICES,
-} from './constants.ts';
+import { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES } from './constants.ts';
 import { findChildService, findChildrenServices } from './find-service.ts';
 import type { FindChildService, FindChildrenServices } from './interface.ts';
 import { removeScope } from './scope.ts';
@@ -31,10 +27,7 @@ function findChildrenServicesFactory({
   return (token: any) => findChildrenServices(token, container);
 }
 
-export function createContainer(
-  parent?: Container,
-  instance?: ComponentInternalInstance | null
-) {
+export function createContainer(parent?: Container) {
   let container: Container;
 
   if (parent) {
@@ -43,10 +36,6 @@ export function createContainer(
     container = new Container();
   }
 
-  if (instance) {
-    // 容器绑定组件实例-方便后续通过依赖注入获取当前组件实例
-    container.bind(CURRENT_COMPONENT).toConstantValue(markRaw(instance));
-  }
   container.bind(FIND_CHILD_SERVICE).toDynamicValue(findChildServiceFactory);
   container
     .bind(FIND_CHILDREN_SERVICES)

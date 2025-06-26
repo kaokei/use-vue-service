@@ -26,7 +26,7 @@
     2. 不支持在 @Inject 中自动推导注入属性的类型，需要手动通过 TokenType 获取 Token 关联的服务类型
 13. to 方法和 toSelf 方法验证 --> test6
 14. declareAppProviders+useService --> test7
-15. declareRootProviders+useRootService --> test7
+15. declareRootProviders+getRootService --> test7
 16. 验证 declareProviders 多次调用结果 --> test8
     1. bindProviders 多次调用验证
     2. 验证 useService 多次调用结果
@@ -35,6 +35,6 @@
     2. 验证 useService 多次调用结果
 18. 验证 declareRootProviders 多次调用结果 --> test10
     1. bindProviders 多次调用验证
-    2. 验证 useRootService 多次调用结果
-    3. 验证 useRootService 在组件内/外调用的结果
+    2. 验证 getRootService 多次调用结果
+    3. 验证 getRootService 在组件内/外调用的结果
     4. 全局 provide 路由变量-route 和 router --> test11

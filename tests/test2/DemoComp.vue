@@ -2,9 +2,13 @@
 import { DemoService } from './DemoService';
 import { declareProviders, useService } from '@/index';
 
-defineProps({
+const props = defineProps({
   msg: String,
 });
+
+const emit = defineEmits<{
+  (e: 'count', count: number): void;
+}>();
 
 declareProviders([DemoService]);
 const service = useService(DemoService);
@@ -12,6 +16,13 @@ const service = useService(DemoService);
 defineExpose({
   service,
 });
+
+service.setComponentMsg(props.msg || '');
+
+function handleCount() {
+  service.increaseCount();
+  emit('count', service.count);
+}
 </script>
 
 <template>
@@ -25,7 +36,7 @@ defineExpose({
     <button type="button" class="btn-age" @click="service.increaseAge()">
       Add age
     </button>
-    <button type="button" class="btn-count" @click="service.increaseCount()">
+    <button type="button" class="btn-count" @click="handleCount">
       Add count
     </button>
   </div>

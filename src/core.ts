@@ -66,7 +66,7 @@ export function useService<T>(token: CommonToken<T>) {
   return container.get(token);
 }
 
-export function useRootService<T>(token: CommonToken<T>) {
+export function getRootService<T>(token: CommonToken<T>) {
   return DEFAULT_CONTAINER.get(token);
 }
 

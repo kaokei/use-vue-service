@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { useService, useRootService } from '@/index';
+import { useService, getRootService } from '@/index';
 import { DemoService } from './DemoService';
 import { OtherService } from './OtherService';
 
 const demoService1 = useService(DemoService);
 const demoService2 = useService(DemoService);
-const demoService3 = useRootService(DemoService);
-const demoService4 = useRootService(DemoService);
+const demoService3 = getRootService(DemoService);
+const demoService4 = getRootService(DemoService);
 
 const otherService1 = useService(OtherService);
 const otherService2 = useService(OtherService);
-const otherService3 = useRootService(OtherService);
-const otherService4 = useRootService(OtherService);
+const otherService3 = getRootService(OtherService);
+const otherService4 = getRootService(OtherService);
 
 defineExpose({
   demoService1,

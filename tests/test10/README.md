@@ -1,3 +1,3 @@
 ## 测试场景
 
-多次调用 declareRootProviders+useRootService+useService
+多次调用 declareRootProviders+getRootService+useService

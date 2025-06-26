@@ -2,7 +2,7 @@ import { flushPromises, mount } from '@vue/test-utils';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
 import { router, TYPES } from './router';
-import { declareRootProviders, useRootService } from '@/index';
+import { declareRootProviders, getRootService } from '@/index';
 import { markRaw, App } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -45,8 +45,8 @@ describe('test11', () => {
       },
     });
 
-    const rootRoute = useRootService(TYPES.route);
-    const rootRouter = useRootService(TYPES.router);
+    const rootRoute = getRootService(TYPES.route);
+    const rootRouter = getRootService(TYPES.router);
 
     expect(wrapper.vm.service).toBeInstanceOf(DemoService);
     expect(router).toBe(rootRouter);

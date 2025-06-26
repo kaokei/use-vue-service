@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
 import { OtherService } from './OtherService';
-import { declareRootProviders, useRootService } from '@/index';
+import { declareRootProviders, getRootService } from '@/index';
 
 describe('test10', () => {
   it('get DemoService instance', async () => {
@@ -11,10 +11,10 @@ describe('test10', () => {
 
     const wrapper = mount(DemoComp);
 
-    const demoService1 = useRootService(DemoService);
-    const demoService2 = useRootService(DemoService);
-    const otherService1 = useRootService(OtherService);
-    const otherService2 = useRootService(OtherService);
+    const demoService1 = getRootService(DemoService);
+    const demoService2 = getRootService(DemoService);
+    const otherService1 = getRootService(OtherService);
+    const otherService2 = getRootService(OtherService);
 
     expect(demoService1).toBeInstanceOf(DemoService);
     expect(demoService2).toBeInstanceOf(DemoService);

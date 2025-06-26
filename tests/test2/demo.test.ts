@@ -50,8 +50,9 @@ describe('test2', () => {
 
     await wrapper.get('.btn-parent-count').trigger('click');
     countEvent = demoCompWrapper.emitted('count');
-    expect(countEvent).toHaveLength(3);
-    expect(countEvent && countEvent[2]).toEqual([4]);
+    expect(countEvent).toHaveLength(2);
+    expect(countEvent && countEvent[0]).toEqual([2]);
+    expect(countEvent && countEvent[1]).toEqual([3]);
     expect(wrapper.get('.count').text()).toBe('4');
     expect(wrapper.get('.age').text()).toBe('103');
     expect(wrapper.get('.name').text()).toBe('nihao-DemoService-103');

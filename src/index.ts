@@ -1,15 +1,11 @@
 export * from '@kaokei/di';
 
-export {
-  CURRENT_COMPONENT,
-  FIND_CHILD_SERVICE,
-  FIND_CHILDREN_SERVICES,
-} from './constants.ts';
+export { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES } from './constants.ts';
 
 export {
   useService,
   declareProviders,
-  useRootService,
+  getRootService,
   declareRootProviders,
   useAppService,
   declareAppProviders,

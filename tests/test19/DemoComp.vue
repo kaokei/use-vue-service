@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { declareProviders, useService, CURRENT_COMPONENT } from '@/index';
+import { declareProviders, useService } from '@/index';
 import { DemoService } from './DemoService';
 import ChildComp from './ChildComp.vue';
 import { getCurrentInstance } from 'vue';
@@ -7,13 +7,11 @@ import { getCurrentInstance } from 'vue';
 declareProviders([DemoService]);
 const demoService = useService(DemoService);
 
-const component1 = useService(CURRENT_COMPONENT);
-const component2 = getCurrentInstance();
+const component = getCurrentInstance();
 
 defineExpose({
   demoService,
-  component1,
-  component2,
+  component,
 });
 </script>
 
