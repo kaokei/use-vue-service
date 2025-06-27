@@ -1,17 +1,32 @@
-## 测试场景-当前组件的服务访问当前组件
+## 测试场景-组件与服务的多种交互方式
 
-```
-@Inject(CURRENT_COMPONENT)
-public component: ComponentInternalInstance | null = null;
-```
+### 测试目的
 
-测试了在服务中获取当前组件的功能，主要功能可以获取 props 或者发送事件
+测试组件和服务之间的交互方式及数据流转，没有使用组件注入功能（CURRENT_COMPONENT 已经被移除），而是使用显式传递数据的方式。
 
-```
-this.component.props
-this.component.emit()
+组件应该主动去更新服务的数据，而不是服务直接读取组件的数据。
+比如在组件中 watch props 的变更，同步数据到服务中。
 
-// 还可以获取组件的defineExpose的数据，但是不建议使用
-// 因为所有数据都在服务中，服务可以通过依赖注入引用其他服务
-this.component.exposeProxy
-```
+服务中也不应该直接调用组件的 emit，而是在组件中调用服务的方法，同时处理 emit 逻辑。
+也就是在组件中定义 event handler，然后在 template 中使用该 handler。
+
+### 测试要点
+
+1. **组件主动传递数据到服务**
+
+   - 通过调用服务方法（如`setComponentMsg`）将组件属性传递给服务
+
+2. **组件与服务共同处理事件**
+
+   - 服务负责状态更新（如`increaseCount`）
+   - 组件基于服务状态发送事件（如`emit('count', service.count)`）
+
+3. **跨组件机制**
+
+   - 父组件通过 ref 引用子组件暴露的服务实例
+   - 通过父组件直接操作子组件的服务实例
+
+4. **服务状态的多重响应性**
+   - 服务中的 getter 属性和 computed 属性能根据组件传入的数据动态计算
+
+这个测试用例演示了在不直接在服务中注入组件实例的情况下，如何实现组件与服务之间的高效交互。
