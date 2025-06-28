@@ -4,65 +4,77 @@
 
 假设有 A，B 两个组件。A 组件中声明了 A 服务，B 组件中声明了 B 服务。同时 B 组件是 A 组件的子组件/子孙组件。
 
-当然一个组件也是可以声明多个服务的。这样就可以实现服务的拆分，避免单个服务过于庞大。
+当然一个组件也是可以声明多个服务的。这样就可以实现服务的拆分，避免单个服务过于庞大。这里只是以 AB 组件为例。
 
 ### A 组件访问 A 服务/B 组件访问 B 服务
 
-useService(A)
+A 组件中可以使用 useService(A) 获取 A 服务实例对象。
+
+B 组件中可以使用 useService(B) 获取 B 服务实例对象。
 
 ### A 组件访问 B 服务
 
-const findChildService = useService(FIND_CHILD_SERVICE)
+因为 A 组件是 B 组件的父组件，所以不能直接使用 useService(B) 获取 B 服务实例对象。
 
-const findChildrenService = useService(FIND_CHILDREN_SERVICES)
+但是可以先获取一个工具方法，const findChildService = useService(FIND_CHILD_SERVICE)
+
+然后在 A 组件中调用 findChildService(B) 获取 B 服务实例对象。
+
+对于 const findChildrenService = useService(FIND_CHILDREN_SERVICES)是类似的工具方法，只是用于获取多个实例对象。
 
 ### A 服务访问 B 服务
 
-@Inject(FIND_CHILD_SERVICE)
+A 服务中可以使用 @Inject(FIND_CHILD_SERVICE) 来获取工具方法。然后调用工具方法获取 B 服务实例对象。
 
-@Inject(FIND_CHILDREN_SERVICES)
+对于 @Inject(FIND_CHILDREN_SERVICES) 是类似的工具方法，只是用于获取多个实例对象。
 
 ### B 组件访问 A 服务
 
-useService(A)
+B 组件中可以使用 useService(A) 获取 A 服务实例对象。
 
 ### B 服务访问 A 服务
 
-@Inject(A)
+B 服务中可以使用 @Inject(A) 来获取 A 服务实例对象。
 
 ### 假设 A 组件声明了多个服务，比如 A1，A2，A3 服务。A1 服务访问 A2 服务或者 A3 服务
 
-@Inject(A2)
+A1 服务中可以使用 @Inject(A2) 来获取 A2 服务实例对象。
 
-@Inject(A3)
+A1 服务中可以使用 @Inject(A3) 来获取 A3 服务实例对象。
 
 ### A 服务访问 A 组件/B 服务访问 B 组件
 
-不支持
+不支持。
+
+历史版本中曾经支持过 A 服务可以注入 A 组件，从而可以在 A 服务中直接访问 A 组件的数据。但是现在已经废弃了。
 
 ### A 组件访问 B 组件
 
-不支持，访问子组件属于 vue 原生功能，通过 ref 来引用子组件，但是不能引用子组件的子组件
+不支持。
+
+访问子组件属于 vue 原生功能，通过 ref 来引用子组件，但是不能引用子组件的子组件。
 
 ### A 服务访问 B 组件
 
-不支持
+不支持。
 
 ### B 组件访问 A 组件
 
-不支持，可以使用 vue 的原生能力，instance.parent 属性
+不支持。
+
+可以使用 vue 的原生能力，也就是 instance.parent 属性
 
 ### B 服务访问 A 组件
 
-不支持
+不支持。
 
 ## 组件和服务的关系
 
-虽然组件和服务是绑定的，并且声明周期是一致的。
+虽然组件和服务是绑定的，并且生命周期是一致的。
 
 但是本库要求组件可以访问服务，服务也可以访问其他服务。但是服务不能访问组件。
 
-也就是说组件是单向访问服务的。
+也就是说只能组件单向访问服务。
 
-那么组件的数据必须明确的调用服务方法来更新服务的数据，也就是组件的 props 变化时，需要组件自己来更新服务数据。
-虽然把组件注入到服务中可以让服务非常方便的访问组件的 props，但是不利于维护。
+那么组件必须明确的调用服务方法来更新服务的数据，也就是组件的 props 变化时，需要组件自己来更新服务数据。
+虽然把组件注入到服务中可以让服务非常方便的访问组件的 props，但是不利于后期的维护。

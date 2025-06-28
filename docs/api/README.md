@@ -130,27 +130,49 @@ app.runWithContext(() => {
 });
 ```
 
-## findService
+## FIND_CHILD_SERVICE
 
 ```ts
-function findService<T>(
-  token: CommonToken<T>,
-  component: ComponentInternalInstance
-): T | undefined;
+const findService = useService(FIND_CHILD_SERVICE);
+const service = findService(Token);
 ```
 
-功能和`useService`类似，用于获取当前组件的子孙组件中绑定的 token 服务。返回第一个找到的服务实例。
+首先通过 useService 获取一个工具方法，该工具方法用于查找当前组件的子孙组件中绑定的 token 服务。返回找到的第一个服务实例。
 
-## findAllServices
+FIND_CHILD_SERVICE 本身是一个 token，所以也可以用在服务中。
 
 ```ts
-function findAllServices<T>(
-  token: CommonToken<T>,
-  component: ComponentInternalInstance
-): T[];
+class DemoService {
+  @Inject(FIND_CHILD_SERVICE)
+  public findService!: TokenType<typeof FIND_CHILD_SERVICE>;
+
+  public handleClickBtn() {
+    const childService = this.findService(ChildService);
+    childService.doSomething();
+  }
+}
 ```
 
-功能同上，返回所有找到的服务要求的服务实例数组。
+## FIND_CHILDREN_SERVICES
+
+```ts
+const findAllService = useService(FIND_CHILDREN_SERVICES);
+const service = findAllService(Token);
+```
+
+功能同上，返回指定 token 服务的多个实例组成的数组。FIND_CHILDREN_SERVICES 本身是一个 token，所以也可以用在服务中。
+
+```ts
+class DemoService {
+  @Inject(FIND_CHILDREN_SERVICES)
+  public findAllService!: TokenType<typeof FIND_CHILDREN_SERVICES>;
+
+  public handleClickBtn() {
+    const childServices = this.findAllService(ChildService);
+    childServices.forEach(service => service.doSomething());
+  }
+}
+```
 
 ## Computed
 
@@ -166,3 +188,40 @@ class DemoService {
 ```
 
 通过 vue 的`computed`对 class 的 getter 属性进行性能优化，避免每次访问都重复执行 getter 方法，只有在确实有依赖变化时，才会重新执行 getter 方法。
+
+## getEffectScope
+
+```ts
+class DemoService {
+  public init() {
+    getEffectScope().run(() => {
+      const doubled = computed(() => counter.value * 2);
+      watch(doubled, () => console.log(doubled.value));
+      watchEffect(() => console.log('Count: ', doubled.value));
+    });
+  }
+}
+```
+
+主要是用于解决`computed`、`watch`、`watchEffect`等方法的副作用销毁问题。
+也就是当实力对象被销毁时，`computed`、`watch`、`watchEffect`等方法的副作用也会被销毁。
+
+如果没有`getEffectScope`工具方法，那么就需要自己手动管理 effectScope 的生命周期。
+
+```ts
+class DemoService {
+  public init() {
+    this.scope = effectScope();
+    this.scope.run(() => {
+      const doubled = computed(() => counter.value * 2);
+      watch(doubled, () => console.log(doubled.value));
+      watchEffect(() => console.log('Count: ', doubled.value));
+    });
+  }
+
+  @PreDestroy()
+  public dispose() {
+    this.scope.stop();
+  }
+}
+```
