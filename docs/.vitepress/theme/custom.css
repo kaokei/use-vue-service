@@ -1,0 +1,8 @@
+.name,
+.text {
+  max-width: 100% !important;
+}
+
+.heading .text {
+  margin: 20px 0;
+}
