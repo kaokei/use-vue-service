@@ -17,8 +17,8 @@
 
 本库通过类来声明服务，对 typescript 支持非常棒。
 
-- [入门指南](./docs/guide/README.md)
-- [API 文档](./docs/api/README.md)
+- [入门指南](./docs/guide/index.md)
+- [API 文档](./docs/api/index.md)
 - [博客文章](./docs/note/01.父组件与子组件的理解.md)
 - [codesandbox example](https://codesandbox.io/s/di-playground-zjnyv)
 - [online demo](https://use-vue-service.vercel.app/)

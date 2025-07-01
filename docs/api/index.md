@@ -1,6 +1,6 @@
 # API 文档
 
-## [@kaokei/di](https://github.com/kaokei/di/blob/main/docs/api/README.md)
+## [@kaokei/di](https://github.com/kaokei/di/blob/main/docs/api/index.md)
 
 本库是基于`@kaokei/di`开发的，默认导出了`@kaokei/di`中的所有 API。
 
