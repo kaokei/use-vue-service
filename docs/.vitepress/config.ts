@@ -11,15 +11,15 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Guide', link: '/guide/' },
       { text: 'API', link: '/api/' },
-      { text: 'Note', link: '/note/' },
+      { text: 'Note', link: '/note/00.README' },
     ],
 
     sidebar: {
       '/note/': [
         {
           text: 'Note',
-          link: '/note/',
           items: [
+            { text: '组件和服务互相访问', link: '/note/00.README' },
             { text: '不同场景', link: '/note/01.不同场景' },
             {
               text: '父组件与子组件的理解',
