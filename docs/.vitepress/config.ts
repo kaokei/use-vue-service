@@ -9,8 +9,8 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'API', link: '/api/' },
       { text: 'Guide', link: '/guide/' },
+      { text: 'API', link: '/api/' },
       { text: 'Note', link: '/note/' },
     ],
 

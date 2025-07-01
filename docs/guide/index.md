@@ -55,6 +55,7 @@ import { CountService, LoggerService } from './service.ts';
 // 这行代码将CountService、LoggerService和当前组件进行了绑定
 declareProviders([CountService, LoggerService]);
 // 这行代码实例化了CountService得到一个countService对象
+// 并且countService对象自动注入了logger属性，是一个LoggerService实例对象
 const countService = useService(CountService);
 </script>
 
