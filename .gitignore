@@ -11,8 +11,10 @@
 # production
 /build
 /lib
-dist
+/dist
 /example/dist
+docs/.vitepress/dist
+docs/.vitepress/cache
 
 # misc
 .DS_Store
@@ -34,6 +36,3 @@ storybook-static
 .vercel
 *.tgz
 *.ignore.ts
-
-
-cache
