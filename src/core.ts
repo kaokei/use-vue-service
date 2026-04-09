@@ -31,7 +31,7 @@ import {
   hasInjectionContext,
 } from 'vue';
 import type { App } from 'vue';
-import type { Container, CommonToken, Newable } from '@kaokei/di';
+import type { Container, CommonToken } from '@kaokei/di';
 import { createContainer } from './utils.ts';
 import { CONTAINER_TOKEN } from './constants.ts';
 import type {
@@ -62,7 +62,7 @@ function bindProviders(container: Container, providers: Provider) {
     providers(container);
   } else {
     for (let i = 0; i < providers.length; i++) {
-      container.bind(providers[i] as CommonToken<unknown> & Newable).toSelf();
+      container.bind(providers[i]).toSelf();
     }
   }
 }
