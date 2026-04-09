@@ -10,7 +10,7 @@
 - **Stage_1_Decorator**：TypeScript 旧版实验性装饰器语法（需开启 `experimentalDecorators`），函数签名为 `(target, key, descriptor)`
 - **Stage_3_Decorator**：TC39 Stage 3 提案的标准装饰器语法，TypeScript 5.0+ 原生支持，无需额外编译器选项
 - **DI_Container**：`@kaokei/di` 提供的依赖注入容器，负责服务的注册、解析和生命周期管理
-- **DEFAULT_CONTAINER**：模块级单例容器，用于 `declareRootProviders` / `useRootService` 的全局服务注册
+- **ROOT_CONTAINER**：模块级单例容器，用于 `declareRootProviders` / `useRootService` 的全局服务注册
 - **CONTAINER_TOKEN**：Vue `provide/inject` 机制中用于传递 DI_Container 实例的注入键
 - **EffectScope**：Vue 的副作用作用域，用于管理 `computed`、`watch` 等响应式副作用的生命周期
 - **Watch_Decorator**：`@Watch` 装饰器，用于在服务类中声明式地监听响应式属性变化并执行副作用
@@ -33,17 +33,17 @@
 6. WHEN 计算属性未定义 setter 且被赋值时，THE Computed_Decorator SHALL 调用原始的 `set` 方法（即 Stage 3 accessor 的默认 set 行为）
 7. THE Computed_Decorator SHALL 保持与 `@kaokei/di` 的 `onActivation` 钩子（将实例转为 `reactive` 对象）的兼容性，确保 `this` 指向 reactive 代理对象
 
-### 需求 2：DEFAULT_CONTAINER 测试隔离支持
+### 需求 2：ROOT_CONTAINER 测试隔离支持
 
 **用户故事：** 作为开发者，我希望能够在测试之间重置全局容器状态，以便每个测试用例在干净的环境中运行，避免服务注册污染。
 
 #### 验收标准
 
-1. THE resetRootContainer SHALL 销毁当前 DEFAULT_CONTAINER 中的所有绑定和子容器
-2. WHEN resetRootContainer 被调用后，THE resetRootContainer SHALL 创建一个新的 DI_Container 实例替换原有的 DEFAULT_CONTAINER
-3. WHEN resetRootContainer 被调用后，新的 DEFAULT_CONTAINER SHALL 包含与初始状态相同的默认配置（`onActivation`、`onDeactivation` 钩子以及 `FIND_CHILD_SERVICE`、`FIND_CHILDREN_SERVICES` 绑定）
+1. THE resetRootContainer SHALL 销毁当前 ROOT_CONTAINER 中的所有绑定和子容器
+2. WHEN resetRootContainer 被调用后，THE resetRootContainer SHALL 创建一个新的 DI_Container 实例替换原有的 ROOT_CONTAINER
+3. WHEN resetRootContainer 被调用后，新的 ROOT_CONTAINER SHALL 包含与初始状态相同的默认配置（`onActivation`、`onDeactivation` 钩子以及 `FIND_CHILD_SERVICE`、`FIND_CHILDREN_SERVICES` 绑定）
 4. THE resetRootContainer SHALL 从 `src/index.ts` 导出，供外部使用
-5. WHEN 之前通过 `declareRootProviders` 注册的服务在 resetRootContainer 调用后被请求时，THE DEFAULT_CONTAINER SHALL 抛出绑定未找到异常
+5. WHEN 之前通过 `declareRootProviders` 注册的服务在 resetRootContainer 调用后被请求时，THE ROOT_CONTAINER SHALL 抛出绑定未找到异常
 
 ### 需求 3：CONTAINER_TOKEN 使用 Symbol 替代字符串
 

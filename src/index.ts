@@ -1,7 +1,5 @@
 export * from '@kaokei/di';
 
-export { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES, resetRootContainer } from './constants.ts';
-
 export {
   useService,
   declareProviders,
@@ -11,6 +9,8 @@ export {
   declareAppProviders,
   declareAppProvidersPlugin,
 } from './core.ts';
+
+export { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES } from './constants.ts';
 
 export { Computed } from './computed.ts';
 

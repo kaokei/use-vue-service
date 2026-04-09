@@ -15,16 +15,11 @@ export const FIND_CHILDREN_SERVICES = new Token<FindChildrenServices>(
 );
 
 // 每个实例对象自身维护的effectScope的key
-export const SCOPE_KEY = Symbol();
+export const SCOPE_KEY = Symbol('SCOPE_KEY');
 
 // 给vue的provide/inject使用的token
-export const CONTAINER_TOKEN: InjectionKey<Container> = Symbol('USE_VUE_SERVICE_CONTAINER_TOKEN');
+export const CONTAINER_TOKEN: InjectionKey<Container> =
+  Symbol('CONTAINER_TOKEN');
 
 // 默认Container，对应declareRootProviders/useRootService
-export let DEFAULT_CONTAINER = createContainer();
-
-// 重置默认容器，用于测试隔离
-export function resetRootContainer(): void {
-  DEFAULT_CONTAINER.destroy();
-  DEFAULT_CONTAINER = createContainer();
-}
+export const ROOT_CONTAINER = createContainer();
