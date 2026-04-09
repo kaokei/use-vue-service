@@ -5,7 +5,7 @@ export { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES } from './constants.ts';
 export {
   useService,
   declareProviders,
-  getRootService,
+  useRootService,
   declareRootProviders,
   useAppService,
   declareAppProviders,

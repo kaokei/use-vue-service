@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { declareProviders, useService } from '@/index';
+import { declareProviders, useService } from '@kaokei/use-vue-service';
 import { DemoService } from './DemoService';
 
 defineProps<{ msg: string }>();

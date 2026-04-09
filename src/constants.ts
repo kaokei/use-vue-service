@@ -18,5 +18,5 @@ export const SCOPE_KEY = Symbol();
 // 给vue的provide/inject使用的token
 export const CONTAINER_TOKEN = 'USE_VUE_SERVICE_CONTAINER_TOKEN';
 
-// 默认Container，对应declareRootProviders/getRootService
+// 默认Container，对应declareRootProviders/useRootService
 export const DEFAULT_CONTAINER = createContainer();
