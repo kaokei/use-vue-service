@@ -22,13 +22,13 @@
 - [x] 2. 检查点 — 确保所有测试通过
   - 确保所有测试通过，如有问题请询问用户。
 
-- [x] 3. 实现 DEFAULT_CONTAINER 测试隔离支持
-  - [x] 3.1 修改 `src/constants.ts`，将 `DEFAULT_CONTAINER` 的声明从 `const` 改为 `let`
+- [x] 3. 实现 ROOT_CONTAINER 测试隔离支持
+  - [x] 3.1 修改 `src/constants.ts`，将 `ROOT_CONTAINER` 的声明从 `const` 改为 `let`
     - _需求：2.2_
 
   - [x] 3.2 在 `src/constants.ts` 中新增 `resetRootContainer` 函数
-    - 调用 `DEFAULT_CONTAINER.destroy()` 销毁当前容器的所有绑定和子容器
-    - 调用 `createContainer()` 创建新的容器实例并赋值给 `DEFAULT_CONTAINER`
+    - 调用 `ROOT_CONTAINER.destroy()` 销毁当前容器的所有绑定和子容器
+    - 调用 `createContainer()` 创建新的容器实例并赋值给 `ROOT_CONTAINER`
     - 新容器自动包含默认配置（`onActivation`、`onDeactivation` 钩子以及 `FIND_CHILD_SERVICE`、`FIND_CHILDREN_SERVICES` 绑定）
     - _需求：2.1, 2.2, 2.3_
 

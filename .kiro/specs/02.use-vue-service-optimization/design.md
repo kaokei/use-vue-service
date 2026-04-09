@@ -5,7 +5,7 @@
 本设计文档描述 `@kaokei/use-vue-service` 库的优化改进方案。核心变更包括：
 
 1. 将 `@Computed` 装饰器从 Stage 1 语法迁移到 Stage 3 accessor 装饰器
-2. 为 `DEFAULT_CONTAINER` 添加 `resetRootContainer` 重置函数，支持测试隔离
+2. 为 `ROOT_CONTAINER` 添加 `resetRootContainer` 重置函数，支持测试隔离
 3. 将 `CONTAINER_TOKEN` 从字符串改为 Symbol，消除命名冲突风险
 4. 精简 `index.ts` 的 re-export，替换通配符导出为显式命名导出
 5. 新增 `@Watch` 和 `@Effect` 方法装饰器
@@ -52,7 +52,7 @@ graph TD
 
 主要架构变更：
 - 新增 `src/watch.ts` 模块，包含 `@Watch` 和 `@Effect` 装饰器
-- `src/constants.ts` 中 `DEFAULT_CONTAINER` 改为 `let` 声明，支持 `resetRootContainer` 重新赋值
+- `src/constants.ts` 中 `ROOT_CONTAINER` 改为 `let` 声明，支持 `resetRootContainer` 重新赋值
 - `src/index.ts` 从通配符导出改为显式命名导出
 
 ## 组件与接口
@@ -125,17 +125,17 @@ export const CONTAINER_TOKEN = 'USE_VUE_SERVICE_CONTAINER_TOKEN';
 export const CONTAINER_TOKEN: InjectionKey<Container> = Symbol('USE_VUE_SERVICE_CONTAINER_TOKEN');
 ```
 
-**DEFAULT_CONTAINER 可重置支持：**
+**ROOT_CONTAINER 可重置支持：**
 ```typescript
 // 之前
-export const DEFAULT_CONTAINER = createContainer();
+export const ROOT_CONTAINER = createContainer();
 
 // 之后
-export let DEFAULT_CONTAINER = createContainer();
+export let ROOT_CONTAINER = createContainer();
 
 export function resetRootContainer(): void {
-  DEFAULT_CONTAINER.destroy();
-  DEFAULT_CONTAINER = createContainer();
+  ROOT_CONTAINER.destroy();
+  ROOT_CONTAINER = createContainer();
 }
 ```
 
@@ -143,7 +143,7 @@ export function resetRootContainer(): void {
 - `CONTAINER_TOKEN` 使用 `Symbol()` 而非 `Symbol.for()`，确保全局唯一性
 - 类型声明为 `InjectionKey<Container>` 以获得 Vue `provide/inject` 的类型推导
 - `resetRootContainer` 先调用 `destroy()` 清理旧容器的所有绑定和子容器，再创建新容器
-- `DEFAULT_CONTAINER` 改为 `let` 声明以支持重新赋值
+- `ROOT_CONTAINER` 改为 `let` 声明以支持重新赋值
 
 ### 4. `src/interface.ts` — Provider_Config 类型
 
@@ -269,7 +269,7 @@ interface ComputedCache {
 
 ### 属性 3：resetRootContainer 隔离性
 
-*对于任意*数量的通过 `declareRootProviders` 注册的服务，调用 `resetRootContainer` 后，`DEFAULT_CONTAINER` 应是一个全新的容器实例，且请求之前注册的任何服务都应抛出 `BindingNotFoundError`。
+*对于任意*数量的通过 `declareRootProviders` 注册的服务，调用 `resetRootContainer` 后，`ROOT_CONTAINER` 应是一个全新的容器实例，且请求之前注册的任何服务都应抛出 `BindingNotFoundError`。
 
 **验证需求：2.1, 2.2, 2.5**
 
