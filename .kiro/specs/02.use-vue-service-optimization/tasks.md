@@ -19,37 +19,37 @@
     - **属性 2：Computed set-then-get 一致性** — 对于任意可写 computed 属性，set 后 get 应返回相同值
     - **验证需求：1.3, 1.4, 1.5, 1.7**
 
-- [ ] 2. 检查点 — 确保所有测试通过
+- [x] 2. 检查点 — 确保所有测试通过
   - 确保所有测试通过，如有问题请询问用户。
 
-- [ ] 3. 实现 DEFAULT_CONTAINER 测试隔离支持
-  - [ ] 3.1 修改 `src/constants.ts`，将 `DEFAULT_CONTAINER` 的声明从 `const` 改为 `let`
+- [x] 3. 实现 DEFAULT_CONTAINER 测试隔离支持
+  - [x] 3.1 修改 `src/constants.ts`，将 `DEFAULT_CONTAINER` 的声明从 `const` 改为 `let`
     - _需求：2.2_
 
-  - [ ] 3.2 在 `src/constants.ts` 中新增 `resetRootContainer` 函数
+  - [x] 3.2 在 `src/constants.ts` 中新增 `resetRootContainer` 函数
     - 调用 `DEFAULT_CONTAINER.destroy()` 销毁当前容器的所有绑定和子容器
     - 调用 `createContainer()` 创建新的容器实例并赋值给 `DEFAULT_CONTAINER`
     - 新容器自动包含默认配置（`onActivation`、`onDeactivation` 钩子以及 `FIND_CHILD_SERVICE`、`FIND_CHILDREN_SERVICES` 绑定）
     - _需求：2.1, 2.2, 2.3_
 
-  - [ ] 3.3 在 `src/index.ts` 中导出 `resetRootContainer`
+  - [x] 3.3 在 `src/index.ts` 中导出 `resetRootContainer`
     - _需求：2.4_
 
   - [ ]* 3.4 编写 resetRootContainer 的属性测试
     - **属性 3：resetRootContainer 隔离性** — 对于任意数量的已注册服务，reset 后请求任何服务都应抛出 BindingNotFoundError
     - **验证需求：2.1, 2.2, 2.5**
 
-- [ ] 4. 将 CONTAINER_TOKEN 从字符串改为 Symbol
-  - [ ] 4.1 修改 `src/constants.ts`，将 `CONTAINER_TOKEN` 从字符串 `'USE_VUE_SERVICE_CONTAINER_TOKEN'` 改为 `Symbol('USE_VUE_SERVICE_CONTAINER_TOKEN')`
+- [x] 4. 将 CONTAINER_TOKEN 从字符串改为 Symbol
+  - [x] 4.1 修改 `src/constants.ts`，将 `CONTAINER_TOKEN` 从字符串 `'USE_VUE_SERVICE_CONTAINER_TOKEN'` 改为 `Symbol('USE_VUE_SERVICE_CONTAINER_TOKEN')`
     - 导入 Vue 的 `InjectionKey` 类型，声明为 `InjectionKey<Container>` 类型
     - _需求：3.1, 3.2_
 
-  - [ ] 4.2 更新 `src/core.ts` 中所有使用 `CONTAINER_TOKEN` 的代码，确保与 Symbol 类型兼容
+  - [x] 4.2 更新 `src/core.ts` 中所有使用 `CONTAINER_TOKEN` 的代码，确保与 Symbol 类型兼容
     - `getCurrentContainer` 函数中 `Object.prototype.hasOwnProperty.call(provides, token)` 需要适配 Symbol key
     - `inject(CONTAINER_TOKEN, ...)` 调用保持兼容
     - _需求：3.3_
 
-- [ ] 5. 检查点 — 确保所有测试通过
+- [x] 5. 检查点 — 确保所有测试通过
   - 确保所有测试通过，如有问题请询问用户。
 
 - [ ] 6. 精简 index.ts 的 re-export 导出
