@@ -50,7 +50,7 @@ describe('test20', () => {
       public id = 1;
       public name = 'demo';
 
-      @Computed
+      @Computed()
       public get age() {
         return this.getAge() + 100;
       }
@@ -94,7 +94,7 @@ describe('test20', () => {
       public id = 1;
       public name = 'demo';
 
-      @Computed
+      @Computed()
       public get age() {
         return this.getAge() + 100;
       }
@@ -138,12 +138,12 @@ describe('test20', () => {
       public id = 1;
       public name = 'demo';
 
-      @Computed
+      @Computed()
       public get age() {
         return this.getAge() + 100;
       }
 
-      @Computed
+      @Computed()
       public get age2() {
         return this.getAge() + 200;
       }

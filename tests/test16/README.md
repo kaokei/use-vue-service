@@ -14,7 +14,7 @@
 2. **应用上下文中 useService 获取全局服务**
    - 当服务已通过 `declareRootProviders` 注册为全局服务时
    - 在 `app.runWithContext` 中调用 `useService` 将返回全局单例
-   - 这个实例与通过 `getRootService` 获得的实例是相同的
+   - 这个实例与通过 `useRootService` 获得的实例是相同的
 
 3. **应用上下文服务与组件级服务的隔离性**
    - 组件内部通过 `declareProviders` 和 `useService` 获取的服务实例

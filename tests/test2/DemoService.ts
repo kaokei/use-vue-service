@@ -1,6 +1,7 @@
-import { PostConstruct } from '@/index';
+import { PostConstruct, Injectable } from '@/index';
 import { computed } from 'vue';
 
+@Injectable()
 export class DemoService {
   public count = 1;
   public age = 100;

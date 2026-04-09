@@ -7,7 +7,7 @@ describe('test20', () => {
       public id = 1;
       public name = 'demo';
 
-      @Computed
+      @Computed()
       public get age() {
         return this.getAge() + 100;
       }
