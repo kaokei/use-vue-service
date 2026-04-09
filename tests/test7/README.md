@@ -19,10 +19,10 @@
 3. **全局级服务容器（Root/Global Level）**
    - 通过 `declareRootProviders([RootService])` 注册全局服务
    - 服务实例在整个 JavaScript 运行环境中共享，生命周期持续到应用结束
-   - 可以通过 `getRootService(RootService)` 直接在组件外部访问，如在路由守卫、全局事件总线等
+   - 可以通过 `useRootService(RootService)` 直接在组件外部访问，如在路由守卫、全局事件总线等
 
 4. **服务实例一致性验证**
-   - 组件内访问的根服务实例与 `getRootService()` 获取的是同一实例
+   - 组件内访问的根服务实例与 `useRootService()` 获取的是同一实例
    - 每个层级的服务状态变更都会正确响应到 UI 上
 
 这个测试展示了框架的多层级依赖注入系统，使开发者能够根据不同场景需求选择适合的服务容器级别。

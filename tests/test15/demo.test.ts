@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { PostConstruct } from '@/index';
+import { PostConstruct, Injectable } from '@/index';
 import { declareProviders } from '@/index';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
@@ -7,6 +7,7 @@ import { DemoService } from './DemoService';
 describe('test15', () => {
   it('get DemoService instance', async () => {
     expect(() => {
+      @Injectable()
       class DemoService {
         public count = 1;
 
@@ -25,6 +26,7 @@ describe('test15', () => {
 
   it('get DemoService instance', async () => {
     expect(() => {
+      @Injectable()
       class DemoService {
         public count = 1;
 
@@ -44,12 +46,13 @@ describe('test15', () => {
       }
       new DemoService();
     }).toThrowError(
-      'Cannot apply @PostConstruct decorator multiple times in the same class'
+      'Multiple @PostConstruct decorators are not allowed in a single class.'
     );
   });
 
   it('get DemoService instance', async () => {
     expect(() => {
+      @Injectable()
       class DemoService {
         public count = 1;
 
@@ -68,6 +71,7 @@ describe('test15', () => {
 
   it('get DemoService instance', async () => {
     expect(() => {
+      @Injectable()
       class DemoService {
         public count = 1;
 
@@ -87,7 +91,7 @@ describe('test15', () => {
       }
       new DemoService();
     }).toThrow(
-      'Cannot apply @PostConstruct decorator multiple times in the same class'
+      'Multiple @PostConstruct decorators are not allowed in a single class.'
     );
   });
 

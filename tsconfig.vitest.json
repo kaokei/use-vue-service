@@ -7,7 +7,6 @@
     "types": ["vitest/globals"],
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
-    "experimentalDecorators": true,
     "paths": {
       "@/*": ["./src/*"],
       "@tests/*": ["./tests/*"]

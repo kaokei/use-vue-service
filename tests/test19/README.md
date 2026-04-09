@@ -8,7 +8,7 @@
 
 1. **全局查找服务的功能注册**
    - 框架通过全局令牌 `FIND_CHILD_SERVICE` 和 `FIND_CHILDREN_SERVICES` 提供查找功能
-   - 这些令牌可以通过 `getRootService` 方法获取对应的查找工具函数
+   - 这些令牌可以通过 `useRootService` 方法获取对应的查找工具函数
 
 2. **查找单个子组件服务**
    - `findChildService` 函数可以查找所有子组件中第一个给定类型的服务实例

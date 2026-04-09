@@ -1,7 +1,8 @@
-import { Inject } from '@/index';
+import { Inject, Injectable } from '@/index';
 import { ParentService } from './ParentService';
 import { DemoService } from './DemoService';
 
+@Injectable()
 export class ChildService {
   public count = 300;
 

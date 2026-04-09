@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import DemoComp from './DemoComp.vue';
 import { DemoService } from './DemoService';
-import { getRootService } from '@/index';
+import { useRootService } from '@/index';
 
 describe('test14', () => {
   it('get DemoService instance', async () => {
@@ -15,7 +15,7 @@ describe('test14', () => {
     expect(wrapper.vm.service).toBeInstanceOf(DemoService);
 
     expect(() => {
-      getRootService(DemoService);
+      useRootService(DemoService);
     }).toThrow('No matching binding found for token: DemoService');
   });
 });
