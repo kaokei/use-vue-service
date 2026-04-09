@@ -33,12 +33,15 @@ import {
 import type { App } from 'vue';
 import type { Container, CommonToken, Newable } from '@kaokei/di';
 import { createContainer } from './utils.ts';
-import { CONTAINER_TOKEN, ROOT_CONTAINER } from './constants.ts';
+import { CONTAINER_TOKEN } from './constants.ts';
 import type {
   NewableProvider,
   FunctionProvider,
   Provider,
 } from './interface.ts';
+
+// 默认Container，对应declareRootProviders/useRootService
+const ROOT_CONTAINER = createContainer();
 
 /**
  * 将服务提供者绑定到指定的 DI 容器上。

@@ -1,7 +1,6 @@
 import { Token } from '@kaokei/di';
 import type { Container } from '@kaokei/di';
 import type { InjectionKey } from 'vue';
-import { createContainer } from './utils.ts';
 import type { FindChildService, FindChildrenServices } from './interface.ts';
 
 // 给依赖注入库使用的token
@@ -20,6 +19,3 @@ export const SCOPE_KEY = Symbol('SCOPE_KEY');
 // 给vue的provide/inject使用的token
 export const CONTAINER_TOKEN: InjectionKey<Container> =
   Symbol('CONTAINER_TOKEN');
-
-// 默认Container，对应declareRootProviders/useRootService
-export const ROOT_CONTAINER = createContainer();
