@@ -1,4 +1,4 @@
-import { Computed } from '@/index';
+import { Computed } from '@kaokei/use-vue-service';
 
 export class DemoService {
   public name = 'demo';

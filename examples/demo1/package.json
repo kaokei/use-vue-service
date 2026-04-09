@@ -1,0 +1,18 @@
+{
+  "name": "use-vue-service-example-demo1",
+  "version": "1.0.0",
+  "description": "基础用法：declareProviders、useService、Computed 装饰器",
+  "type": "module",
+  "scripts": {
+    "start": "vite"
+  },
+  "dependencies": {
+    "@kaokei/di": "^5.0.0",
+    "@kaokei/use-vue-service": "^3.0.2",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.0",
+    "vite": "^6.0.0"
+  }
+}
