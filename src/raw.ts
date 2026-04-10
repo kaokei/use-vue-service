@@ -16,16 +16,18 @@ import { ensureRaw } from './utils.ts';
 /**
  * Raw 装饰器的实际实现，提取为模块级函数避免每次调用 Raw() 时重复创建
  */
-function rawDecorator(value: any, context: ClassFieldDecoratorContext | ClassAccessorDecoratorContext) {
+function rawDecorator(
+  value: any,
+  context: ClassFieldDecoratorContext | ClassAccessorDecoratorContext
+) {
   if (context.kind === 'accessor') {
     // auto-accessor 装饰器：返回 { get, set, init } 拦截读写和初始化
-    const { get, set } = value as ClassAccessorDecoratorResult<unknown, unknown>;
     return {
       get() {
-        return get!.call(this);
+        return value.get.call(this);
       },
       set(newVal: unknown) {
-        set!.call(this, ensureRaw(newVal));
+        value.set.call(this, ensureRaw(newVal));
       },
       init: ensureRaw,
     };
