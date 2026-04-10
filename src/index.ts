@@ -14,4 +14,6 @@ export { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES } from './constants.ts';
 
 export { Computed } from './computed.ts';
 
+export { Raw } from './raw.ts';
+
 export { getEffectScope } from './scope.ts';
