@@ -13,45 +13,55 @@ import { isObject } from './utils.ts';
 // 转为响应式会导致性能问题甚至功能异常。
 // 使用 @Raw() 装饰的属性，无论初始值还是后续赋值，都会自动调用 markRaw，
 // 确保该属性值永远不会被 Vue 的响应式系统代理。
-export function Raw() {
-  return function (value: any, context: ClassFieldDecoratorContext | ClassAccessorDecoratorContext) {
-    if (context.kind === 'accessor') {
-      // auto-accessor 装饰器：返回 { get, set, init } 拦截读写和初始化
-      const { get, set } = value as ClassAccessorDecoratorResult<unknown, unknown>;
-      return {
-        get() {
-          return get!.call(this);
-        },
-        set(newVal: unknown) {
-          set!.call(this, isObject(newVal) ? markRaw(newVal) : newVal);
-        },
-        init(initialValue: unknown) {
-          return isObject(initialValue) ? markRaw(initialValue) : initialValue;
-        },
-      };
-    }
 
-    // field 装饰器：通过 addInitializer + defineProperty 拦截后续赋值
-    const propertyName = context.name;
+/**
+ * 将值标记为 raw（如果是对象则调用 markRaw，否则原样返回）
+ * 提取为顶层函数，避免装饰器每次调用时重复创建闭包
+ */
+function ensureRaw(val: unknown): unknown {
+  return isObject(val) ? markRaw(val) : val;
+}
 
-    context.addInitializer(function (this: any) {
-      const cacheKey = Symbol.for(`__raw_${String(propertyName)}`);
-
-      Object.defineProperty(this, propertyName, {
-        configurable: true,
-        enumerable: true,
-        get() {
-          return this[cacheKey];
-        },
-        set(newVal: unknown) {
-          this[cacheKey] = isObject(newVal) ? markRaw(newVal) : newVal;
-        },
-      });
-    });
-
-    // 返回 initializer 函数，处理字段的初始值
-    return function (this: any, initialValue: unknown): unknown {
-      return isObject(initialValue) ? markRaw(initialValue) : initialValue;
+/**
+ * Raw 装饰器的实际实现，提取为模块级函数避免每次调用 Raw() 时重复创建
+ */
+function rawDecorator(value: any, context: ClassFieldDecoratorContext | ClassAccessorDecoratorContext) {
+  if (context.kind === 'accessor') {
+    // auto-accessor 装饰器：返回 { get, set, init } 拦截读写和初始化
+    const { get, set } = value as ClassAccessorDecoratorResult<unknown, unknown>;
+    return {
+      get() {
+        return get!.call(this);
+      },
+      set(newVal: unknown) {
+        set!.call(this, ensureRaw(newVal));
+      },
+      init: ensureRaw,
     };
-  };
+  }
+
+  // field 装饰器：通过 addInitializer + defineProperty 拦截后续赋值
+  const propertyName = context.name;
+
+  context.addInitializer(function (this: any) {
+    const cacheKey = Symbol.for(`__raw_${String(propertyName)}`);
+
+    Object.defineProperty(this, propertyName, {
+      configurable: true,
+      enumerable: true,
+      get() {
+        return this[cacheKey];
+      },
+      set(newVal: unknown) {
+        this[cacheKey] = ensureRaw(newVal);
+      },
+    });
+  });
+
+  // 返回 initializer 函数，处理字段的初始值
+  return ensureRaw;
+}
+
+export function Raw() {
+  return rawDecorator;
 }

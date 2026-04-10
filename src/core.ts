@@ -32,7 +32,7 @@ import {
 } from 'vue';
 import type { App } from 'vue';
 import type { Container, CommonToken } from '@kaokei/di';
-import { createContainer } from './utils.ts';
+import { createContainer } from './create-container.ts';
 import { CONTAINER_TOKEN } from './constants.ts';
 import type {
   NewableProvider,
