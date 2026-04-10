@@ -67,9 +67,23 @@ function computedDecorator(
   };
 }
 
+// 重载签名：支持 @Computed 和 @Computed() 两种用法
 export function Computed(): (
   value: (this: any) => any,
   context: ClassGetterDecoratorContext
-) => (this: any) => any {
+) => (this: any) => any;
+export function Computed(
+  value: (this: any) => any,
+  context: ClassGetterDecoratorContext
+): (this: any) => any;
+export function Computed(
+  value?: (this: any) => any,
+  context?: ClassGetterDecoratorContext
+): any {
+  // 不带括号：@Computed — 直接作为装饰器调用，第一个参数是 getter 函数
+  if (typeof value === 'function' && context?.kind === 'getter') {
+    return computedDecorator(value, context);
+  }
+  // 带括号：@Computed() — 作为工厂函数调用，返回装饰器
   return computedDecorator;
 }
