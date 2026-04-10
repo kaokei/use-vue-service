@@ -12,8 +12,9 @@ import { getEffectScope } from './scope.ts';
 // 4. 返回 computedRef.value（首次返回值）
 // 后续访问时，reactive 代理直接读取数据属性并通过 Auto_Unwrap 自动解包。
 //
-// setter 支持：如果类上定义了同名的 setter，赋值操作会先触发原型链上的 setter，
-// setter 内部修改依赖属性后，ComputedRef 会自动重新计算。
+// setter 支持：如果原型链上存在同名 setter，使用 writable computed（computed({ get, set })）。
+// 赋值时 reactive 的 Auto_Unwrap 会调用 computedRef.value = val，
+// 触发 writable computed 的 set 回调，进而调用原始 setter。
 export function Computed(): (
   value: (this: any) => any,
   context: ClassGetterDecoratorContext
@@ -27,7 +28,6 @@ export function Computed(): (
       // this 在 Reactive_Proxy 上访问时已经是 reactive 代理
       const scope = getEffectScope(this);
       const originalGet = value;
-      const computedRef = scope.run(() => computed(() => originalGet.call(this)));
       const raw = toRaw(this);
 
       // 查找原型链上是否存在同名的 setter
@@ -42,30 +42,28 @@ export function Computed(): (
         proto = Object.getPrototypeOf(proto);
       }
 
-      if (originalSet) {
-        // 存在 setter：使用 accessor 属性描述符，保留 setter 的同时返回 ComputedRef 的值
-        const setter = originalSet;
-        Object.defineProperty(raw, propertyName, {
-          configurable: true,
-          enumerable: true,
-          get() {
-            return computedRef;
-          },
-          set(v: any) {
-            setter.call(this, v);
-          },
-        });
-      } else {
-        // 不存在 setter：使用数据属性描述符，直接存储 ComputedRef
-        Object.defineProperty(raw, propertyName, {
-          value: computedRef,
-          writable: true,
-          configurable: true,
-          enumerable: true,
-        });
-      }
+      // 根据是否存在 setter 创建只读或可写的 computed
+      const that = this;
+      const computedRef = originalSet
+        ? scope.run(() => {
+            const setter = originalSet!;
+            return computed({
+              get: () => originalGet.call(that),
+              set: (v: any) => setter.call(that, v),
+            });
+          })
+        : scope.run(() => computed(() => originalGet.call(that)));
 
-      // 首次返回值（Auto_Unwrap 会在后续访问中自动解包）
+      // 始终使用数据属性描述符存储 ComputedRef
+      // reactive 的 Auto_Unwrap 会自动处理读取（返回 .value）和写入（调用 .value = val）
+      Object.defineProperty(raw, propertyName, {
+        value: computedRef,
+        writable: true,
+        configurable: true,
+        enumerable: true,
+      });
+
+      // 首次返回值
       return computedRef!.value;
     };
   };
