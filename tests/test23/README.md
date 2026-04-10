@@ -9,6 +9,7 @@
 1. 外部访问 vs 类内部 `this` 访问
 2. 普通对象 vs `reactive` 对象
 3. `computed` 作为属性赋值（`computedX`）vs getter 返回（`getComputedX`）vs 普通 getter（`getX`）
+4. 组件模板是否渲染了 `computedX` 对更新行为的影响
 
 ### 关键发现
 
@@ -23,17 +24,21 @@
 | 内部 `this.getComputedX` | ComputedRef（不解包） | 原始值（自动解包） |
 | 内部 `this.getX` | 原始值 | 原始值 |
 
-#### 响应式更新行为
+#### 响应式更新行为（重要发现）
 
-| 场景 | 是否响应式更新 | 原因 |
-|------|--------------|------|
-| 普通对象修改 `t.x` 后访问 `t.computedX` | 否 | `this.x` 非响应式依赖，computed 返回缓存旧值 |
-| reactive 对象修改 `rt.x` 后访问 `rt.computedX` | 是 | reactive 代理的属性修改触发响应式更新 |
-| DI 注入后 `service.increaseX()` 后访问 `service.computedX` | 否 | computedX 构造时 `this` 指向原始对象，闭包中的 `this.x` 不是响应式依赖 |
-| DI 注入后 `service.increaseX()` 后访问 `service.getComputedX` | 是 | getter 调用时 `this` 是 reactive 代理，每次创建新 computed 读取最新值 |
+| 场景 | 是否更新 | 原因 |
+|------|---------|------|
+| 普通对象：修改 `t.x` 后访问 `t.computedX.value` | 否 | `this.x` 非响应式依赖，computed 返回缓存旧值 |
+| reactive 对象（无组件）：`rt.increaseX()` 后访问 `rt.computedX` | 是 | computed 未被 effect 订阅，走 globalVersion 检查路径 |
+| 组件模板渲染了 computedX：`service.increaseX()` 后访问 `service.computedX` | 否 | computed 被渲染 effect 订阅后，走 dep 版本号检查路径，而 dep 版本号不会递增 |
+| 组件模板未渲染 computedX：`service.increaseX()` 后访问 `service.computedX` | 是 | computed 未被 effect 订阅，走 globalVersion 检查路径 |
 
 #### 核心结论
 
-1. `reactive` 会自动解包属性上的 `ref`/`computed`，无论是外部访问还是类内部 `this` 访问
-2. 类属性中直接赋值 `computedX = computed(() => this.x)` 在 DI 场景下有陷阱：构造时 `this` 指向原始对象，`increaseX` 通过 reactive 代理调用时修改的是代理上的属性，但 `computedX` 闭包中的 `this.x` 仍然读取原始对象（非响应式），导致不更新
-3. getter 中返回 `computed(() => this.x)` 虽然每次创建新实例（性能浪费），但因为 getter 调用时 `this` 已是 reactive 代理，所以能正确响应更新
+1. `reactive` 会自动解包属性上的 `ref`/`computed`，无论是外部访问还是类内部 `this` 访问。
+
+2. `computedX = computed(() => this.x)` 在类属性中直接赋值时，`this.x` 不是响应式依赖。但在纯 reactive 场景（无组件渲染）下，由于 computed 没有被任何 effect 订阅，Vue 会通过 `globalVersion` 检查路径来判断是否需要重新计算，因此仍然能获取到最新值。
+
+3. 一旦组件模板渲染了 `computedX`（触发了 computed 被渲染 effect 订阅），Vue 会切换到 dep 版本号检查路径。由于 `this.x` 不是响应式依赖，dep 版本号永远不会递增，computed 认为自己是"干净的"，直接返回缓存值，导致不再更新。
+
+4. 这个问题与 DI 框架无关，纯粹是 Vue computed 的缓存机制导致的。不使用 DI，直接 `new + reactive` 在组件中渲染 `computedX` 也会出现同样的问题。
