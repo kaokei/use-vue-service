@@ -1,7 +1,11 @@
 import { markRaw } from 'vue';
+import { isObject } from './utils.ts';
 
-// TC39 Stage 3 属性装饰器：标记属性永远保持原始对象，不被 Vue 转为响应式
-// 使用方式：@Raw()（必须带括号调用，与 @Computed() 保持一致）
+// TC39 Stage 3 装饰器：标记属性永远保持原始对象，不被 Vue 转为响应式
+//
+// 同时支持两种用法：
+//   @Raw() x = {}              — 普通 field 装饰器
+//   @Raw() accessor x = {}     — auto-accessor 装饰器
 //
 // 应用场景：
 // 当实例被 reactive() 包裹后，默认所有属性都会被递归转为响应式对象。
@@ -9,19 +13,25 @@ import { markRaw } from 'vue';
 // 转为响应式会导致性能问题甚至功能异常。
 // 使用 @Raw() 装饰的属性，无论初始值还是后续赋值，都会自动调用 markRaw，
 // 确保该属性值永远不会被 Vue 的响应式系统代理。
-//
-// 实现策略：
-// 通过 context.addInitializer 在实例创建时，使用 Object.defineProperty
-// 将目标属性替换为带有 getter/setter 的访问器属性。
-// setter 中对每次赋值的新值调用 markRaw，确保值始终为原始对象。
-export function Raw(): (
-  value: undefined,
-  context: ClassFieldDecoratorContext
-) => (this: any, initialValue: unknown) => unknown {
-  return function (
-    _value: undefined,
-    context: ClassFieldDecoratorContext
-  ): (this: any, initialValue: unknown) => unknown {
+export function Raw() {
+  return function (value: any, context: ClassFieldDecoratorContext | ClassAccessorDecoratorContext) {
+    if (context.kind === 'accessor') {
+      // auto-accessor 装饰器：返回 { get, set, init } 拦截读写和初始化
+      const { get, set } = value as ClassAccessorDecoratorResult<unknown, unknown>;
+      return {
+        get() {
+          return get!.call(this);
+        },
+        set(newVal: unknown) {
+          set!.call(this, isObject(newVal) ? markRaw(newVal) : newVal);
+        },
+        init(initialValue: unknown) {
+          return isObject(initialValue) ? markRaw(initialValue) : initialValue;
+        },
+      };
+    }
+
+    // field 装饰器：通过 addInitializer + defineProperty 拦截后续赋值
     const propertyName = context.name;
 
     context.addInitializer(function (this: any) {
@@ -34,20 +44,14 @@ export function Raw(): (
           return this[cacheKey];
         },
         set(newVal: unknown) {
-          // 核心：每次赋值都强制 markRaw，确保值永远不被转为响应式
-          this[cacheKey] = isMarkRawable(newVal) ? markRaw(newVal) : newVal;
+          this[cacheKey] = isObject(newVal) ? markRaw(newVal) : newVal;
         },
       });
     });
 
     // 返回 initializer 函数，处理字段的初始值
     return function (this: any, initialValue: unknown): unknown {
-      return isMarkRawable(initialValue) ? markRaw(initialValue) : initialValue;
+      return isObject(initialValue) ? markRaw(initialValue) : initialValue;
     };
   };
-}
-
-// markRaw 只能作用于对象类型，对原始类型（string、number 等）调用会报错
-function isMarkRawable(val: unknown): val is object {
-  return val !== null && typeof val === 'object';
 }
