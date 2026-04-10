@@ -54,6 +54,7 @@ export default defineConfig({
     environment: 'jsdom',
     coverage: {
       include: ['src/**/*.ts'],
+      exclude: ['src/interface.ts'],
       reporter: ['text', 'lcov'],
     },
   },
