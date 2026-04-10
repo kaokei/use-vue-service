@@ -33,7 +33,7 @@
     - 测试：仅处理 getter 装饰器，不处理 setter 和 accessor
     - _需求：1.1, 1.2, 1.4, 1.5, 1.6, 1.7_
 
-  - [ ]* 2.2 在 `tests/computed-plan-a-lazy/basic.test.ts` 中编写属性测试
+  - [x] 2.2 在 `tests/computed-plan-a-lazy/basic.test.ts` 中编写属性测试
     - **Property 1：Plan_A 同名属性替代与自动解包**
     - **Property 2：Plan_A 后续访问不调用原始 getter**
     - **Property 3：Plan_A_Lazy 懒创建时机**
@@ -46,7 +46,7 @@
     - 测试：连续多次修改依赖属性，每次访问 getter 都返回正确的最新值
     - _需求：3.1, 3.2, 3.3_
 
-  - [ ]* 2.4 在 `tests/computed-plan-a-lazy/reactive.test.ts` 中编写属性测试
+  - [x] 2.4 在 `tests/computed-plan-a-lazy/reactive.test.ts` 中编写属性测试
     - **Property 6：响应式依赖追踪与重新计算**
     - **Property 7：多 getter 独立缓存**
     - **验证：需求 3.1, 3.3**
@@ -57,7 +57,7 @@
     - 测试：三个及以上实例的隔离性
     - _需求：6.1, 6.2_
 
-  - [ ]* 2.6 在 `tests/computed-plan-a-lazy/multi-instance.test.ts` 中编写属性测试
+  - [x] 2.6 在 `tests/computed-plan-a-lazy/multi-instance.test.ts` 中编写属性测试
     - **Property 8：多实例隔离**
     - **验证：需求 6.1, 6.2**
 
@@ -67,7 +67,7 @@
     - 测试：多层继承场景（祖父类 → 父类 → 子类）
     - _需求：10.1, 10.2_
 
-  - [ ]* 2.8 在 `tests/computed-plan-a-lazy/inheritance.test.ts` 中编写属性测试
+  - [x] 2.8 在 `tests/computed-plan-a-lazy/inheritance.test.ts` 中编写属性测试
     - **Property 9：继承场景 — 未覆盖 getter**
     - **Property 10：继承场景 — 覆盖 getter**
     - **验证：需求 10.1, 10.2**
@@ -92,7 +92,7 @@
     - 测试：仅处理 getter 装饰器
     - _需求：1.1, 1.2, 1.4, 1.5, 1.8, 1.9_
 
-  - [ ]* 3.2 在 `tests/computed-plan-a-eager/basic.test.ts` 中编写属性测试
+  - [x] 3.2 在 `tests/computed-plan-a-eager/basic.test.ts` 中编写属性测试
     - **Property 1：Plan_A 同名属性替代与自动解包**
     - **Property 2：Plan_A 后续访问不调用原始 getter**
     - **Property 4：Plan_A_Eager 提前创建时机**
@@ -105,7 +105,7 @@
     - 测试：连续多次修改依赖属性，每次访问 getter 都返回正确的最新值
     - _需求：3.1, 3.2, 3.3_
 
-  - [ ]* 3.4 在 `tests/computed-plan-a-eager/reactive.test.ts` 中编写属性测试
+  - [x] 3.4 在 `tests/computed-plan-a-eager/reactive.test.ts` 中编写属性测试
     - **Property 6：响应式依赖追踪与重新计算**
     - **Property 7：多 getter 独立缓存**
     - **验证：需求 3.1, 3.3**
@@ -115,7 +115,7 @@
     - 测试：多个实例各自独立创建 ComputedRef 缓存
     - _需求：6.1, 6.2_
 
-  - [ ]* 3.6 在 `tests/computed-plan-a-eager/multi-instance.test.ts` 中编写属性测试
+  - [x] 3.6 在 `tests/computed-plan-a-eager/multi-instance.test.ts` 中编写属性测试
     - **Property 8：多实例隔离**
     - **验证：需求 6.1, 6.2**
 
@@ -124,7 +124,7 @@
     - 测试：子类覆盖父类 getter 时，使用子类的 getter 实现计算
     - _需求：10.1, 10.2_
 
-  - [ ]* 3.8 在 `tests/computed-plan-a-eager/inheritance.test.ts` 中编写属性测试
+  - [x] 3.8 在 `tests/computed-plan-a-eager/inheritance.test.ts` 中编写属性测试
     - **Property 9：继承场景 — 未覆盖 getter**
     - **Property 10：继承场景 — 覆盖 getter**
     - **验证：需求 10.1, 10.2**
@@ -149,7 +149,7 @@
     - 测试：仅处理 getter 装饰器
     - _需求：2.1, 2.2, 2.3, 2.4, 2.5_
 
-  - [ ]* 4.2 在 `tests/computed-plan-b/basic.test.ts` 中编写属性测试
+  - [x] 4.2 在 `tests/computed-plan-b/basic.test.ts` 中编写属性测试
     - **Property 5：Plan_B 缓存创建与复用**
     - **验证：需求 2.2, 2.3**
 
@@ -159,7 +159,7 @@
     - 测试：多个 getter 共享同一依赖属性时，各自独立维护缓存
     - _需求：3.1, 3.2, 3.3_
 
-  - [ ]* 4.4 在 `tests/computed-plan-b/reactive.test.ts` 中编写属性测试
+  - [x] 4.4 在 `tests/computed-plan-b/reactive.test.ts` 中编写属性测试
     - **Property 6：响应式依赖追踪与重新计算**
     - **Property 7：多 getter 独立缓存**
     - **验证：需求 3.1, 3.3**
@@ -169,7 +169,7 @@
     - 测试：多个实例各自独立创建 ComputedRef 缓存
     - _需求：6.1, 6.2_
 
-  - [ ]* 4.6 在 `tests/computed-plan-b/multi-instance.test.ts` 中编写属性测试
+  - [x] 4.6 在 `tests/computed-plan-b/multi-instance.test.ts` 中编写属性测试
     - **Property 8：多实例隔离**
     - **验证：需求 6.1, 6.2**
 
@@ -178,7 +178,7 @@
     - 测试：子类覆盖父类 getter 时，使用子类的 getter 实现计算
     - _需求：10.1, 10.2_
 
-  - [ ]* 4.8 在 `tests/computed-plan-b/inheritance.test.ts` 中编写属性测试
+  - [x] 4.8 在 `tests/computed-plan-b/inheritance.test.ts` 中编写属性测试
     - **Property 9：继承场景 — 未覆盖 getter**
     - **Property 10：继承场景 — 覆盖 getter**
     - **验证：需求 10.1, 10.2**

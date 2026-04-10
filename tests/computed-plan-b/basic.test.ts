@@ -156,3 +156,96 @@ describe('Plan_B — 基础功能', () => {
     expect(typeof result).toBe('function');
   });
 });
+
+// ============================================================================
+// 属性测试（Property-Based Tests）
+// ============================================================================
+
+import fc from 'fast-check';
+import { PBT_NUM_RUNS, arbInitialValue } from '../computed-helpers';
+import { toRaw } from 'vue';
+
+describe('Plan_B — 属性测试', () => {
+  /**
+   * Feature: computed-decorator-redesign, Property 5
+   * Plan_B 缓存创建与复用
+   *
+   * 对于任意被 @ComputedPlanB() 装饰的 getter 属性，
+   * 首次调用 getter 时应创建 ComputedRef 并缓存；
+   * 后续多次调用 getter 时应复用同一个 ComputedRef 对象，
+   * computed() 函数仅被调用一次。
+   *
+   * **Validates: Requirements 2.2, 2.3**
+   */
+  it('Feature: computed-decorator-redesign, Property 5 — Plan_B 缓存创建与复用', () => {
+    fc.assert(
+      fc.property(
+        arbInitialValue,
+        fc.integer({ min: 2, max: 10 }),
+        (initialId, accessCount) => {
+          // 用于追踪原始 getter 调用次数的计数器
+          let getterCallCount = 0;
+
+          class DemoService {
+            public id = initialId;
+
+            @ComputedPlanB()
+            public get age() {
+              getterCallCount++;
+              return this.id + 10;
+            }
+          }
+
+          const demo = new DemoService();
+          const reactiveDemo = reactive(demo);
+          const rawDemo = toRaw(reactiveDemo);
+
+          // 首次访问前，原始实例上不应有 Symbol 缓存
+          const symbolsBefore = Object.getOwnPropertySymbols(rawDemo);
+          const computedSymbolsBefore = symbolsBefore.filter((s) =>
+            String(s).includes('__computed__')
+          );
+          expect(computedSymbolsBefore.length).toBe(0);
+
+          // 首次访问，触发 ComputedRef 创建
+          const firstValue = reactiveDemo.age;
+          expect(firstValue).toBe(initialId + 10);
+
+          // 首次访问后，getter 应被调用恰好 1 次
+          expect(getterCallCount).toBe(1);
+
+          // 首次访问后，原始实例上应存在 Symbol 缓存的 ComputedRef
+          const symbolsAfter = Object.getOwnPropertySymbols(rawDemo);
+          const computedSymbolsAfter = symbolsAfter.filter((s) =>
+            String(s).includes('__computed__')
+          );
+          expect(computedSymbolsAfter.length).toBe(1);
+
+          // 记录首次创建的 ComputedRef 对象引用
+          const cachedRef = rawDemo[computedSymbolsAfter[0]];
+
+          // 后续多次访问（依赖未变化），应复用同一个 ComputedRef 对象
+          for (let i = 0; i < accessCount; i++) {
+            const value = reactiveDemo.age;
+            expect(value).toBe(initialId + 10);
+          }
+
+          // computed() 仅被调用一次 — getter 调用次数仍为 1
+          expect(getterCallCount).toBe(1);
+
+          // Symbol 缓存 key 数量不变（仅创建了一个 ComputedRef）
+          const symbolsFinal = Object.getOwnPropertySymbols(rawDemo);
+          const computedSymbolsFinal = symbolsFinal.filter((s) =>
+            String(s).includes('__computed__')
+          );
+          expect(computedSymbolsFinal.length).toBe(1);
+
+          // 缓存的 ComputedRef 对象引用应与首次创建时相同（复用验证）
+          const cachedRefFinal = rawDemo[computedSymbolsFinal[0]];
+          expect(cachedRefFinal).toBe(cachedRef);
+        }
+      ),
+      { numRuns: PBT_NUM_RUNS }
+    );
+  });
+});

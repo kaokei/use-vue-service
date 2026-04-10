@@ -45,13 +45,12 @@ function computedDecorator(
     // 根据是否存在 setter 创建只读或可写的 computed
     const that = this;
     const computedRef = originalSet
-      ? scope.run(() => {
-          const setter = originalSet!;
-          return computed({
+      ? scope.run(() =>
+          computed({
             get: () => originalGet.call(that),
-            set: (v: any) => setter.call(that, v),
-          });
-        })
+            set: (v: any) => originalSet.call(that, v),
+          })
+        )
       : scope.run(() => computed(() => originalGet.call(that)));
 
     // 在原始实例上定义数据属性来存储 ComputedRef
