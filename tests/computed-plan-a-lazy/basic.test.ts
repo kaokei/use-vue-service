@@ -312,3 +312,40 @@ describe('Plan_A_Lazy — 属性测试', () => {
     );
   });
 });
+
+describe('Plan_A_Lazy — 不带括号用法 @Computed', () => {
+  it('不带括号：getter 返回值与原始计算结果一致', () => {
+    class DemoService {
+      public id = 1;
+
+      @ComputedPlanALazy
+      public get age() {
+        return this.id + 10 + 100;
+      }
+    }
+
+    const demo = new DemoService();
+    const reactiveDemo = reactive(demo);
+
+    expect(reactiveDemo.age).toBe(111);
+  });
+
+  it('不带括号：依赖变化后重新计算', () => {
+    class DemoService {
+      public id = 1;
+
+      @ComputedPlanALazy
+      public get age() {
+        return this.id + 10;
+      }
+    }
+
+    const demo = new DemoService();
+    const reactiveDemo = reactive(demo);
+
+    expect(reactiveDemo.age).toBe(11);
+
+    reactiveDemo.id = 5;
+    expect(reactiveDemo.age).toBe(15);
+  });
+});

@@ -133,3 +133,57 @@ describe('Raw 装饰器 — auto-accessor 用法', () => {
     expect(demo.data.y).toBe(2);
   });
 });
+
+describe('Raw 装饰器 — 不带括号用法 @Raw', () => {
+  it('field：不带括号，初始值对象应被 markRaw 标记', () => {
+    class DemoService {
+      @Raw
+      public chart: any = { type: 'bar' };
+    }
+
+    const demo = new DemoService();
+    const reactiveDemo = reactive(demo);
+
+    expect(isReactive(reactiveDemo.chart)).toBe(false);
+  });
+
+  it('field：不带括号，赋值新对象应被 markRaw 标记', () => {
+    class DemoService {
+      @Raw
+      public chart: any = null;
+    }
+
+    const demo = new DemoService();
+    const reactiveDemo = reactive(demo);
+
+    const newObj = { type: 'line' };
+    reactiveDemo.chart = newObj;
+
+    expect(isReactive(reactiveDemo.chart)).toBe(false);
+    expect(reactiveDemo.chart).toBe(newObj);
+  });
+
+  it('accessor：不带括号，初始值对象应被 markRaw 标记', () => {
+    class DemoService {
+      @Raw
+      public accessor chart: any = { type: 'pie' };
+    }
+
+    const demo = new DemoService();
+    expect(isReactive(demo.chart)).toBe(false);
+  });
+
+  it('accessor：不带括号，赋值新对象应被 markRaw 标记', () => {
+    class DemoService {
+      @Raw
+      public accessor chart: any = null;
+    }
+
+    const demo = new DemoService();
+    const newObj = { type: 'scatter' };
+    demo.chart = newObj;
+
+    expect(isReactive(demo.chart)).toBe(false);
+    expect(demo.chart).toBe(newObj);
+  });
+});
