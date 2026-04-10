@@ -55,6 +55,20 @@ function rawDecorator(
   return ensureRaw;
 }
 
-export function Raw() {
+// 重载签名：支持 @Raw 和 @Raw() 两种用法
+export function Raw(): (
+  value: any,
+  context: ClassFieldDecoratorContext | ClassAccessorDecoratorContext
+) => any;
+export function Raw(
+  value: any,
+  context: ClassFieldDecoratorContext | ClassAccessorDecoratorContext
+): any;
+export function Raw(value?: any, context?: any): any {
+  // 不带括号：@Raw — 直接作为装饰器调用，context.kind 为 'field' 或 'accessor'
+  if (context?.kind === 'field' || context?.kind === 'accessor') {
+    return rawDecorator(value, context);
+  }
+  // 带括号：@Raw() — 作为工厂函数调用，返回装饰器
   return rawDecorator;
 }
