@@ -1,4 +1,4 @@
-import { ComputedPlanALazy } from '@/index';
+import { Computed as ComputedPlanALazy } from '@/index';
 import { getScope, removeScope } from '@/scope';
 import { SCOPE_KEY } from '@/constants';
 import { reactive } from 'vue';

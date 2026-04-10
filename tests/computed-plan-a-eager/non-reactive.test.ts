@@ -1,4 +1,4 @@
-import { ComputedPlanAEager } from '@/index';
+import { ComputedPlanAEager } from './computed-plan-a-eager';
 
 /**
  * 研究性测试：非 reactive 场景下的行为

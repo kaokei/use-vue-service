@@ -7,7 +7,9 @@
  * 验证：需求 8.2, 8.3
  */
 
-import { ComputedPlanALazy, ComputedPlanAEager, ComputedPlanB } from '@/index';
+import { Computed as ComputedPlanALazy } from '@/index';
+import { ComputedPlanAEager } from '../computed-plan-a-eager/computed-plan-a-eager';
+import { ComputedPlanB } from '../computed-plan-b/computed-plan-b';
 import { reactive, isRef } from 'vue';
 
 describe('三种方案行为对比', () => {

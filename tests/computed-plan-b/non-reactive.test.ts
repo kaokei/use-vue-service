@@ -1,4 +1,4 @@
-import { ComputedPlanB } from '@/index';
+import { ComputedPlanB } from './computed-plan-b';
 
 /**
  * 研究性测试：非 reactive 场景下的行为

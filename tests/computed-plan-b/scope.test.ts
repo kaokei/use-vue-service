@@ -1,4 +1,4 @@
-import { ComputedPlanB } from '@/index';
+import { ComputedPlanB } from './computed-plan-b';
 import { getScope, removeScope } from '@/scope';
 import { SCOPE_KEY } from '@/constants';
 import { reactive } from 'vue';

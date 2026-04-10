@@ -1,5 +1,5 @@
 import { computed, toRaw } from 'vue';
-import { getEffectScope } from './scope.ts';
+import { getEffectScope } from '@/scope.ts';
 
 // Plan_B（返回新 getter 函数策略）：
 // 装饰器返回一个新的 getter 函数替换原始 getter。

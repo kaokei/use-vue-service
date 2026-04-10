@@ -1,4 +1,4 @@
-import { ComputedPlanAEager } from '@/index';
+import { ComputedPlanAEager } from './computed-plan-a-eager';
 import { getScope, removeScope } from '@/scope';
 import { SCOPE_KEY } from '@/constants';
 import { reactive } from 'vue';

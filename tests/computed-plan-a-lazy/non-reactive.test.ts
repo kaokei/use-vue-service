@@ -1,4 +1,4 @@
-import { ComputedPlanALazy } from '@/index';
+import { Computed as ComputedPlanALazy } from '@/index';
 
 /**
  * 研究性测试：非 reactive 场景下的行为
