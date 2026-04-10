@@ -17,42 +17,6 @@ import { getEffectScope } from './scope.ts';
 // 触发 writable computed 的 set 回调，进而调用原始 setter。
 
 /**
- * 沿原型链查找指定属性的 setter
- * 提取为顶层函数，避免装饰器每次调用时重复创建
- */
-function findProtoSetter(
-  raw: object,
-  propertyName: PropertyKey
-): ((v: any) => void) | undefined {
-  let proto = Object.getPrototypeOf(raw);
-  while (proto) {
-    const desc = Object.getOwnPropertyDescriptor(proto, propertyName);
-    if (desc && desc.set) {
-      return desc.set;
-    }
-    proto = Object.getPrototypeOf(proto);
-  }
-  return undefined;
-}
-
-/**
- * 在原始实例上定义数据属性来存储 ComputedRef
- * reactive 的 Auto_Unwrap 会自动处理读取（返回 .value）和写入（调用 .value = val）
- */
-function defineComputedProperty(
-  raw: object,
-  propertyName: PropertyKey,
-  computedRef: any
-): void {
-  Object.defineProperty(raw, propertyName, {
-    value: computedRef,
-    writable: true,
-    configurable: true,
-    enumerable: true,
-  });
-}
-
-/**
  * Computed 装饰器的实际实现，提取为模块级函数避免每次调用 Computed() 时重复创建
  */
 function computedDecorator(
@@ -66,7 +30,17 @@ function computedDecorator(
     const originalGet = value;
     const raw = toRaw(this);
 
-    const originalSet = findProtoSetter(raw, propertyName);
+    // 查找原型链上是否存在同名的 setter
+    let originalSet: ((v: any) => void) | undefined;
+    let proto = Object.getPrototypeOf(raw);
+    while (proto) {
+      const desc = Object.getOwnPropertyDescriptor(proto, propertyName);
+      if (desc && desc.set) {
+        originalSet = desc.set;
+        break;
+      }
+      proto = Object.getPrototypeOf(proto);
+    }
 
     // 根据是否存在 setter 创建只读或可写的 computed
     const that = this;
@@ -80,7 +54,14 @@ function computedDecorator(
         })
       : scope.run(() => computed(() => originalGet.call(that)));
 
-    defineComputedProperty(raw, propertyName, computedRef);
+    // 在原始实例上定义数据属性来存储 ComputedRef
+    // reactive 的 Auto_Unwrap 会自动处理读取（返回 .value）和写入（调用 .value = val）
+    Object.defineProperty(raw, propertyName, {
+      value: computedRef,
+      writable: true,
+      configurable: true,
+      enumerable: true,
+    });
 
     // 首次返回值
     return computedRef!.value;
