@@ -28,3 +28,4 @@
 2. 评估是否需要@Watch/@Effect
 3. 发布@kaokei/di@5.0.3
 4. 更新hasOwn
+5. 增加@Raw装饰器
