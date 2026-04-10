@@ -22,3 +22,9 @@
 - [博客文章](./docs/note/01.父组件与子组件的理解.md)
 - [codesandbox example](https://codesandbox.io/s/di-playground-zjnyv)
 - [online demo](https://use-vue-service.vercel.app/)
+
+## Todo List
+1. 优化@Computed
+2. 评估是否需要@Watch/@Effect
+3. 发布@kaokei/di@5.0.3
+4. 更新hasOwn
