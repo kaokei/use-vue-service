@@ -1,4 +1,4 @@
-import { ComputedPlanB } from '@/index';
+import { ComputedPlanB } from './computed-plan-b';
 import { reactive } from 'vue';
 
 describe('Plan_B — 继承场景', () => {

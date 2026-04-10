@@ -1,4 +1,4 @@
-import { ComputedPlanAEager } from '@/index';
+import { ComputedPlanAEager } from './computed-plan-a-eager';
 import { reactive } from 'vue';
 
 describe('Plan_A_Eager — 继承场景', () => {

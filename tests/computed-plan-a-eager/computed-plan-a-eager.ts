@@ -1,5 +1,5 @@
 import { computed, reactive } from 'vue';
-import { getEffectScope } from './scope.ts';
+import { getEffectScope } from '@/scope.ts';
 
 // Plan_A_Eager（提前创建策略）：
 // 在装饰器执行阶段，通过 context.addInitializer 注册回调。

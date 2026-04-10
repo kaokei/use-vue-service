@@ -1,4 +1,4 @@
-import { ComputedPlanALazy } from '@/index';
+import { Computed as ComputedPlanALazy } from '@/index';
 import { reactive } from 'vue';
 
 describe('Plan_A_Lazy — 多实例隔离', () => {

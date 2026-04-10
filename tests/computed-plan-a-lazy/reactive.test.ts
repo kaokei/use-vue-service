@@ -1,4 +1,4 @@
-import { ComputedPlanALazy } from '@/index';
+import { Computed as ComputedPlanALazy } from '@/index';
 import { reactive, watchEffect, nextTick, effectScope } from 'vue';
 
 describe('Plan_A_Lazy — 响应式能力', () => {
