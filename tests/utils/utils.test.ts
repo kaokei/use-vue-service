@@ -1,4 +1,5 @@
-import { isObject, ensureRaw } from '@/utils';
+import { isObject } from '@kaokei/di';
+import { ensureRaw } from '@/raw';
 import { isReactive, reactive } from 'vue';
 
 describe('isObject', () => {

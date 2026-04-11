@@ -32,6 +32,7 @@ import {
 } from 'vue';
 import type { App } from 'vue';
 import type { Container, CommonToken } from '@kaokei/di';
+import { hasOwn } from '@kaokei/di';
 import { createContainer } from './create-container.ts';
 import { CONTAINER_TOKEN } from './constants.ts';
 import type {
@@ -88,11 +89,7 @@ function getCurrentContainer(): Container | undefined {
     const token = CONTAINER_TOKEN;
     const provides = instance.provides;
     const parentProvides = instance.parent && instance.parent.provides;
-    if (
-      provides &&
-      provides !== parentProvides &&
-      Object.prototype.hasOwnProperty.call(provides, token)
-    ) {
+    if (provides && provides !== parentProvides && hasOwn(provides, token)) {
       return provides[token] as Container;
     }
   }
