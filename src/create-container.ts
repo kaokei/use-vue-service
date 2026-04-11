@@ -1,10 +1,9 @@
 import { reactive } from 'vue';
-import { Container, type Context } from '@kaokei/di';
+import { isObject, Container, type Context } from '@kaokei/di';
 import { removeScope } from './scope.ts';
 import { findChildService, findChildrenServices } from './find-service.ts';
 import { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES } from './constants.ts';
 import type { FindChildService, FindChildrenServices } from './interface.ts';
-import { isObject } from './utils.ts';
 
 function activationHandle(_: Context, obj: any) {
   return isObject(obj) ? reactive(obj) : obj;

@@ -1,4 +1,5 @@
-import { ensureRaw } from './utils.ts';
+import { markRaw } from 'vue';
+import { isObject } from '@kaokei/di';
 
 // TC39 Stage 3 装饰器：标记属性永远保持原始对象，不被 Vue 转为响应式
 //
@@ -12,6 +13,13 @@ import { ensureRaw } from './utils.ts';
 // 转为响应式会导致性能问题甚至功能异常。
 // 使用 @Raw() 装饰的属性，无论初始值还是后续赋值，都会自动调用 markRaw，
 // 确保该属性值永远不会被 Vue 的响应式系统代理。
+
+/**
+ * 将值标记为 raw（如果是对象则调用 markRaw，否则原样返回）
+ */
+export function ensureRaw(val: unknown): unknown {
+  return isObject(val) ? markRaw(val) : val;
+}
 
 /**
  * Raw 装饰器的实际实现，提取为模块级函数避免每次调用 Raw() 时重复创建
