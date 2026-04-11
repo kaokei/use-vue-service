@@ -1,5 +1,5 @@
 import { reactive, watchEffect, ref } from 'vue';
-import { EffectScope } from '@/index';
+import { RunInScope } from '@/index';
 import fc from 'fast-check';
 
 // ============================================================================
@@ -12,13 +12,13 @@ const PBT_NUM_RUNS = 100;
 // 基础功能单元测试
 // ============================================================================
 
-describe('EffectScope 装饰器 — 基础功能', () => {
+describe('RunInScope 装饰器 — 基础功能', () => {
   // 测试：方法体内的 watchEffect 副作用被收集到返回的 Child_Scope 中（需求 1.1, 1.2）
   it('方法体内的 watchEffect 副作用被收集到返回的 Child_Scope 中', () => {
     class DemoService {
       public count = 0;
 
-      @EffectScope
+      @RunInScope
       public setup() {
         watchEffect(() => {
           // 读取 count 以建立依赖
@@ -39,7 +39,7 @@ describe('EffectScope 装饰器 — 基础功能', () => {
   // 测试：返回值是活跃的 Vue EffectScope 实例（需求 4.1）
   it('返回值是活跃的 Vue EffectScope 实例', () => {
     class DemoService {
-      @EffectScope
+      @RunInScope
       public setup() {
         watchEffect(() => {});
       }
@@ -61,7 +61,7 @@ describe('EffectScope 装饰器 — 基础功能', () => {
     let callCount = 0;
 
     class DemoService {
-      @EffectScope
+      @RunInScope
       public setup() {
         callCount++;
       }
@@ -79,11 +79,11 @@ describe('EffectScope 装饰器 — 基础功能', () => {
 // 装饰器调用风格测试
 // ============================================================================
 
-describe('EffectScope 装饰器 — 调用风格', () => {
-  // 测试：@EffectScope（不带括号）正确装饰方法（需求 6.1）
-  it('@EffectScope（不带括号）正确装饰方法', () => {
+describe('RunInScope 装饰器 — 调用风格', () => {
+  // 测试：@RunInScope（不带括号）正确装饰方法（需求 6.1）
+  it('@RunInScope（不带括号）正确装饰方法', () => {
     class DemoService {
-      @EffectScope
+      @RunInScope
       public setup() {
         watchEffect(() => {});
       }
@@ -98,10 +98,10 @@ describe('EffectScope 装饰器 — 调用风格', () => {
     expect(scope.effects.length).toBe(1);
   });
 
-  // 测试：@EffectScope()（带括号）正确装饰方法（需求 6.2）
-  it('@EffectScope()（带括号）正确装饰方法', () => {
+  // 测试：@RunInScope()（带括号）正确装饰方法（需求 6.2）
+  it('@RunInScope()（带括号）正确装饰方法', () => {
     class DemoService {
-      @EffectScope()
+      @RunInScope()
       public setup() {
         watchEffect(() => {});
       }
@@ -121,11 +121,11 @@ describe('EffectScope 装饰器 — 调用风格', () => {
 // 属性测试（Property-Based Tests）
 // ============================================================================
 
-describe('EffectScope 装饰器 — 属性测试', () => {
+describe('RunInScope 装饰器 — 属性测试', () => {
   /**
    * Feature: effect-scope-decorator, Property 1: 副作用收集到 Child_Scope
    *
-   * 对于任意被 @EffectScope 装饰的方法，当方法体内创建了 N 个 watchEffect 副作用时，
+   * 对于任意被 @RunInScope 装饰的方法，当方法体内创建了 N 个 watchEffect 副作用时，
    * 返回的 scope.effects 长度应等于 N。
    *
    * **Validates: Requirements 1.1, 1.2, 2.2**
@@ -136,7 +136,7 @@ describe('EffectScope 装饰器 — 属性测试', () => {
         const counter = ref(0);
 
         class DemoService {
-          @EffectScope
+          @RunInScope
           public setup() {
             for (let i = 0; i < n; i++) {
               watchEffect(() => {
@@ -172,7 +172,7 @@ describe('EffectScope 装饰器 — 属性测试', () => {
         class DemoService {
           public value = initialValue;
 
-          @EffectScope
+          @RunInScope
           public setup() {
             watchEffect(() => {
               void this.value;
@@ -209,7 +209,7 @@ describe('EffectScope 装饰器 — 属性测试', () => {
         class DemoService {
           public value = initialValue;
 
-          @EffectScope
+          @RunInScope
           public setup() {
             callCount++;
           }

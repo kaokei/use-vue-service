@@ -1,5 +1,5 @@
 import { reactive, watchEffect } from 'vue';
-import { EffectScope } from '@/index';
+import { RunInScope } from '@/index';
 import { removeScope } from '@/scope';
 import fc from 'fast-check';
 
@@ -13,13 +13,13 @@ const PBT_NUM_RUNS = 100;
 // 生命周期与级联清理单元测试
 // ============================================================================
 
-describe('EffectScope 装饰器 — 生命周期与级联清理', () => {
+describe('RunInScope 装饰器 — 生命周期与级联清理', () => {
   // 测试：Child_Scope 被 stop 后，再次调用方法返回新的活跃 Child_Scope，且新 scope 能正常收集副作用（需求 5.3）
   it('Child_Scope 被 stop 后，再次调用方法返回新的活跃 Child_Scope，且新 scope 能正常收集副作用', () => {
     class DemoService {
       public count = 0;
 
-      @EffectScope
+      @RunInScope
       public setup() {
         watchEffect(() => {
           void this.count;
@@ -53,14 +53,14 @@ describe('EffectScope 装饰器 — 生命周期与级联清理', () => {
     class DemoService {
       public count = 0;
 
-      @EffectScope
+      @RunInScope
       public setupA() {
         watchEffect(() => {
           void this.count;
         });
       }
 
-      @EffectScope
+      @RunInScope
       public setupB() {
         watchEffect(() => {
           void this.count;
@@ -90,11 +90,11 @@ describe('EffectScope 装饰器 — 生命周期与级联清理', () => {
 // 属性测试（Property-Based Tests）
 // ============================================================================
 
-describe('EffectScope 装饰器 — 生命周期属性测试', () => {
+describe('RunInScope 装饰器 — 生命周期属性测试', () => {
   /**
    * Feature: effect-scope-decorator, Property 6: Stop 不影响后续调用
    *
-   * 对于任意被 @EffectScope 装饰的方法，当之前返回的某个 Child_Scope 被 stop() 后，
+   * 对于任意被 @RunInScope 装饰的方法，当之前返回的某个 Child_Scope 被 stop() 后，
    * 再次调用该方法时，应返回一个新的活跃 Child_Scope，且新 scope 能正常收集副作用。
    *
    * **Validates: Requirements 5.3**
@@ -108,7 +108,7 @@ describe('EffectScope 装饰器 — 生命周期属性测试', () => {
           class DemoService {
             public count = 0;
 
-            @EffectScope
+            @RunInScope
             public setup() {
               for (let i = 0; i < effectCount; i++) {
                 watchEffect(() => {
@@ -145,7 +145,7 @@ describe('EffectScope 装饰器 — 生命周期属性测试', () => {
   /**
    * Feature: effect-scope-decorator, Property 7: 级联清理
    *
-   * 对于任意包含 @EffectScope 方法的类实例，当通过 removeScope(obj) 停止 Root_Scope 时，
+   * 对于任意包含 @RunInScope 方法的类实例，当通过 removeScope(obj) 停止 Root_Scope 时，
    * 所有 Child_Scope 都应变为 inactive 状态。
    *
    * **Validates: Requirements 7.1**
@@ -156,7 +156,7 @@ describe('EffectScope 装饰器 — 生命周期属性测试', () => {
         class DemoService {
           public count = 0;
 
-          @EffectScope
+          @RunInScope
           public setup() {
             watchEffect(() => {
               void this.count;

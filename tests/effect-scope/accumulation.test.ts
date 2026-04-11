@@ -1,5 +1,5 @@
-import { reactive, watchEffect } from 'vue';
-import { EffectScope } from '@/index';
+import { EffectScope, reactive, watchEffect } from 'vue';
+import { RunInScope } from '@/index';
 import fc from 'fast-check';
 
 // ============================================================================
@@ -12,11 +12,11 @@ const PBT_NUM_RUNS = 100;
 // 累加语义单元测试
 // ============================================================================
 
-describe('EffectScope 装饰器 — 累加语义', () => {
+describe('RunInScope 装饰器 — 累加语义', () => {
   // 测试：多次调用同一方法，每次返回不同的 Child_Scope 实例（需求 3.1, 3.2）
   it('多次调用同一方法，每次返回不同的 Child_Scope 实例（引用不相等）', () => {
     class DemoService {
-      @EffectScope
+      @RunInScope
       public setup() {
         watchEffect(() => {});
       }
@@ -38,7 +38,7 @@ describe('EffectScope 装饰器 — 累加语义', () => {
   // 测试：多次调用后，之前调用产生的副作用仍然活跃（需求 3.1, 3.2）
   it('多次调用后，之前调用产生的副作用仍然活跃（未被清理）', () => {
     class DemoService {
-      @EffectScope
+      @RunInScope
       public setup() {
         watchEffect(() => {});
       }
@@ -76,11 +76,11 @@ describe('EffectScope 装饰器 — 累加语义', () => {
 // 属性测试（Property-Based Tests）
 // ============================================================================
 
-describe('EffectScope 装饰器 — 累加语义属性测试', () => {
+describe('RunInScope 装饰器 — 累加语义属性测试', () => {
   /**
    * Feature: effect-scope-decorator, Property 2: 每次调用返回新的 Child_Scope
    *
-   * 对于任意被 @EffectScope 装饰的方法和任意调用次数 N（N ≥ 2），
+   * 对于任意被 @RunInScope 装饰的方法和任意调用次数 N（N ≥ 2），
    * 每次调用都应返回一个新的 Child_Scope 实例（与之前返回的 scope 不是同一个对象），
    * 且每个 scope 都是活跃的。
    *
@@ -90,7 +90,7 @@ describe('EffectScope 装饰器 — 累加语义属性测试', () => {
     fc.assert(
       fc.property(fc.integer({ min: 2, max: 10 }), n => {
         class DemoService {
-          @EffectScope
+          @RunInScope
           public setup() {
             watchEffect(() => {});
           }

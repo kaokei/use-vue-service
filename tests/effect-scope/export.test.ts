@@ -5,11 +5,11 @@ import * as ScopeModule from '@/scope';
 // 导出冒烟测试
 // ============================================================================
 
-describe('EffectScope 导出检查', () => {
-  // 测试：@/index 导出了 EffectScope（需求 9.1）
-  it('@/index 导出了 EffectScope', () => {
-    expect('EffectScope' in IndexModule).toBe(true);
-    expect(typeof IndexModule.EffectScope).toBe('function');
+describe('RunInScope 导出检查', () => {
+  // 测试：@/index 导出了 RunInScope（需求 9.1）
+  it('@/index 导出了 RunInScope', () => {
+    expect('RunInScope' in IndexModule).toBe(true);
+    expect(typeof IndexModule.RunInScope).toBe('function');
   });
 
   // 测试：@/index 不再导出 getEffectScope（需求 9.2）
