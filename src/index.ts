@@ -16,4 +16,4 @@ export { Computed } from './computed.ts';
 
 export { Raw } from './raw.ts';
 
-export { getEffectScope } from './scope.ts';
+export { EffectScope } from './effect-scope.ts';
