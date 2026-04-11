@@ -154,19 +154,55 @@ describe('test23 - computed 自动解包行为研究', () => {
         expect(t.computedX.value).toBe(1);
       });
 
-      it('reactive 对象：直接修改 rt.x 后 computedX 响应式更新', () => {
+      it('普通对象：不先访问 computedX.value 直接修改，computedX 也不会更新（this.x 始终非响应式）', () => {
+        const t = new DemoService();
+
+        // 不先访问 computedX.value
+        t.x = 42;
+        // 普通对象上 computed 内部的 this.x 不是响应式的，
+        // 但第一次求值时 this.x 已经是 42，所以返回 42
+        expect(t.computedX.value).toBe(42);
+
+        // 再次修改后同样不更新（NO_DIRTY_CHECK 锁定）
+        t.x = 100;
+        expect(t.computedX.value).toBe(42);
+      });
+
+      it('reactive 对象：先访问 computedX 再修改 rt.x，computedX 不会更新（NO_DIRTY_CHECK 锁定）', () => {
         const t = new DemoService();
         const rt = reactive(t);
 
+        // 先访问 computedX → computed 求值 → 发现无响应式依赖 → flags 变为 NO_DIRTY_CHECK
         expect(rt.computedX).toBe(1);
         rt.x = 42;
 
-        expect(rt.computedX).toBe(42);
+        // computedX 被 NO_DIRTY_CHECK 锁定，永远返回缓存值
+        expect(rt.computedX).toBe(1);
+        // getX 和 getComputedX 不受影响，因为 getter 中 this 指向 reactive 代理
         expect(rt.getX).toBe(42);
         expect(rt.getComputedX).toBe(42);
       });
 
-      it('reactive 对象：increaseX 修改后各属性均能更新', () => {
+      it('reactive 对象：不先访问 computedX 直接修改 rt.x，computedX 看起来能更新（延迟求值的时序巧合）', () => {
+        const t = new DemoService();
+        const rt = reactive(t);
+
+        // 不先访问 computedX，直接修改
+        rt.x = 42;
+
+        // computed 还没求值过（flags 仍为 TRACKING），第一次求值时 this.x 已经是 42
+        expect(rt.computedX).toBe(42);
+        expect(rt.getX).toBe(42);
+        expect(rt.getComputedX).toBe(42);
+
+        // 但再次修改后就不会更新了，因为上面的访问已经触发了 NO_DIRTY_CHECK
+        rt.x = 100;
+        expect(rt.computedX).toBe(42); // 锁定在第一次求值的结果
+        expect(rt.getX).toBe(100);
+        expect(rt.getComputedX).toBe(100);
+      });
+
+      it('reactive 对象：increaseX 修改后各属性均能更新（延迟求值的时序巧合）', () => {
         const t = new DemoService();
         const rt = reactive(t);
 
@@ -176,6 +212,9 @@ describe('test23 - computed 自动解包行为研究', () => {
         expect(rt.x).toBe(2);
         expect(rt.getX).toBe(2);
         expect(rt.getComputedX).toBe(2);
+        // 注意：这里 computedX 返回 2 不是因为响应式更新，
+        // 而是因为修改前从未访问过 computedX，此时是第一次求值，
+        // this.x 已经是 2 了，所以"碰巧"返回正确值。
         expect(rt.computedX).toBe(2);
       });
     });
@@ -184,16 +223,18 @@ describe('test23 - computed 自动解包行为研究', () => {
   // ========================================================================
   // 第二部分：组件渲染对 computed 更新行为的影响
   //
-  // 关键发现：问题不在于 DI，而在于组件模板是否渲染了 computedX。
-  // 当模板渲染 service.computedX 时，reactive 代理自动解包 ComputedRef，
-  // 此过程中 computed 被组件的渲染 effect 订阅。
-  // 但 computed 内部的 this.x 不是响应式依赖（this 指向原始对象），
-  // 所以 computed 的 dep 版本号永远不会递增。
-  // 后续访问时 computed 认为自己是"干净的"，直接返回缓存值。
+  // 关键发现：computed(() => this.x) 中的 this 指向原始对象（非 reactive 代理），
+  // 所以 computed 永远无法收集到响应式依赖。
   //
-  // 而在不渲染的场景中，computed 没有被任何 effect 订阅，
-  // 每次访问 .value 时 Vue 会走另一个代码路径（检查 globalVersion），
-  // 能检测到全局有变化从而重新计算。
+  // Vue 3.5+ 的 NO_DIRTY_CHECK 机制：
+  // computed 第一次求值后，如果发现没有收集到任何响应式依赖（deps 为空），
+  // 会将 flags 设置为 NO_DIRTY_CHECK (128)，后续访问直接返回缓存值。
+  //
+  // 因此，只要 computedX 被访问过一次（无论是通过模板渲染还是测试代码），
+  // 它就会被永久锁定。之前观察到的"未渲染时能更新"只是延迟求值的时序巧合：
+  // 如果修改发生在 computed 第一次求值之前，第一次求值时读到的就是新值。
+  //
+  // 详见：docs/note/11.computed缓存陷阱.md
   // ========================================================================
   describe('组件渲染对 computed 更新的影响', () => {
     it('模板渲染了 computedX：increaseX 后 computedX 不会更新', () => {
@@ -208,7 +249,7 @@ describe('test23 - computed 自动解包行为研究', () => {
       expect(service.computedX).toBe(1);
     });
 
-    it('模板未渲染 computedX：increaseX 后 computedX 能正常更新', () => {
+    it('模板未渲染 computedX：先访问 computedX 再 increaseX，computedX 不会更新（NO_DIRTY_CHECK 锁定）', () => {
       // 创建一个不在模板中渲染 computedX 的组件
       const NoComputedXComp = defineComponent({
         setup() {
@@ -226,11 +267,12 @@ describe('test23 - computed 自动解包行为研究', () => {
       const wrapper = mount(NoComputedXComp);
       const service = wrapper.vm.service;
 
+      // 先访问 computedX → NO_DIRTY_CHECK 锁定
       expect(service.computedX).toBe(1);
       service.increaseX();
       expect(service.x).toBe(2);
-      // computedX 能正常更新！
-      expect(service.computedX).toBe(2);
+      // computedX 不会更新，因为已被 NO_DIRTY_CHECK 锁定
+      expect(service.computedX).toBe(1);
     });
 
     it('不使用 DI，直接 new + reactive 在组件中渲染 computedX：同样不会更新', () => {
@@ -259,7 +301,7 @@ describe('test23 - computed 自动解包行为研究', () => {
       expect(service.computedX).toBe(1);
     });
 
-    it('DI 但模板不使用 service：computedX 能正常更新', () => {
+    it('DI 但模板不使用 service：先访问 computedX 再修改，computedX 不会更新（NO_DIRTY_CHECK 锁定）', () => {
       const NoRenderComp = defineComponent({
         setup() {
           declareProviders([DemoService]);
@@ -274,10 +316,68 @@ describe('test23 - computed 自动解包行为研究', () => {
       const wrapper = mount(NoRenderComp);
       const service = wrapper.vm.service;
 
+      // 先访问 computedX → NO_DIRTY_CHECK 锁定
       expect(service.computedX).toBe(1);
       service.increaseX();
       expect(service.x).toBe(2);
+      // computedX 不会更新
+      expect(service.computedX).toBe(1);
+    });
+
+    it('DI 但模板不使用 service：不先访问 computedX，看起来能更新（延迟求值的时序巧合）', () => {
+      const NoRenderComp = defineComponent({
+        setup() {
+          declareProviders([DemoService]);
+          const service = useService(DemoService);
+          return { service };
+        },
+        render() {
+          return h('div', 'nothing');
+        },
+      });
+
+      const wrapper = mount(NoRenderComp);
+      const service = wrapper.vm.service;
+
+      // 不先访问 computedX，直接修改
+      service.increaseX();
+      expect(service.x).toBe(2);
+      // 第一次访问 computedX，此时 this.x 已经是 2，所以"碰巧"返回 2
       expect(service.computedX).toBe(2);
+
+      // 但再次修改后就不更新了
+      service.increaseX();
+      expect(service.x).toBe(3);
+      expect(service.computedX).toBe(2); // 锁定在第一次求值的结果
+    });
+
+    it('模板未渲染 computedX：不先访问 computedX，看起来能更新（延迟求值的时序巧合）', () => {
+      const NoComputedXComp = defineComponent({
+        setup() {
+          declareProviders([DemoService]);
+          const service = useService(DemoService);
+          return { service };
+        },
+        render() {
+          return h('div', [
+            h('div', { class: 'x' }, String(this.service.x)),
+          ]);
+        },
+      });
+
+      const wrapper = mount(NoComputedXComp);
+      const service = wrapper.vm.service;
+
+      // 不先访问 computedX，直接修改
+      service.increaseX();
+      expect(service.x).toBe(2);
+      // 第一次访问 computedX，此时 this.x 已经是 2
+      expect(service.computedX).toBe(2);
+
+      // 但再次修改后就不更新了
+      service.increaseX();
+      expect(service.x).toBe(3);
+      expect(service.computedX).toBe(2); // 锁定
     });
   });
 
