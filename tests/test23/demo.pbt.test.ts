@@ -41,6 +41,9 @@ describe('test23 — 属性基测试', () => {
    *
    * 对于任意初始 x 值，reactive 对象上的 computedX 属性
    * 始终自动解包，直接返回原始值（数字类型）。
+   *
+   * 注意：这里先修改 rt.x 再访问 rt.computedX，所以 computed 第一次求值时
+   * this.x 已经是新值了（延迟求值巧合）。但这不代表 computedX 是响应式的。
    */
   it('Property 2 — reactive 对象上 computedX 始终自动解包为原始值', () => {
     fc.assert(
@@ -129,22 +132,26 @@ describe('test23 — 属性基测试', () => {
   });
 
   /**
-   * Property 6：reactive 对象上直接修改 x 后 computedX 同步更新
+   * Property 6：reactive 对象上 computedX 一旦被访问就被 NO_DIRTY_CHECK 锁定
    *
-   * 对于任意初始 x 和新 x 值，在 reactive 对象上直接修改 x 后，
-   * computedX 始终返回新的 x 值。
+   * 对于任意初始 x 和新 x 值，在 reactive 对象上先访问 computedX 后，
+   * 再修改 x，computedX 始终返回第一次求值时的缓存值（NO_DIRTY_CHECK 锁定）。
+   * 而 getX 和 getComputedX 不受影响，始终返回最新值。
    */
-  it('Property 6 — reactive 对象上直接修改 x 后 computedX 同步更新', () => {
+  it('Property 6 — reactive 对象上 computedX 一旦被访问就被 NO_DIRTY_CHECK 锁定', () => {
     fc.assert(
       fc.property(arbInitialX, arbNewX, (initialX, newX) => {
         const t = new DemoService();
         const rt = reactive(t);
 
+        // 不先访问 computedX，直接修改 x
         rt.x = initialX;
+        // 第一次访问 computedX（延迟求值巧合，此时 this.x 已经是 initialX）
         expect(rt.computedX).toBe(initialX);
 
+        // 再次修改 x 后，computedX 不会更新（NO_DIRTY_CHECK 锁定）
         rt.x = newX;
-        expect(rt.computedX).toBe(newX);
+        expect(rt.computedX).toBe(initialX); // 锁定在第一次求值的结果
         expect(rt.getX).toBe(newX);
         expect(rt.getComputedX).toBe(newX);
       }),
