@@ -19,7 +19,7 @@ import { getEffectScope } from './scope.ts';
  */
 function effectScopeDecorator(
   value: (this: any, ...args: any[]) => void,
-  context: ClassMethodDecoratorContext
+  _context: ClassMethodDecoratorContext
 ): (this: any, ...args: any[]) => VueEffectScope {
   return function (this: any, ...args: any[]): VueEffectScope {
     const rootScope = getEffectScope(this);

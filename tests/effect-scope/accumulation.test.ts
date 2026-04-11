@@ -88,7 +88,7 @@ describe('EffectScope 装饰器 — 累加语义属性测试', () => {
    */
   it('Feature: effect-scope-decorator, Property 2: 每次调用返回新的 Child_Scope', () => {
     fc.assert(
-      fc.property(fc.integer({ min: 2, max: 10 }), (n) => {
+      fc.property(fc.integer({ min: 2, max: 10 }), n => {
         class DemoService {
           @EffectScope
           public setup() {
