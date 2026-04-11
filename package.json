@@ -41,7 +41,7 @@
   "scripts": {
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "build": "vue-tsc -b && vite build",
+    "build": "vue-tsc -b tsconfig.app.json && vite build",
     "clean": "rm -rf dist/*",
     "public": "npm publish --access public",
     "postpublish": "git push origin --follow-tags",

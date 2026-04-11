@@ -8,7 +8,7 @@
 import fc from 'fast-check';
 import { mount } from '@vue/test-utils';
 import DemoComp from './DemoComp.vue';
-import { getEffectScope } from '@/index';
+import { getEffectScope } from '@/scope';
 import { onScopeDispose } from 'vue';
 
 const arbClickTimes = fc.integer({ min: 1, max: 5 });
