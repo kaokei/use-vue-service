@@ -15,9 +15,9 @@ export class CountService {
   /** 当前计数值 */
   public count = 0;
 
-  /** 通过 @Inject 装饰器注入 LoggerService，使用 Stage 3 auto-accessor 语法 */
+  /** 通过 @Inject 装饰器注入 LoggerService */
   @Inject(LoggerService)
-  accessor logger!: LoggerService;
+  logger!: LoggerService;
 
   /** 计数加一，并通过注入的 LoggerService 输出日志 */
   public addOne() {
