@@ -1,4 +1,4 @@
-import { markRaw } from 'vue';
+import { markRaw, toRaw } from 'vue';
 import { isObject } from '@kaokei/di';
 
 // TC39 Stage 3 装饰器：标记属性永远保持原始对象，不被 Vue 转为响应式
@@ -32,10 +32,10 @@ function rawDecorator(
     // auto-accessor 装饰器：返回 { get, set, init } 拦截读写和初始化
     return {
       get() {
-        return value.get.call(this);
+        return value.get.call(toRaw(this));
       },
       set(newVal: unknown) {
-        value.set.call(this, ensureRaw(newVal));
+        value.set.call(toRaw(this), ensureRaw(newVal));
       },
       init: ensureRaw,
     };
