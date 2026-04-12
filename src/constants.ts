@@ -5,12 +5,12 @@ import type { FindChildService, FindChildrenServices } from './interface.ts';
 
 // 给依赖注入库使用的token
 export const FIND_CHILD_SERVICE = new Token<FindChildService>(
-  'USE_REACT_SERVICE_FIND_CHILD_SERVICE'
+  'FIND_CHILD_SERVICE'
 );
 
 // 给依赖注入库使用的token
 export const FIND_CHILDREN_SERVICES = new Token<FindChildrenServices>(
-  'USE_REACT_SERVICE_FIND_CHILDREN_SERVICES'
+  'FIND_CHILDREN_SERVICES'
 );
 
 // 每个实例对象自身维护的effectScope的key
