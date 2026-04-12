@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@kaokei/di':
-        specifier: ^5.0.3
-        version: 5.0.3
+        specifier: ^5.0.4
+        version: 5.0.4
       '@swc/core':
         specifier: ^1.15.21
         version: 1.15.24
@@ -79,7 +79,7 @@ importers:
     dependencies:
       '@kaokei/di':
         specifier: ^5.0.0
-        version: 5.0.3
+        version: 5.0.4
       '@kaokei/use-vue-service':
         specifier: ^3.0.2
         version: 3.0.2
@@ -594,8 +594,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@kaokei/di@5.0.3':
-    resolution: {integrity: sha512-n1p0LW6Ntk90UL9d9nqCosuDNPMH+PdjqKgoOZnbIAQGJMwFxFMocgCBK76ISswNYZWTTUJAq8XHruPdRRypdw==}
+  '@kaokei/di@5.0.4':
+    resolution: {integrity: sha512-4XJ0it1d6JlTN6DsD4ySaXMOhHN1+yqmuJXlnQ9fhUsw1gkk2oYKi3pQ3apmsOmxw6h4BcCyqPKqh84LLZNhyw==}
 
   '@kaokei/use-vue-service@3.0.2':
     resolution: {integrity: sha512-eXWMADj+5XKRttBg05k4CHUGqgVWviD0Phtfxv9z6hipcxcHGerLYplAE3G7gmgZ2i/7IEXqmEvSUIb3NuH+ww==}
@@ -2249,8 +2249,8 @@ packages:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
 
-  resolve@1.22.11:
-    resolution: {integrity: sha512-RfqAvLnMl313r7c9oclB1HhUEAezcpLjz95wFH4LVuhk9JF/r22qmVP9AMmOU4vMX7Q8pN8jwNg/CSpdFnMjTQ==}
+  resolve@1.22.12:
+    resolution: {integrity: sha512-TyeJ1zif53BPfHootBGwPRYT1RUt6oGWsaQr8UyZW/eAm9bKoijtvruSDEmZHm92CwS9nj7/fWttqPCgzep8CA==}
     engines: {node: '>= 0.4'}
     hasBin: true
 
@@ -3208,7 +3208,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@kaokei/di@5.0.3': {}
+  '@kaokei/di@5.0.4': {}
 
   '@kaokei/use-vue-service@3.0.2': {}
 
@@ -3232,7 +3232,7 @@ snapshots:
       diff: 8.0.4
       lodash: 4.18.1
       minimatch: 10.2.3
-      resolve: 1.22.11
+      resolve: 1.22.12
       semver: 7.5.4
       source-map: 0.6.1
       typescript: 5.9.3
@@ -3244,7 +3244,7 @@ snapshots:
       '@microsoft/tsdoc': 0.16.0
       ajv: 8.18.0
       jju: 1.4.0
-      resolve: 1.22.11
+      resolve: 1.22.12
 
   '@microsoft/tsdoc@0.16.0': {}
 
@@ -3346,7 +3346,7 @@ snapshots:
       fs-extra: 11.3.4
       import-lazy: 4.0.0
       jju: 1.4.0
-      resolve: 1.22.11
+      resolve: 1.22.12
       semver: 7.5.4
     optionalDependencies:
       '@types/node': 22.19.17
@@ -3357,7 +3357,7 @@ snapshots:
 
   '@rushstack/rig-package@0.7.2':
     dependencies:
-      resolve: 1.22.11
+      resolve: 1.22.12
       strip-json-comments: 3.1.1
 
   '@rushstack/terminal@0.22.5(@types/node@22.19.17)':
@@ -4766,7 +4766,7 @@ snapshots:
   normalize-package-data@2.5.0:
     dependencies:
       hosted-git-info: 2.8.9
-      resolve: 1.22.11
+      resolve: 1.22.12
       semver: 5.7.2
       validate-npm-package-license: 3.0.4
 
@@ -4965,8 +4965,9 @@ snapshots:
 
   require-from-string@2.0.2: {}
 
-  resolve@1.22.11:
+  resolve@1.22.12:
     dependencies:
+      es-errors: 1.3.0
       is-core-module: 2.16.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
