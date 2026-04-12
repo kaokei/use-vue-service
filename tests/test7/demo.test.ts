@@ -6,7 +6,7 @@ import { RootService } from './RootService';
 import {
   declareAppProvidersPlugin,
   declareRootProviders,
-  getRootService,
+  useRootService,
 } from '@/index';
 
 describe('test7', () => {
@@ -22,7 +22,7 @@ describe('test7', () => {
       },
     });
 
-    const rootService = getRootService(RootService);
+    const rootService = useRootService(RootService);
 
     expect(wrapper.vm.service).toBeInstanceOf(DemoService);
     expect(wrapper.vm.appService).toBeInstanceOf(AppService);

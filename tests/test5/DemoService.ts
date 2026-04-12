@@ -1,7 +1,8 @@
 import { computed } from 'vue';
 import { TYPES } from './token';
-import { Inject, PostConstruct, TokenType } from '@/index';
+import { Inject, PostConstruct, TokenType, Injectable } from '@/index';
 
+@Injectable()
 export class DemoService {
   public count = 1;
   public age = 100;

@@ -1,7 +1,5 @@
 export * from '@kaokei/di';
 
-export { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES } from './constants.ts';
-
 export {
   useService,
   declareProviders,
@@ -12,6 +10,10 @@ export {
   declareAppProvidersPlugin,
 } from './core.ts';
 
+export { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES } from './constants.ts';
+
 export { Computed } from './computed.ts';
 
-export { getEffectScope } from './scope.ts';
+export { Raw } from './raw.ts';
+
+export { RunInScope } from './effect-scope.ts';

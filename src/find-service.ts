@@ -1,21 +1,25 @@
 import type { CommonToken, Container } from '@kaokei/di';
 
+// 遍历子容器树，收集绑定了指定 token 的服务实例
+// findFirst 为 true 时找到第一个即停止遍历
 function walk<T>(
   children: Set<Container> | undefined,
   token: CommonToken<T>,
-  results: T[]
-): T[] {
+  results: T[],
+  findFirst: boolean
+): boolean {
   if (children) {
-    children.forEach(container => {
-      if (container && container.isCurrentBound(token)) {
+    for (const container of children) {
+      if (container.isCurrentBound(token)) {
         results.push(container.get(token));
+        if (findFirst) return true;
       }
-      if (container.children) {
-        walk(container.children, token, results);
+      if (container.children && walk(container.children, token, results, findFirst)) {
+        return true;
       }
-    });
+    }
   }
-  return results;
+  return false;
 }
 
 export function findChildService<T>(
@@ -23,7 +27,7 @@ export function findChildService<T>(
   container: Container
 ): T | undefined {
   const results: T[] = [];
-  walk(container.children, token, results);
+  walk(container.children, token, results, true);
   return results[0];
 }
 
@@ -32,6 +36,6 @@ export function findChildrenServices<T>(
   container: Container
 ): T[] {
   const results: T[] = [];
-  walk(container.children, token, results);
+  walk(container.children, token, results, false);
   return results;
 }

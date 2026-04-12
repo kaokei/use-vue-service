@@ -1,6 +1,7 @@
-import { Inject } from '@kaokei/di';
+import { Inject, Injectable } from '@kaokei/di';
 import { OtherService } from './OtherService';
 
+@Injectable()
 export class DemoServiceBase {
   public count_base = 1;
 

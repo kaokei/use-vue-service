@@ -1,6 +1,7 @@
-import { Inject } from '@/index';
+import { Inject, Injectable } from '@/index';
 import { TYPES } from './router';
 
+@Injectable()
 export class DemoService {
   public count = 1;
 

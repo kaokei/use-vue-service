@@ -1,7 +1,8 @@
 import { computed } from 'vue';
-import { Inject, PostConstruct } from '@/index';
+import { Inject, PostConstruct, Injectable } from '@/index';
 import { OtherService } from './OtherService';
 
+@Injectable()
 export class DemoService {
   public count = 1;
   public age = 100;
