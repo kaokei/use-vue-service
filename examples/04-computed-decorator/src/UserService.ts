@@ -1,3 +1,4 @@
+import { toRaw } from 'vue';
 import { Computed } from '@kaokei/use-vue-service';
 
 /**
@@ -28,7 +29,8 @@ export class UserService {
    */
   @Computed
   public get fullName(): string {
-    this.fullNameCalcCount++;
+    // 避免Computed死循环
+    toRaw(this).fullNameCalcCount++;
     return `${this.firstName}${this.lastName}`;
   }
 
@@ -38,7 +40,8 @@ export class UserService {
    */
   @Computed()
   public get displayName(): string {
-    this.displayNameCalcCount++;
+    // 避免Computed死循环
+    toRaw(this).displayNameCalcCount++;
     return `你好，${this.firstName}${this.lastName}！`;
   }
 
