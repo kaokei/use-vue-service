@@ -18,14 +18,15 @@
 本库通过类来声明服务，对 typescript 支持非常棒。
 
 - [入门指南](./docs/guide/index.md)
+- [示例代码](./docs/guide/EXAMPLES.md)
 - [API 文档](./docs/api/index.md)
-- [博客文章](./docs/note/01.父组件与子组件的理解.md)
-- [codesandbox example](https://codesandbox.io/s/di-playground-zjnyv)
+- [笔记文章](./docs/note/00.README.md)
 - [online demo](https://use-vue-service.vercel.app/)
 
-## Todo List
-1. 优化@Computed
-5. 增加@Raw装饰器
-4. 更新hasOwn
-3. 发布@kaokei/di@5.0.3
-2. 评估是否需要@Watch/@Effect
+https://github.com/huanggm/use-vue-service-demo
+https://use-vue-service-demo.vercel.app/#/api
+
+https://github.com/kaokei/use-vue-service-docs
+use-vue-service-docs.vercel.app
+
+
