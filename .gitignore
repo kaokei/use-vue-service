@@ -39,3 +39,4 @@ storybook-static
 
 .nuxt
 .output
+dist

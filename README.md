@@ -29,4 +29,7 @@ https://use-vue-service-demo.vercel.app/#/api
 https://github.com/kaokei/use-vue-service-docs
 use-vue-service-docs.vercel.app
 
+https://github.com/kaokei/use-vue-service
+use-vue-service.vercel.app
+
 

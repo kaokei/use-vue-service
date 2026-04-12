@@ -367,6 +367,34 @@ importers:
         specifier: ^5.8.0
         version: 5.9.3
 
+  examples/14-tree-scope-demo:
+    dependencies:
+      '@kaokei/di':
+        specifier: ^5.0.0
+        version: 5.0.4
+      '@kaokei/use-vue-service':
+        specifier: ^4.0.0
+        version: 4.0.1(@kaokei/di@5.0.4)
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.32(typescript@5.9.3)
+      vue-router:
+        specifier: ^4.5.0
+        version: 4.6.4(vue@3.5.32(typescript@5.9.3))
+    devDependencies:
+      '@babel/plugin-proposal-decorators':
+        specifier: ^7.29.0
+        version: 7.29.0(@babel/core@7.29.0)
+      '@rollup/plugin-babel':
+        specifier: ^7.0.0
+        version: 7.0.0(@babel/core@7.29.0)(rollup@4.60.1)
+      '@vitejs/plugin-vue':
+        specifier: ^6.0.0
+        version: 6.0.5(vite@6.4.2(@types/node@22.19.17)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3))
+      vite:
+        specifier: ^6.0.0
+        version: 6.4.2(@types/node@22.19.17)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3)
+
 packages:
 
   '@algolia/abtesting@1.16.1':
