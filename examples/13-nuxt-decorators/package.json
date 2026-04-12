@@ -1,0 +1,25 @@
+{
+  "name": "use-vue-service-example-13-nuxt-decorators",
+  "version": "1.0.0",
+  "description": "Nuxt 项目中使用 TC39 Stage 3 装饰器 + DI 系统",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "start": "nuxt dev"
+  },
+  "dependencies": {
+    "@kaokei/di": "^5.0.0",
+    "@kaokei/use-vue-service": "^4.0.0",
+    "nuxt": "^4.3.0",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.25.0",
+    "@babel/plugin-syntax-jsx": "^7.25.0",
+    "typescript": "^5.8.0"
+  }
+}

@@ -36,3 +36,6 @@ storybook-static
 .vercel
 *.tgz
 *.ignore.ts
+
+.nuxt
+.output
