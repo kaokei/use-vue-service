@@ -1,6 +1,7 @@
-import { Inject, LazyToken } from '@/index';
+import { Inject, LazyToken, Injectable } from '@/index';
 import { OtherService } from './OtherService';
 
+@Injectable()
 export class DemoService {
   public count = 100;
 

@@ -2,7 +2,7 @@
 
 ### 测试目的
 
-验证全局级服务的注册与多种访问方式，以及全局单例的一致性保证。对比 `useService` 和 `getRootService` 两种方法获取全局服务的等效性。
+验证全局级服务的注册与多种访问方式，以及全局单例的一致性保证。对比 `useService` 和 `useRootService` 两种方法获取全局服务的等效性。
 
 ### 测试要点
 
@@ -12,7 +12,7 @@
 
 2. **全局服务的两种获取方式**
    - 通过组件中的 `useService(ServiceClass)` 访问
-   - 通过组件内外都可调用的 `getRootService(ServiceClass)` 访问
+   - 通过组件内外都可调用的 `useRootService(ServiceClass)` 访问
    - 两种方法获取的是同一实例，完全等价
 
 3. **全局单例性保证**

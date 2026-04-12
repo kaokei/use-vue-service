@@ -41,7 +41,7 @@
   "scripts": {
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "build": "vue-tsc -b && vite build",
+    "build": "vue-tsc -b tsconfig.app.json && vite build",
     "clean": "rm -rf dist/*",
     "public": "npm publish --access public",
     "postpublish": "git push origin --follow-tags",
@@ -53,10 +53,10 @@
     "docs:preview": "vitepress preview docs"
   },
   "peerDependencies": {
-    "@kaokei/di": "^5.0.2"
+    "@kaokei/di": "^5.0.4"
   },
   "devDependencies": {
-    "@kaokei/di": "^5.0.2",
+    "@kaokei/di": "^5.0.4",
     "@types/node": "^22.15.17",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vitest/coverage-v8": "^3.1.1",

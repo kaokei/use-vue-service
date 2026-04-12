@@ -7,7 +7,7 @@ export class DemoService {
     this.count++;
   }
 
-  @Computed
+  @Computed()
   public get sum() {
     return this.count + 100;
   }

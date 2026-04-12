@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import DemoComp from './DemoComp.vue';
-import { getEffectScope } from '@/index';
+import { getEffectScope } from '@/scope';
 import { onScopeDispose } from 'vue';
 
 describe('test19', () => {
