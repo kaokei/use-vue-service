@@ -1,0 +1,19 @@
+{
+  "name": "use-vue-service-example-09-vue-router-integration",
+  "version": "1.0.0",
+  "description": "Vue Router 集成：在路由组件中使用依赖注入服务",
+  "type": "module",
+  "scripts": {
+    "start": "vite"
+  },
+  "dependencies": {
+    "@kaokei/di": "^5.0.0",
+    "@kaokei/use-vue-service": "^4.0.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.0",
+    "vite": "^6.0.0"
+  }
+}

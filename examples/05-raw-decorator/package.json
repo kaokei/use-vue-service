@@ -1,0 +1,18 @@
+{
+  "name": "use-vue-service-example-05-raw-decorator",
+  "version": "1.0.0",
+  "description": "@Raw 装饰器：标记属性不参与 Vue 响应式追踪",
+  "type": "module",
+  "scripts": {
+    "start": "vite"
+  },
+  "dependencies": {
+    "@kaokei/di": "^5.0.0",
+    "@kaokei/use-vue-service": "^4.0.0",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.0",
+    "vite": "^6.0.0"
+  }
+}

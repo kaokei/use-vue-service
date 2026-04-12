@@ -15,6 +15,23 @@ export default defineConfig({
     ],
 
     sidebar: {
+      '/guide/': [
+        {
+          text: 'Guide',
+          items: [
+            { text: '快速开始', link: '/guide/' },
+            { text: 'CodeSandbox 在线示例', link: '/guide/EXAMPLES' },
+          ],
+        },
+      ],
+      '/api/': [
+        {
+          text: 'API',
+          items: [
+            { text: 'API 文档', link: '/api/' },
+          ],
+        },
+      ],
       '/note/': [
         {
           text: 'Note',
@@ -39,6 +56,11 @@ export default defineConfig({
             { text: 'SSR-angular', link: '/note/08.SSR-angular' },
             { text: 'SSR-pinia', link: '/note/09.SSR-pinia' },
             { text: 'SSR', link: '/note/10.SSR' },
+            { text: 'computed缓存陷阱', link: '/note/11.computed缓存陷阱' },
+            { text: 'TC39-Stage3-装饰器类型详解', link: '/note/12.TC39-Stage3-装饰器类型详解' },
+            { text: 'Legacy-experimentalDecorators-装饰器类型详解', link: '/note/13.Legacy-experimentalDecorators-装饰器类型详解' },
+            { text: 'Computed装饰器只适用于getter属性', link: '/note/14.Computed装饰器只适用于getter属性' },
+            { text: 'computed-comparison', link: '/note/15.computed-comparison' },
             { text: '基本命令', link: '/note/99.基本命令' },
           ],
         },

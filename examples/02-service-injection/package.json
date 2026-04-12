@@ -1,0 +1,18 @@
+{
+  "name": "use-vue-service-example-02-service-injection",
+  "version": "1.0.0",
+  "description": "服务间依赖注入：使用 @Inject 装饰器注入依赖服务",
+  "type": "module",
+  "scripts": {
+    "start": "vite"
+  },
+  "dependencies": {
+    "@kaokei/di": "^5.0.0",
+    "@kaokei/use-vue-service": "^4.0.0",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.0",
+    "vite": "^6.0.0"
+  }
+}

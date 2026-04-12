@@ -1,0 +1,18 @@
+{
+  "name": "use-vue-service-example-12-app-providers-plugin",
+  "version": "1.0.0",
+  "description": "App 级服务插件：使用 declareAppProvidersPlugin 以 Vue 插件形式声明服务",
+  "type": "module",
+  "scripts": {
+    "start": "vite"
+  },
+  "dependencies": {
+    "@kaokei/di": "^5.0.0",
+    "@kaokei/use-vue-service": "^4.0.0",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.0",
+    "vite": "^6.0.0"
+  }
+}
