@@ -71,14 +71,13 @@ describe('Raw 装饰器 — field 用法', () => {
   });
 });
 
-describe('Raw 装饰器 — auto-accessor 用法', () => {
+describe('Raw 装饰器 — auto-accessor 用法（原始实例）', () => {
   it('初始值为对象时，应被 markRaw 标记', () => {
     class DemoService {
       @Raw()
       public accessor chart: any = { type: 'pie' };
     }
 
-    // 直接在原始实例上验证（accessor 使用私有字段，reactive 代理无法访问）
     const demo = new DemoService();
     // 初始值经过 init: ensureRaw 处理，对象应被 markRaw 标记
     expect(isReactive(demo.chart)).toBe(false);
@@ -134,6 +133,81 @@ describe('Raw 装饰器 — auto-accessor 用法', () => {
   });
 });
 
+describe('Raw 装饰器 — auto-accessor 用法（reactive 代理）', () => {
+  // 以下测试覆盖通过 reactive() 代理对象访问 accessor 属性的场景。
+  // accessor 编译后使用私有字段（#A）存储值，Proxy 对象无法直接访问私有字段，
+  // 因此 get/set 中必须使用 toRaw(this) 还原为原始对象，否则会抛出：
+  // TypeError: Cannot read private member #A from an object whose class did not declare it
+
+  it('通过 reactive 代理读取初始值，应正常返回且不被响应式代理', () => {
+    class DemoService {
+      @Raw()
+      public accessor chart: any = { type: 'pie' };
+    }
+
+    const demo = new DemoService();
+    const reactiveDemo = reactive(demo);
+
+    expect(reactiveDemo.chart).toEqual({ type: 'pie' });
+    expect(isReactive(reactiveDemo.chart)).toBe(false);
+  });
+
+  it('通过 reactive 代理赋值新对象，新值应被 markRaw 标记', () => {
+    class DemoService {
+      @Raw()
+      public accessor chart: any = null;
+    }
+
+    const demo = new DemoService();
+    const reactiveDemo = reactive(demo);
+
+    const newObj = { type: 'scatter' };
+    reactiveDemo.chart = newObj;
+
+    expect(isReactive(reactiveDemo.chart)).toBe(false);
+    expect(reactiveDemo.chart).toBe(newObj);
+  });
+
+  it('通过 reactive 代理赋值非对象时，原样保留', () => {
+    class DemoService {
+      @Raw()
+      public accessor value: any = null;
+    }
+
+    const demo = new DemoService();
+    const reactiveDemo = reactive(demo);
+
+    reactiveDemo.value = 'hello';
+    expect(reactiveDemo.value).toBe('hello');
+
+    reactiveDemo.value = 42;
+    expect(reactiveDemo.value).toBe(42);
+
+    reactiveDemo.value = false;
+    expect(reactiveDemo.value).toBe(false);
+  });
+
+  it('通过 reactive 代理多次赋值对象，每次都应被 markRaw 标记', () => {
+    class DemoService {
+      @Raw()
+      public accessor instance: any = null;
+    }
+
+    const demo = new DemoService();
+    const reactiveDemo = reactive(demo);
+
+    const obj1 = { id: 1 };
+    const obj2 = { id: 2 };
+
+    reactiveDemo.instance = obj1;
+    expect(isReactive(reactiveDemo.instance)).toBe(false);
+
+    reactiveDemo.instance = obj2;
+    expect(isReactive(reactiveDemo.instance)).toBe(false);
+    expect(reactiveDemo.instance).toBe(obj2);
+  });
+});
+
 describe('Raw 装饰器 — 不带括号用法 @Raw', () => {
   it('field：不带括号，初始值对象应被 markRaw 标记', () => {
     class DemoService {
@@ -185,5 +259,34 @@ describe('Raw 装饰器 — 不带括号用法 @Raw', () => {
 
     expect(isReactive(demo.chart)).toBe(false);
     expect(demo.chart).toBe(newObj);
+  });
+
+  it('accessor：不带括号，通过 reactive 代理读取初始值应正常工作', () => {
+    class DemoService {
+      @Raw
+      public accessor chart: any = { type: 'pie' };
+    }
+
+    const demo = new DemoService();
+    const reactiveDemo = reactive(demo);
+
+    expect(reactiveDemo.chart).toEqual({ type: 'pie' });
+    expect(isReactive(reactiveDemo.chart)).toBe(false);
+  });
+
+  it('accessor：不带括号，通过 reactive 代理赋值新对象应被 markRaw 标记', () => {
+    class DemoService {
+      @Raw
+      public accessor chart: any = null;
+    }
+
+    const demo = new DemoService();
+    const reactiveDemo = reactive(demo);
+
+    const newObj = { type: 'scatter' };
+    reactiveDemo.chart = newObj;
+
+    expect(isReactive(reactiveDemo.chart)).toBe(false);
+    expect(reactiveDemo.chart).toBe(newObj);
   });
 });

@@ -82,7 +82,7 @@ importers:
         version: 5.0.4
       '@kaokei/use-vue-service':
         specifier: ^4.0.0
-        version: 4.0.0(@kaokei/di@5.0.4)
+        version: 4.0.1(@kaokei/di@5.0.4)
       vue:
         specifier: ^3.5.13
         version: 3.5.32(typescript@5.9.3)
@@ -101,7 +101,7 @@ importers:
         version: 5.0.4
       '@kaokei/use-vue-service':
         specifier: ^4.0.0
-        version: 4.0.0(@kaokei/di@5.0.4)
+        version: 4.0.1(@kaokei/di@5.0.4)
       vue:
         specifier: ^3.5.13
         version: 3.5.32(typescript@5.9.3)
@@ -126,7 +126,7 @@ importers:
         version: 5.0.4
       '@kaokei/use-vue-service':
         specifier: ^4.0.0
-        version: 4.0.0(@kaokei/di@5.0.4)
+        version: 4.0.1(@kaokei/di@5.0.4)
       vue:
         specifier: ^3.5.13
         version: 3.5.32(typescript@5.9.3)
@@ -145,7 +145,7 @@ importers:
         version: 5.0.4
       '@kaokei/use-vue-service':
         specifier: ^4.0.0
-        version: 4.0.0(@kaokei/di@5.0.4)
+        version: 4.0.1(@kaokei/di@5.0.4)
       vue:
         specifier: ^3.5.13
         version: 3.5.32(typescript@5.9.3)
@@ -170,7 +170,7 @@ importers:
         version: 5.0.4
       '@kaokei/use-vue-service':
         specifier: ^4.0.0
-        version: 4.0.0(@kaokei/di@5.0.4)
+        version: 4.0.1(@kaokei/di@5.0.4)
       vue:
         specifier: ^3.5.13
         version: 3.5.32(typescript@5.9.3)
@@ -195,7 +195,7 @@ importers:
         version: 5.0.4
       '@kaokei/use-vue-service':
         specifier: ^4.0.0
-        version: 4.0.0(@kaokei/di@5.0.4)
+        version: 4.0.1(@kaokei/di@5.0.4)
       vue:
         specifier: ^3.5.13
         version: 3.5.32(typescript@5.9.3)
@@ -220,7 +220,7 @@ importers:
         version: 5.0.4
       '@kaokei/use-vue-service':
         specifier: ^4.0.0
-        version: 4.0.0(@kaokei/di@5.0.4)
+        version: 4.0.1(@kaokei/di@5.0.4)
       vue:
         specifier: ^3.5.13
         version: 3.5.32(typescript@5.9.3)
@@ -239,7 +239,7 @@ importers:
         version: 5.0.4
       '@kaokei/use-vue-service':
         specifier: ^4.0.0
-        version: 4.0.0(@kaokei/di@5.0.4)
+        version: 4.0.1(@kaokei/di@5.0.4)
       vue:
         specifier: ^3.5.13
         version: 3.5.32(typescript@5.9.3)
@@ -258,7 +258,7 @@ importers:
         version: 5.0.4
       '@kaokei/use-vue-service':
         specifier: ^4.0.0
-        version: 4.0.0(@kaokei/di@5.0.4)
+        version: 4.0.1(@kaokei/di@5.0.4)
       vue:
         specifier: ^3.5.13
         version: 3.5.32(typescript@5.9.3)
@@ -280,7 +280,7 @@ importers:
         version: 5.0.4
       '@kaokei/use-vue-service':
         specifier: ^4.0.0
-        version: 4.0.0(@kaokei/di@5.0.4)
+        version: 4.0.1(@kaokei/di@5.0.4)
       vue:
         specifier: ^3.5.13
         version: 3.5.32(typescript@5.9.3)
@@ -305,7 +305,7 @@ importers:
         version: 5.0.4
       '@kaokei/use-vue-service':
         specifier: ^4.0.0
-        version: 4.0.0(@kaokei/di@5.0.4)
+        version: 4.0.1(@kaokei/di@5.0.4)
       vue:
         specifier: ^3.5.13
         version: 3.5.32(typescript@5.9.3)
@@ -330,7 +330,7 @@ importers:
         version: 5.0.4
       '@kaokei/use-vue-service':
         specifier: ^4.0.0
-        version: 4.0.0(@kaokei/di@5.0.4)
+        version: 4.0.1(@kaokei/di@5.0.4)
       vue:
         specifier: ^3.5.13
         version: 3.5.32(typescript@5.9.3)
@@ -935,8 +935,8 @@ packages:
   '@kaokei/di@5.0.4':
     resolution: {integrity: sha512-4XJ0it1d6JlTN6DsD4ySaXMOhHN1+yqmuJXlnQ9fhUsw1gkk2oYKi3pQ3apmsOmxw6h4BcCyqPKqh84LLZNhyw==}
 
-  '@kaokei/use-vue-service@4.0.0':
-    resolution: {integrity: sha512-3UFPWfiMRIl31HINYgEsGq8hvGLe0TyyRocf0AydvYEBPWUD/RVHoEsSPcas1uToroAoZ2vKaqylYSc8lWuo1A==}
+  '@kaokei/use-vue-service@4.0.1':
+    resolution: {integrity: sha512-1DwE7yMtmXtCbfMbp4PZUTuSdxbYrVmfysjZp4ilZJOMpBg4j9sx4t6a430WL5nHZ8rLgXsy8xUr7r3DWdMEOg==}
     peerDependencies:
       '@kaokei/di': ^5.0.4
 
@@ -3752,7 +3752,7 @@ snapshots:
 
   '@kaokei/di@5.0.4': {}
 
-  '@kaokei/use-vue-service@4.0.0(@kaokei/di@5.0.4)':
+  '@kaokei/use-vue-service@4.0.1(@kaokei/di@5.0.4)':
     dependencies:
       '@kaokei/di': 5.0.4
 
