@@ -42,19 +42,20 @@ function rawDecorator(
   }
 
   // field 装饰器：通过 addInitializer + defineProperty 拦截后续赋值
+  // 利用闭包存储值，避免在 this 上挂载额外属性
   const propertyName = context.name;
 
   context.addInitializer(function (this: any) {
-    const cacheKey = Symbol.for(`__raw_${String(propertyName)}`);
+    let cachedValue: unknown;
 
     Object.defineProperty(this, propertyName, {
       configurable: true,
       enumerable: true,
       get() {
-        return this[cacheKey];
+        return cachedValue;
       },
       set(newVal: unknown) {
-        this[cacheKey] = ensureRaw(newVal);
+        cachedValue = ensureRaw(newVal);
       },
     });
   });
