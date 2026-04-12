@@ -19,5 +19,6 @@ URL 格式：`https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tre
 | 11-lazy-token             | LazyToken 解决循环依赖：使用 LazyToken 延迟解析避免循环引用            | [打开](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/11-lazy-token)             |
 | 12-app-providers-plugin   | App 级服务插件：使用 declareAppProvidersPlugin 以 Vue 插件形式声明服务 | [打开](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/12-app-providers-plugin)   |
 | 13-nuxt-decorators        | App 级服务插件：使用 declareAppProvidersPlugin 以 Vue 插件形式声明服务 | [打开](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/13-nuxt-decorators)        |
+| 14-tree-scope-demo        | App 级服务插件：使用 declareAppProvidersPlugin 以 Vue 插件形式声明服务 | [打开](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/14-tree-scope-demo)        |
 
 每个示例目录包含独立的 `package.json`（依赖已发布的 `@kaokei/use-vue-service` 和 `@kaokei/di` 版本）和 `tsconfig.json`，与主包构建流程完全隔离，可直接在 CodeSandbox 中运行。
