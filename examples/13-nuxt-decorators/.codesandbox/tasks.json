@@ -1,6 +1,10 @@
 {
   "setupTasks": [
     {
+      "name": "Remove Dependencies",
+      "command": "rm -rf node_modules"
+    },
+    {
       "name": "Installing Dependencies",
       "command": "pnpm install"
     }
