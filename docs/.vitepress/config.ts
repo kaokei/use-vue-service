@@ -68,6 +68,7 @@ export default defineConfig({
             { text: '组件间通信方式', link: '/note/20.组件间通信方式' },
             { text: '组件与服务', link: '/note/21.组件与服务' },
             { text: '响应式实现分析', link: '/note/22.响应式实现分析' },
+            { text: 'autobind的必要性分析.md', link: '/note/23.autobind的必要性分析.md' },
             { text: '基本命令', link: '/note/99.基本命令' },
           ],
         },
