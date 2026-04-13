@@ -14,11 +14,14 @@ import * as path from 'path';
  * Validates: Requirements 5.2, 7.2
  */
 
-// 获取所有示例目录（匹配 XX-name 模式）
+// Nuxt 示例使用不同的项目结构，不适用于 Vite 示例的通用规范检查
+const EXCLUDED_DIRS = ['13-nuxt-decorators'];
+
+// 获取所有示例目录（匹配 XX-name 模式，排除非 Vite 示例）
 const examplesDir = path.resolve(__dirname, '../../examples');
 const exampleDirs = fs.readdirSync(examplesDir).filter((dir) => {
   const fullPath = path.join(examplesDir, dir);
-  return fs.statSync(fullPath).isDirectory() && /^\d{2}-/.test(dir);
+  return fs.statSync(fullPath).isDirectory() && /^\d{2}-/.test(dir) && !EXCLUDED_DIRS.includes(dir);
 });
 
 // fast-check 生成器：从实际示例目录中随机选取
