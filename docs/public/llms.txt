@@ -1,0 +1,72 @@
+# @kaokei/use-vue-service
+
+> Lightweight Vue 3 state management with dependency injection, inspired by Angular services.
+
+本库基于 [@kaokei/di](https://github.com/kaokei/di) 开发，通过依赖注入实现面向服务编程和领域驱动开发，可以代替 vuex/pinia。
+
+- 版本：4.0.1
+- 许可证：MIT
+- GitHub：https://github.com/kaokei/use-vue-service
+- npm：https://www.npmjs.com/package/@kaokei/use-vue-service
+- 文档站点：https://use-vue-service.kaokei.com
+
+## 安装
+
+```sh
+npm install @kaokei/di @kaokei/use-vue-service
+```
+
+不依赖 reflect-metadata。使用 TC39 Stage 3 标准装饰器语法，TypeScript 5.0+ 默认支持，无需配置 experimentalDecorators。
+
+## 核心概念
+
+本库将 Angular 的"服务 + 依赖注入"模式引入 Vue 3。通过类来声明服务，利用 Vue 的 provide/inject 机制在组件树中传递 DI 容器，实现服务的声明、注入和共享。
+
+服务实例会自动被 `reactive()` 包裹，天然具备 Vue 响应式能力。
+
+## 三组核心 API
+
+### 组件级：useService / declareProviders
+- `declareProviders(providers)` — 在当前组件创建子容器，组件卸载时自动销毁
+- `useService(token)` — 从当前组件或最近祖先组件的容器中获取服务实例
+
+### 全局根级：useRootService / declareRootProviders
+- `declareRootProviders(providers)` — 在全局根容器上声明服务，全局共享
+- `useRootService(token)` — 从全局根容器中获取服务实例，不依赖组件树
+
+### App 级：useAppService / declareAppProviders / declareAppProvidersPlugin
+- `declareAppProviders(providers, app)` — 在指定 App 实例上声明服务
+- `useAppService(token, app)` — 从指定 App 实例获取服务
+- `declareAppProvidersPlugin(providers)` — 返回 Vue 插件，用于 `app.use()`
+
+## 装饰器
+
+### @Computed
+将 getter 属性转换为 Vue computed 响应式计算属性。支持 `@Computed` 和 `@Computed()` 两种用法。
+
+### @Raw
+标记属性不参与 Vue 响应式追踪，自动调用 markRaw。支持普通 field 和 auto-accessor。
+
+### @RunInScope
+在 EffectScope 中运行方法，自动管理副作用生命周期。返回 EffectScope 供手动停止。
+
+## Token 常量
+
+- `FIND_CHILD_SERVICE` — 查找子组件中声明的单个服务实例
+- `FIND_CHILDREN_SERVICES` — 查找子组件中声明的所有匹配服务实例
+
+## 从 @kaokei/di 重新导出的 API
+
+本库通过 `export * from '@kaokei/di'` 重新导出了 @kaokei/di 的所有 API，包括：
+- `@Inject` — 属性注入装饰器
+- `@PostConstruct` — 实例化后自动执行的生命周期方法装饰器
+- `Token` — 创建自定义 token
+- `LazyToken` — 延迟解析 token，用于解决循环依赖
+- `Container` — DI 容器类
+
+## 详细文档
+
+- [快速开始](https://github.com/kaokei/use-vue-service/blob/main/docs/guide/index.md)
+- [API 文档](https://github.com/kaokei/use-vue-service/blob/main/docs/api/index.md)
+- [示例代码](https://github.com/kaokei/use-vue-service/blob/main/docs/examples/index.md)
+- [完整 LLM 文档](https://use-vue-service.kaokei.com/llms-full.txt)

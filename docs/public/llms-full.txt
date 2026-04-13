@@ -1,0 +1,575 @@
+# @kaokei/use-vue-service — 完整 LLM 参考文档
+
+> Lightweight Vue 3 state management with dependency injection, inspired by Angular services.
+
+本库基于 [@kaokei/di](https://github.com/kaokei/di) 开发，通过依赖注入实现面向服务编程和领域驱动开发，可以代替 vuex/pinia。通过类来声明服务，对 TypeScript 支持非常好。
+
+- 版本：4.0.1
+- 许可证：MIT
+- GitHub：https://github.com/kaokei/use-vue-service
+- npm：https://www.npmjs.com/package/@kaokei/use-vue-service
+- 文档站点：https://use-vue-service.kaokei.com
+- 依赖：@kaokei/di ^5.0.4（peerDependency）
+
+---
+
+## 安装
+
+```sh
+npm install @kaokei/di @kaokei/use-vue-service
+```
+
+不依赖 reflect-metadata。使用 TC39 Stage 3 标准装饰器语法，TypeScript 5.0+ 默认支持，无需在 tsconfig.json 中配置 experimentalDecorators。
+
+---
+
+## 核心概念
+
+本库将 Angular 的"服务 + 依赖注入"模式引入 Vue 3：
+
+1. 用 class 定义服务，服务中可以通过 `@Inject` 装饰器声明对其他服务的依赖
+2. 在 Vue 组件的 setup 中调用 `declareProviders` 将服务绑定到当前组件的 DI 容器
+3. 调用 `useService` 获取服务实例，实例会自动被 `reactive()` 包裹，天然具备 Vue 响应式能力
+4. 子组件可以自动继承父组件声明的服务，也可以覆盖或新增服务绑定
+5. 组件卸载时，容器自动销毁，清理资源
+
+---
+
+## 导出总览
+
+```ts
+// 从 @kaokei/di 重新导出的所有 API
+export * from '@kaokei/di';
+
+// 核心 API
+export { useService, declareProviders } from './core';
+export { useRootService, declareRootProviders } from './core';
+export { useAppService, declareAppProviders, declareAppProvidersPlugin } from './core';
+
+// Token 常量
+export { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES } from './constants';
+
+// 装饰器
+export { Computed } from './computed';
+export { Raw } from './raw';
+export { RunInScope } from './effect-scope';
+```
+
+---
+
+## 类型定义
+
+```ts
+import type { Container, Newable, CommonToken } from '@kaokei/di';
+
+// 服务提供者类型
+type NewableProvider = Newable[];
+type FunctionProvider = (container: Container) => void;
+type Provider = NewableProvider | FunctionProvider;
+
+// 子组件服务查找函数类型
+type FindChildService = <T>(token: CommonToken<T>) => T | undefined;
+type FindChildrenServices = <T>(token: CommonToken<T>) => T[];
+```
+
+- `NewableProvider`：类数组形式。将每个类以 `toSelf()` 的方式绑定到容器，即类本身既是 token 也是实现。
+- `FunctionProvider`：函数形式。接收容器实例作为参数，允许自由调用容器的绑定 API（如 `container.bind(token).toConstantValue()`、`container.bind(token).toDynamicValue()` 等）。
+- `Provider`：`NewableProvider | FunctionProvider` 的联合类型。
+
+---
+
+## 三组核心 API
+
+### 第一组：组件级作用域 — useService / declareProviders
+
+容器通过 Vue 的 provide/inject 机制在组件树中传递。这是最常用的方式。
+
+#### declareProviders
+
+```ts
+function declareProviders(providers: NewableProvider): void;
+function declareProviders(providers: FunctionProvider): void;
+```
+
+在当前组件中声明服务提供者。
+
+行为逻辑：
+- 如果当前组件已经声明过容器（重复调用），则直接在已有容器上追加绑定
+- 如果当前组件尚未声明容器，则：
+  1. 获取父级容器作为 parent
+  2. 创建子容器（继承父级容器的所有绑定）
+  3. 在子容器上绑定新的服务
+  4. 通过 Vue 的 provide 将子容器注入组件树
+  5. 组件卸载时（onUnmounted）自动销毁子容器
+
+伪代码：
+
+```ts
+const container = new Container();
+provide(CONTAINER_TOKEN, container);
+container.bind(ClassName).toSelf();
+```
+
+#### useService
+
+```ts
+function useService<T>(token: CommonToken<T>): T;
+```
+
+从当前组件或最近的祖先组件的 DI 容器中获取服务实例。
+
+查找顺序：
+1. 先检查当前组件自身是否声明了容器
+2. 如果没有，则沿组件树向上查找最近的祖先组件的容器
+3. 如果整个组件树中都没有提供容器，则回退到全局的根容器
+
+伪代码：
+
+```ts
+const container = inject(CONTAINER_TOKEN);
+return container.get(token);
+```
+
+### 第二组：全局根级作用域 — useRootService / declareRootProviders
+
+直接操作全局的根容器，不依赖 Vue 组件树，可以在任何地方调用。
+
+#### declareRootProviders
+
+```ts
+function declareRootProviders(providers: NewableProvider): void;
+function declareRootProviders(providers: FunctionProvider): void;
+```
+
+在全局根容器上声明服务提供者，绑定的服务在整个应用中全局共享。
+
+#### useRootService
+
+```ts
+function useRootService<T>(token: CommonToken<T>): T;
+```
+
+从全局根容器中获取服务实例。
+
+### 第三组：App 级作用域 — useAppService / declareAppProviders / declareAppProvidersPlugin
+
+通过 `app.runWithContext` 在指定 Vue App 实例的上下文中操作容器，适用于多 App 实例场景，每个 App 拥有独立的容器。
+
+#### declareAppProviders
+
+```ts
+function declareAppProviders(providers: NewableProvider, app: App): void;
+function declareAppProviders(providers: FunctionProvider, app: App): void;
+```
+
+在指定 App 实例的上下文中声明服务提供者。
+
+行为逻辑：
+- 如果该 App 已经有容器，则直接追加绑定
+- 如果该 App 尚未有容器，则以全局根容器为 parent 创建子容器，绑定服务，通过 `app.provide` 注入。App 卸载时自动销毁容器
+
+#### useAppService
+
+```ts
+function useAppService<T>(token: CommonToken<T>, app: App): T;
+```
+
+在指定 App 实例的上下文中获取服务实例。
+
+#### declareAppProvidersPlugin
+
+```ts
+function declareAppProvidersPlugin(providers: Provider): (app: App) => void;
+```
+
+返回一个 Vue 插件函数，可直接用于 `app.use()`。
+
+```ts
+const app = createApp(App);
+app.use(declareAppProvidersPlugin([ServiceA, ServiceB]));
+app.mount('#app');
+```
+
+---
+
+## 装饰器
+
+### @Computed
+
+将 getter 属性转换为 Vue `computed` 响应式计算属性。
+
+```ts
+// 用法一：不带括号
+@Computed
+public get fullName() { return this.firstName + this.lastName; }
+
+// 用法二：带括号
+@Computed()
+public get fullName() { return this.firstName + this.lastName; }
+```
+
+功能说明：
+- 对 getter 属性进行性能优化，只有依赖变化时才重新执行
+- 采用懒创建策略：首次在 reactive 代理上访问时才创建 ComputedRef
+- 支持 writable computed：如果原型链上存在同名 setter，自动创建可写的 `computed({ get, set })`
+
+只读 computed 示例：
+
+```ts
+import { Computed } from '@kaokei/use-vue-service';
+
+class CountService {
+  public count = 1;
+
+  @Computed
+  public get doubleCount() {
+    return this.count * 2;
+  }
+}
+```
+
+Writable computed 示例：
+
+```ts
+import { Computed } from '@kaokei/use-vue-service';
+
+class UserService {
+  public firstName = '张';
+  public lastName = '三';
+
+  @Computed
+  public get fullName() {
+    return this.firstName + this.lastName;
+  }
+
+  public set fullName(val: string) {
+    this.firstName = val.slice(0, 1);
+    this.lastName = val.slice(1);
+  }
+}
+```
+
+### @Raw
+
+标记属性不参与 Vue 响应式追踪。无论初始值还是后续赋值，都会自动调用 `markRaw`。
+
+```ts
+// 用法一：不带括号
+@Raw
+public chart = {};
+
+// 用法二：带括号
+@Raw()
+public chart = {};
+```
+
+支持两种装饰目标：
+
+普通 field 装饰器：
+
+```ts
+import { Raw } from '@kaokei/use-vue-service';
+
+class ChartService {
+  @Raw
+  public chartInstance: any = null;
+}
+```
+
+auto-accessor 装饰器：
+
+```ts
+import { Raw } from '@kaokei/use-vue-service';
+
+class ChartService {
+  @Raw
+  accessor chartInstance: any = null;
+}
+```
+
+适用场景：复杂的第三方 SDK 对象（如 ECharts 实例、Monaco Editor 实例等），避免转为响应式导致的性能问题或功能异常。
+
+### @RunInScope
+
+在 Vue 的 `EffectScope` 中运行方法，自动管理副作用生命周期。
+
+```ts
+// 用法一：不带括号
+@RunInScope
+public setup() { watchEffect(() => { /* ... */ }); }
+
+// 用法二：带括号
+@RunInScope()
+public setup() { watchEffect(() => { /* ... */ }); }
+```
+
+每次调用被装饰方法时：
+1. 获取或创建实例的 Root_Scope（每个实例最多一个）
+2. 在 Root_Scope 内创建新的 Child_Scope
+3. 在 Child_Scope 中执行原始方法体
+4. 返回 Child_Scope 给调用者
+
+实例销毁时，Root_Scope 自动清理，其下所有 Child_Scope 中的副作用一并销毁。
+
+```ts
+import type { EffectScope } from 'vue';
+import { watchEffect } from 'vue';
+import { RunInScope } from '@kaokei/use-vue-service';
+
+class DemoService {
+  public count = 0;
+
+  @RunInScope
+  public setup(): EffectScope {
+    watchEffect(() => {
+      console.log('count 变化了：', this.count);
+    });
+    return null as unknown as EffectScope;
+  }
+}
+
+// 使用
+const scope = demoService.setup() as unknown as EffectScope;
+scope.stop(); // 手动停止副作用
+```
+
+> 注意：TypeScript 装饰器目前无法自动修改返回类型。推荐在方法签名上显式声明返回 EffectScope，并在方法体末尾添加 `return null as unknown as EffectScope` 占位。
+
+---
+
+## Token 常量
+
+### FIND_CHILD_SERVICE
+
+```ts
+import { useService, FIND_CHILD_SERVICE } from '@kaokei/use-vue-service';
+
+const findChild = useService(FIND_CHILD_SERVICE);
+const childService = findChild(SomeService); // T | undefined
+```
+
+查找当前组件的子孙组件中绑定的第一个匹配服务实例。也可以在服务中通过 @Inject 使用：
+
+```ts
+class DemoService {
+  @Inject(FIND_CHILD_SERVICE)
+  public findService!: FindChildService;
+
+  public handleClick() {
+    const child = this.findService(ChildService);
+    child?.doSomething();
+  }
+}
+```
+
+### FIND_CHILDREN_SERVICES
+
+```ts
+import { useService, FIND_CHILDREN_SERVICES } from '@kaokei/use-vue-service';
+
+const findAll = useService(FIND_CHILDREN_SERVICES);
+const allServices = findAll(SomeService); // T[]
+```
+
+查找当前组件的子孙组件中绑定的所有匹配服务实例，返回数组。
+
+---
+
+## 内部机制
+
+### 容器创建与响应式
+
+每个容器在创建时会注册两个全局钩子：
+
+- `onActivation`：当服务实例被创建时，自动调用 `reactive()` 将其转为响应式对象
+- `onDeactivation`：当容器销毁时，自动清理实例上的 EffectScope
+
+```ts
+container.onActivation((context, obj) => isObject(obj) ? reactive(obj) : obj);
+container.onDeactivation((obj) => removeScope(obj));
+```
+
+### EffectScope 管理
+
+每个服务实例通过 Symbol key 挂载唯一的 EffectScope。`@Computed` 和 `@RunInScope` 装饰器都使用这个 scope 来收集响应式副作用。实例销毁时 scope 自动 stop，清理所有副作用。
+
+### 子组件服务查找
+
+`FIND_CHILD_SERVICE` 和 `FIND_CHILDREN_SERVICES` 通过遍历容器的子容器树来查找服务。容器之间通过 parent-children 关系形成树状结构，与 Vue 组件树对应。
+
+---
+
+## 完整使用示例
+
+### 基本用法
+
+```ts
+// CountService.ts
+import { Inject } from '@kaokei/use-vue-service';
+
+export class LoggerService {
+  public log(...msg: any[]) {
+    console.log('from logger ==>', ...msg);
+  }
+}
+
+export class CountService {
+  public count = 0;
+
+  @Inject(LoggerService)
+  public accessor logger: LoggerService;
+
+  public addOne() {
+    this.count++;
+    this.logger.log('addOne ==>', this.count);
+  }
+}
+```
+
+```vue
+<!-- App.vue -->
+<script lang="ts" setup>
+import { declareProviders, useService } from '@kaokei/use-vue-service';
+import { CountService, LoggerService } from './CountService';
+
+declareProviders([CountService, LoggerService]);
+const countService = useService(CountService);
+</script>
+
+<template>
+  <div>{{ countService.count }}</div>
+  <button @click="countService.addOne()">+1</button>
+</template>
+```
+
+### 服务间依赖注入
+
+```ts
+import { Inject } from '@kaokei/use-vue-service';
+
+class LoggerService {
+  log(msg: string) { console.log(msg); }
+}
+
+class CountService {
+  count = 0;
+
+  @Inject(LoggerService)
+  accessor logger: LoggerService;
+
+  increment() {
+    this.count++;
+    this.logger.log(`count: ${this.count}`);
+  }
+}
+```
+
+### 三层级服务作用域
+
+```ts
+import { createApp } from 'vue';
+import {
+  declareRootProviders,
+  useRootService,
+  declareAppProvidersPlugin,
+  useAppService,
+  declareProviders,
+  useService,
+} from '@kaokei/use-vue-service';
+
+// 全局根级
+declareRootProviders([GlobalConfigService]);
+const config = useRootService(GlobalConfigService);
+
+// App 级
+const app = createApp(App);
+app.use(declareAppProvidersPlugin([AppService]));
+
+// 组件级（在 setup 中）
+declareProviders([ComponentService]);
+const service = useService(ComponentService);
+```
+
+### 使用 Token 和自定义绑定
+
+```ts
+import { Token, declareProviders, useService } from '@kaokei/use-vue-service';
+
+const API_URL = new Token<string>('API_URL');
+
+declareProviders((container) => {
+  container.bind(API_URL).toConstantValue('https://api.example.com');
+  container.bind(UserService).toSelf();
+});
+
+const apiUrl = useService(API_URL);
+const userService = useService(UserService);
+```
+
+### @PostConstruct 生命周期
+
+```ts
+import { PostConstruct, Inject } from '@kaokei/use-vue-service';
+
+class DataService {
+  public data: any[] = [];
+
+  @PostConstruct
+  public init() {
+    // 实例化后自动执行，适合做初始化逻辑
+    this.data = [1, 2, 3];
+  }
+}
+```
+
+### LazyToken 解决循环依赖
+
+```ts
+import { Inject, LazyToken } from '@kaokei/use-vue-service';
+
+class ServiceA {
+  @Inject(new LazyToken(() => ServiceB))
+  accessor serviceB: ServiceB;
+}
+
+class ServiceB {
+  @Inject(new LazyToken(() => ServiceA))
+  accessor serviceA: ServiceA;
+}
+```
+
+---
+
+## 在线示例
+
+以下示例可通过 CodeSandbox 直接在线运行：
+
+| 示例 | 说明 |
+|------|------|
+| 01-basic-usage | 基本用法：declareProviders + useService |
+| 02-service-injection | 服务间依赖注入：@Inject 装饰器 |
+| 03-three-level-scope | 三层级服务作用域：组件级、App 级、全局根级 |
+| 04-computed-decorator | @Computed 装饰器 |
+| 05-raw-decorator | @Raw 装饰器 |
+| 06-run-in-scope | @RunInScope 装饰器 |
+| 07-find-child-service | FIND_CHILD_SERVICE 和 FIND_CHILDREN_SERVICES |
+| 08-token-and-binding | Token 系统与自定义绑定 |
+| 09-vue-router-integration | Vue Router 集成 |
+| 10-post-construct | @PostConstruct 生命周期 |
+| 11-lazy-token | LazyToken 解决循环依赖 |
+| 12-app-providers-plugin | declareAppProvidersPlugin 插件形式 |
+
+URL 格式：`https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/<示例目录>`
+
+---
+
+## 与其他方案的对比
+
+| 特性 | use-vue-service | Vuex/Pinia | Angular DI |
+|------|----------------|------------|------------|
+| 状态管理方式 | 服务类 + 依赖注入 | 全局 Store | 服务类 + 依赖注入 |
+| 作用域 | 组件级/App级/全局 | 全局 | 模块级/组件级 |
+| TypeScript 支持 | 原生类，类型推断好 | 需要额外类型定义 | 原生类 |
+| 响应式 | 自动 reactive() | 内置 | 需要 RxJS |
+| 学习成本 | 低（熟悉 Angular 更低） | 低 | 中 |
+| 框架依赖 | Vue 3 | Vue | Angular |
