@@ -19,7 +19,7 @@
 
 - [快速开始](./docs/guide/index.md)
 - [API 文档](./docs/api/index.md)
-- [示例代码](./docs/guide/EXAMPLES.md)
+- [示例代码（Example）](./docs/examples/index.md)
 - [笔记文章](./docs/note/00.README.md)
 
 ## Todo List
@@ -28,7 +28,7 @@
 2. 源码-->单元测试-->文档-->示例代码
 5. PostConstruct 在循环依赖场景下，拿到的cache对象可能是不完整的
 3. @autobind 没有使用，但是this似乎已经绑定了。https://di.kaokei.com/note/07.AUTOBIND.html
-
 6. 示例代码生成readme
 7. 示例代码单独一个菜单入口，note笔记入口缺少部分文章
+
 4. 创建llms.txt文件

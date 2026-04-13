@@ -11,6 +11,7 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Guide', link: '/guide/' },
       { text: 'API', link: '/api/' },
+      { text: 'Example', link: '/examples' },
       { text: 'Note', link: '/note/00.README' },
     ],
 
@@ -20,7 +21,6 @@ export default defineConfig({
           text: 'Guide',
           items: [
             { text: '快速开始', link: '/guide/' },
-            { text: 'CodeSandbox 在线示例', link: '/guide/EXAMPLES' },
           ],
         },
       ],

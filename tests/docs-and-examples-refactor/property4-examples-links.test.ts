@@ -4,17 +4,17 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 /**
- * 属性 4：EXAMPLES 文档 CodeSandbox 链接格式正确性
+ * 属性 examples/index.md 文档 CodeSandbox 链接格式正确性
  *
- * 对于 EXAMPLES 文档中列出的任意 CodeSandbox 链接，其 URL 应匹配格式
+ * 对于 examples/index.md 文档中列出的任意 CodeSandbox 链接，其 URL 应匹配格式
  * `https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/<示例目录>`，
  * 且 `<示例目录>` 应对应 `examples/` 下实际存在的目录名。
  *
  * Validates: Requirements 6.3
  */
 
-// 读取 EXAMPLES.md 文件内容
-const examplesDocPath = path.resolve(__dirname, '../../docs/guide/EXAMPLES.md');
+// 读取 examples/index.md 文件内容
+const examplesDocPath = path.resolve(__dirname, '../../docs/examples/index.md');
 const examplesDocContent = fs.readFileSync(examplesDocPath, 'utf-8');
 
 // 提取所有实际的 CodeSandbox 链接（在 markdown 链接语法中的 URL，排除说明文字中的模板）
@@ -34,9 +34,9 @@ const expectedPrefix = 'https://codesandbox.io/p/sandbox/github/kaokei/use-vue-s
 // fast-check 生成器：从提取的 URL 中随机选取
 const urlArb = fc.constantFrom(...extractedUrls);
 
-describe('Feature: docs-and-examples-refactor, Property 4: EXAMPLES 文档 CodeSandbox 链接格式正确性', () => {
-  it('EXAMPLES.md 中应包含 CodeSandbox 链接', () => {
-    expect(extractedUrls.length, 'EXAMPLES.md 中应至少包含一个 CodeSandbox 链接').toBeGreaterThan(0);
+describe('Feature: docs-and-examples-refactor, Property 4: examples/index.md 文档 CodeSandbox 链接格式正确性', () => {
+  it('examples/index.md 中应包含 CodeSandbox 链接', () => {
+    expect(extractedUrls.length, 'examples/index.md 中应至少包含一个 CodeSandbox 链接').toBeGreaterThan(0);
   });
 
   it('所有 CodeSandbox 链接应格式正确且对应实际存在的示例目录', () => {
