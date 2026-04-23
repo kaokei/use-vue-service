@@ -25,3 +25,9 @@
 ## Todo List
 
 1. 改成tsdown来打包代码
+3. 所有使用@Inject的代码都需要@Injectable
+
+2. @Inject(FIND_CHILD_SERVICE)
+public findService!: FIND_CHILD_SERVICE;
+4. useService可以从declareAppProviders+declareRootProviders中获取服务
+5. useAppService可以从declareRootProviders中获取服务

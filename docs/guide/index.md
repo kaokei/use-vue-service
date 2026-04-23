@@ -19,7 +19,7 @@ npm install @kaokei/di @kaokei/use-vue-service
 本库使用 TC39 Stage 3 标准装饰器语法，TypeScript 5.0+ 默认支持，**无需** 在 `tsconfig.json` 中配置 `experimentalDecorators`。
 
 ::: tip 关于装饰器
-旧版本需要配置 `"experimentalDecorators": true`，4.0.0 版本已迁移到 Stage 3 装饰器，不再需要任何额外配置。
+本库在旧版本需要配置 `"experimentalDecorators": true`。目前最新的4.0.0 版本已迁移到 Stage 3 装饰器，不再需要任何额外配置。
 :::
 
 ## 基本使用

@@ -53,10 +53,10 @@
     "docs:preview": "vitepress preview docs"
   },
   "peerDependencies": {
-    "@kaokei/di": "^5.0.4"
+    "@kaokei/di": "^5.0.7"
   },
   "devDependencies": {
-    "@kaokei/di": "^5.0.4",
+    "@kaokei/di": "^5.0.7",
     "@types/node": "^22.15.17",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vitest/coverage-v8": "^3.1.1",
