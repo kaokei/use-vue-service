@@ -31,3 +31,6 @@
 5. useAppService可以从declareRootProviders中获取服务
 2. @Inject(FIND_CHILD_SERVICE)
 public findService!: FIND_CHILD_SERVICE;
+
+- 问题2.7
+- 问题3.1
