@@ -60,8 +60,6 @@ function rawDecorator(
     });
   });
 
-  // 返回 initializer 函数，处理字段的初始值
-  return ensureRaw;
 }
 
 // 重载签名：支持 @Raw 和 @Raw() 两种用法

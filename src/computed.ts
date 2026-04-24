@@ -31,7 +31,7 @@ function computedDecorator(
     const scope = getEffectScope(raw);
     const originalGet = value;
 
-    // 查找原型链上是否存在同名的 setter
+    // 查找原型链上是否存在同名的 setter（仅首次访问 getter 时执行一次）
     let originalSet: ((v: any) => void) | undefined;
     let proto = Object.getPrototypeOf(raw);
     while (proto) {
