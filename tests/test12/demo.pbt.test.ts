@@ -18,7 +18,7 @@ describe('test12 — 属性基测试', () => {
    * Property 1：在 setup 外调用 useService 始终抛出错误
    *
    * 对于任意 msg，挂载组件后，在组件外调用 useService 始终抛出
-   * "getProvideContainer 只能在 setup 中使用" 错误。
+   * "useService 只能在 setup 中使用" 错误。
    */
   it('Property 1 — 在 setup 外调用 useService 始终抛出错误', () => {
     fc.assert(
@@ -30,7 +30,7 @@ describe('test12 — 属性基测试', () => {
         // 在 setup 外调用 useService 始终抛出错误
         expect(() => {
           useService(DemoService);
-        }).toThrow('getProvideContainer 只能在 setup 中使用');
+        }).toThrow('useService 只能在 setup 中使用');
 
         wrapper.unmount();
       }),
@@ -54,7 +54,7 @@ describe('test12 — 属性基测试', () => {
           for (let i = 0; i < callTimes; i++) {
             expect(() => {
               useService(DemoService);
-            }).toThrow('getProvideContainer 只能在 setup 中使用');
+            }).toThrow('useService 只能在 setup 中使用');
           }
 
           wrapper.unmount();

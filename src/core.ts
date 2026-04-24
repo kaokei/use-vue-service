@@ -96,18 +96,21 @@ function getCurrentContainer(): Container | undefined {
 }
 
 /**
+ * 断言当前处于 Vue 的注入上下文（setup）中，否则抛出友好的错误信息。
+ */
+function assertInjectionContext(callerName: string): void {
+  if (!hasInjectionContext()) {
+    throw new Error(`${callerName} 只能在 setup 中使用`);
+  }
+}
+
+/**
  * 从父级组件开始向上查找最近的 DI 容器。
  * 借助 Vue 的 inject 方法沿组件树向上查找 CONTAINER_TOKEN。
  * 如果整个组件树中都没有提供容器，则回退到全局的 ROOT_CONTAINER。
- *
- * @throws 如果不在 Vue 的 setup 上下文中调用则抛出错误
  */
 function getProvideContainer(): Container {
-  if (hasInjectionContext()) {
-    return inject(CONTAINER_TOKEN, ROOT_CONTAINER);
-  } else {
-    throw new Error('getProvideContainer 只能在 setup 中使用');
-  }
+  return inject(CONTAINER_TOKEN, ROOT_CONTAINER);
 }
 
 // ============================================================================
@@ -125,6 +128,7 @@ function getProvideContainer(): Container {
  * @returns 对应 token 的服务实例
  */
 export function useService<T>(token: CommonToken<T>): T {
+  assertInjectionContext('useService');
   const container = getCurrentContainer() || getProvideContainer();
   return container.get(token);
 }
@@ -147,6 +151,7 @@ export function declareProviders(providers: FunctionProvider): void;
 export function declareProviders(providers: NewableProvider): void;
 export function declareProviders(providers: Provider): void;
 export function declareProviders(providers: Provider) {
+  assertInjectionContext('declareProviders');
   const currentContainer = getCurrentContainer();
   if (currentContainer) {
     bindProviders(currentContainer, providers);

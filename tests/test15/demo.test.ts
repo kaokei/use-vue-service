@@ -119,6 +119,6 @@ describe('declareProviders', () => {
   it('should call console.warn with the expected message when condition is true', () => {
     expect(() => {
       declareProviders([DemoService]);
-    }).toThrowError('getProvideContainer 只能在 setup 中使用');
+    }).toThrowError('declareProviders 只能在 setup 中使用');
   });
 });
