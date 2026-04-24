@@ -26,9 +26,10 @@ function computedDecorator(
   const propertyName = context.name;
   return function (this: any): any {
     // this 在 Reactive_Proxy 上访问时已经是 reactive 代理
-    const scope = getEffectScope(this);
-    const originalGet = value;
+    const that = this;
     const raw = toRaw(this);
+    const scope = getEffectScope(raw);
+    const originalGet = value;
 
     // 查找原型链上是否存在同名的 setter
     let originalSet: ((v: any) => void) | undefined;
@@ -43,7 +44,6 @@ function computedDecorator(
     }
 
     // 根据是否存在 setter 创建只读或可写的 computed
-    const that = this;
     const computedRef = originalSet
       ? scope.run(() =>
           computed({
