@@ -157,12 +157,11 @@ export function declareProviders(providers: Provider) {
     bindProviders(currentContainer, providers);
   } else {
     const parent = getProvideContainer();
-    let container = createContainer(parent);
+    const container = createContainer(parent);
     bindProviders(container, providers);
     provide(CONTAINER_TOKEN, container);
     onUnmounted(() => {
       container.destroy();
-      container = null as any;
     });
   }
 }
@@ -238,12 +237,11 @@ export function declareAppProviders(providers: Provider, app: App) {
     if (appContainer) {
       bindProviders(appContainer, providers);
     } else {
-      let container = createContainer(ROOT_CONTAINER);
+      const container = createContainer(ROOT_CONTAINER);
       bindProviders(container, providers);
       app.provide(CONTAINER_TOKEN, container);
       app.onUnmount(() => {
         container.destroy();
-        container = null as any;
       });
     }
   });
