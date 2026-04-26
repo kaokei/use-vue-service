@@ -4,16 +4,15 @@ import { RAW_CLASS_KEY } from './constants.ts';
 
 // TC39 Stage 3 装饰器：标记属性永远保持原始对象，不被 Vue 转为响应式
 //
-// 同时支持两种用法：
-//   @Raw() x = {}              — 普通 field 装饰器
-//   @Raw() accessor x = {}     — auto-accessor 装饰器
+// 支持三种用法：
+//   @Raw() x = {}              — field 装饰器：单个属性不转为响应式
+//   @Raw() accessor x = {}     — auto-accessor 装饰器：单个属性不转为响应式
+//   @Raw() class Foo {}        — class 装饰器：整个实例不转为响应式
 //
 // 应用场景：
 // 当实例被 reactive() 包裹后，默认所有属性都会被递归转为响应式对象。
 // 对于复杂的第三方 SDK 对象（如 ECharts 实例、Monaco Editor 实例等），
 // 转为响应式会导致性能问题甚至功能异常。
-// 使用 @Raw() 装饰的属性，无论初始值还是后续赋值，都会自动调用 markRaw，
-// 确保该属性值永远不会被 Vue 的响应式系统代理。
 
 /**
  * 将值标记为 raw（如果是对象则调用 markRaw，否则原样返回）
@@ -22,28 +21,10 @@ export function ensureRaw(val: unknown): unknown {
   return isObject(val) ? markRaw(val) : val;
 }
 
-/**
- * Raw 装饰器的实际实现，提取为模块级函数避免每次调用 Raw() 时重复创建
- */
-function rawDecorator(
-  value: any,
-  context: ClassFieldDecoratorContext | ClassAccessorDecoratorContext
-) {
-  if (context.kind === 'accessor') {
-    // auto-accessor 装饰器：返回 { get, set, init } 拦截读写和初始化
-    return {
-      get() {
-        return value.get.call(toRaw(this));
-      },
-      set(newVal: unknown) {
-        value.set.call(toRaw(this), ensureRaw(newVal));
-      },
-      init: ensureRaw,
-    };
-  }
-
-  // field 装饰器：通过 addInitializer + defineProperty 拦截后续赋值
-  // 利用闭包存储值，避免在 this 上挂载额外属性
+function rawFieldDecorator(
+  _value: any,
+  context: ClassFieldDecoratorContext
+): void {
   const propertyName = context.name;
 
   context.addInitializer(function (this: any) {
@@ -60,10 +41,24 @@ function rawDecorator(
       },
     });
   });
-
 }
 
-function rawClassDecorator(_value: any, context: ClassDecoratorContext) {
+function rawAccessorDecorator(
+  value: ClassAccessorDecoratorTarget<any, any>,
+  _context: ClassAccessorDecoratorContext
+): ClassAccessorDecoratorResult<any, any> {
+  return {
+    get() {
+      return value.get.call(toRaw(this));
+    },
+    set(newVal: unknown) {
+      value.set.call(toRaw(this), ensureRaw(newVal));
+    },
+    init: ensureRaw,
+  };
+}
+
+function rawClassDecorator(_value: any, context: ClassDecoratorContext): void {
   if (context.metadata) {
     context.metadata[RAW_CLASS_KEY] = true;
   }
@@ -79,22 +74,24 @@ export function Raw(): (
 ) => any;
 export function Raw(
   value: any,
-  context:
-    | ClassFieldDecoratorContext
-    | ClassAccessorDecoratorContext
-    | ClassDecoratorContext
-): any;
+  context: ClassFieldDecoratorContext
+): void;
+export function Raw(
+  value: any,
+  context: ClassAccessorDecoratorContext
+): ClassAccessorDecoratorResult<any, any>;
+export function Raw(
+  value: any,
+  context: ClassDecoratorContext
+): void;
 export function Raw(value?: any, context?: any): any {
-  // 不带括号：@Raw — 直接作为装饰器调用
-  if (context?.kind === 'field' || context?.kind === 'accessor') {
-    return rawDecorator(value, context);
-  }
-  if (context?.kind === 'class') {
-    return rawClassDecorator(value, context);
-  }
+  if (context?.kind === 'field') return rawFieldDecorator(value, context);
+  if (context?.kind === 'accessor') return rawAccessorDecorator(value, context);
+  if (context?.kind === 'class') return rawClassDecorator(value, context);
   // 带括号：@Raw() — 作为工厂函数调用，返回装饰器
   return (v: any, ctx: any) => {
-    if (ctx?.kind === 'class') return rawClassDecorator(v, ctx);
-    return rawDecorator(v, ctx);
+    if (ctx?.kind === 'field') return rawFieldDecorator(v, ctx);
+    if (ctx?.kind === 'accessor') return rawAccessorDecorator(v, ctx);
+    return rawClassDecorator(v, ctx);
   };
 }
