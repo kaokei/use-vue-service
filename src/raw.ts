@@ -1,5 +1,6 @@
 import { markRaw, toRaw } from 'vue';
 import { isObject } from '@kaokei/di';
+import { RAW_CLASS_KEY } from './constants.ts';
 
 // TC39 Stage 3 装饰器：标记属性永远保持原始对象，不被 Vue 转为响应式
 //
@@ -62,20 +63,38 @@ function rawDecorator(
 
 }
 
-// 重载签名：支持 @Raw 和 @Raw() 两种用法
+function rawClassDecorator(_value: any, context: ClassDecoratorContext) {
+  if (context.metadata) {
+    context.metadata[RAW_CLASS_KEY] = true;
+  }
+}
+
+// 重载签名：支持 @Raw 和 @Raw() 两种用法，覆盖 field / accessor / class 三种粒度
 export function Raw(): (
   value: any,
-  context: ClassFieldDecoratorContext | ClassAccessorDecoratorContext
+  context:
+    | ClassFieldDecoratorContext
+    | ClassAccessorDecoratorContext
+    | ClassDecoratorContext
 ) => any;
 export function Raw(
   value: any,
-  context: ClassFieldDecoratorContext | ClassAccessorDecoratorContext
+  context:
+    | ClassFieldDecoratorContext
+    | ClassAccessorDecoratorContext
+    | ClassDecoratorContext
 ): any;
 export function Raw(value?: any, context?: any): any {
-  // 不带括号：@Raw — 直接作为装饰器调用，context.kind 为 'field' 或 'accessor'
+  // 不带括号：@Raw — 直接作为装饰器调用
   if (context?.kind === 'field' || context?.kind === 'accessor') {
     return rawDecorator(value, context);
   }
+  if (context?.kind === 'class') {
+    return rawClassDecorator(value, context);
+  }
   // 带括号：@Raw() — 作为工厂函数调用，返回装饰器
-  return rawDecorator;
+  return (v: any, ctx: any) => {
+    if (ctx?.kind === 'class') return rawClassDecorator(v, ctx);
+    return rawDecorator(v, ctx);
+  };
 }

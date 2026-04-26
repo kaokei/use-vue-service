@@ -1,12 +1,14 @@
-import { reactive } from 'vue';
-import { isObject, Container, type Context } from '@kaokei/di';
+import { markRaw, reactive } from 'vue';
+import { isObject, getOwnMetadata, Container, type Context } from '@kaokei/di';
 import { removeScope } from './scope.ts';
 import { findChildService, findChildrenServices } from './find-service.ts';
-import { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES } from './constants.ts';
+import { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES, RAW_CLASS_KEY } from './constants.ts';
 import type { FindChildService, FindChildrenServices } from './interface.ts';
 
-function activationHandle(_: Context, obj: any) {
-  return isObject(obj) ? reactive(obj) : obj;
+function activationHandle(_: Context, obj: any, token: any) {
+  if (!isObject(obj)) return obj;
+  if (getOwnMetadata(RAW_CLASS_KEY, token)) return markRaw(obj);
+  return reactive(obj);
 }
 
 function deactivationHandle(obj: any) {

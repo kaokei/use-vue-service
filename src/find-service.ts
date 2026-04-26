@@ -14,7 +14,7 @@ function walk<T>(
         results.push(container.get(token));
         if (findFirst) return true;
       }
-      if (container.children && walk(container.children, token, results, findFirst)) {
+      if (walk(container.getChildren(), token, results, findFirst)) {
         return true;
       }
     }
@@ -27,7 +27,7 @@ export function findChildService<T>(
   container: Container
 ): T | undefined {
   const results: T[] = [];
-  walk(container.children, token, results, true);
+  walk(container.getChildren(), token, results, true);
   return results[0];
 }
 
@@ -36,6 +36,6 @@ export function findChildrenServices<T>(
   container: Container
 ): T[] {
   const results: T[] = [];
-  walk(container.children, token, results, false);
+  walk(container.getChildren(), token, results, false);
   return results;
 }

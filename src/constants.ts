@@ -16,6 +16,9 @@ export const FIND_CHILDREN_SERVICES = new Token<FindChildrenServices>(
 // 每个实例对象自身维护的effectScope的key
 export const SCOPE_KEY = Symbol('SCOPE_KEY');
 
+// class 级别 @Raw 装饰器在 context.metadata 上写入的标记 key
+export const RAW_CLASS_KEY = 'raw';
+
 // 给vue的provide/inject使用的token
 export const CONTAINER_TOKEN: InjectionKey<Container> =
   Symbol('CONTAINER_TOKEN');
