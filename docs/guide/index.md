@@ -162,9 +162,9 @@ class UserService {
 
 ### @Raw
 
-标记属性或整个类不参与 Vue 响应式追踪。支持 `@Raw` 和 `@Raw()` 两种用法，支持普通 field、auto-accessor、class 三种装饰目标。
+本库采用 **opt-out** 响应式策略：服务实例的所有属性默认都是响应式的，只有需要排除的属性才使用 `@Raw` 标记。这与 Pinia 等需要显式声明响应式字段的 opt-in 策略相反。
 
-适用于复杂的第三方 SDK 对象（如 ECharts 实例、Monaco Editor 实例等），避免转为响应式导致的性能问题或功能异常。
+`@Raw` 标记属性或整个类不参与 Vue 响应式追踪。支持 `@Raw` 和 `@Raw()` 两种用法，支持普通 field、auto-accessor、class 三种装饰目标。适用于复杂的第三方 SDK 对象（如 ECharts 实例、Monaco Editor 实例等），避免转为响应式导致的性能问题或功能异常。
 
 ```ts
 import { Raw } from '@kaokei/use-vue-service';
