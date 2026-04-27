@@ -1,5 +1,6 @@
 import { reactive, isReactive } from 'vue';
-import { Raw } from '@/index';
+import { Raw, Injectable } from '@/index';
+import { createContainer } from '@/create-container.ts';
 
 describe('Raw 装饰器 — field 用法', () => {
   it('初始值为对象时，应被 markRaw 标记（不被响应式代理）', () => {
@@ -288,5 +289,80 @@ describe('Raw 装饰器 — 不带括号用法 @Raw', () => {
 
     expect(isReactive(reactiveDemo.chart)).toBe(false);
     expect(reactiveDemo.chart).toBe(newObj);
+  });
+});
+
+describe('Raw 装饰器 — class 用法（不带括号 @Raw）', () => {
+  it('通过 DI 容器获取实例，整个实例不被转为 reactive', () => {
+    @Raw
+    @Injectable()
+    class DemoService {
+      public data = { value: 1 };
+    }
+
+    const container = createContainer();
+    container.bind(DemoService).toSelf();
+    const service = container.get(DemoService);
+
+    expect(isReactive(service)).toBe(false);
+  });
+
+  it('实例属性中的对象也不被 reactive 代理（markRaw 整体保护）', () => {
+    @Raw
+    @Injectable()
+    class DemoService {
+      public nested = { count: 42 };
+    }
+
+    const container = createContainer();
+    container.bind(DemoService).toSelf();
+    const service = container.get(DemoService);
+
+    expect(isReactive(service.nested)).toBe(false);
+    expect(service.nested.count).toBe(42);
+  });
+
+  it('未使用 @Raw 的类，通过 DI 容器获取的实例应被转为 reactive（对比验证）', () => {
+    @Injectable()
+    class DemoService {
+      public count = 1;
+    }
+
+    const container = createContainer();
+    container.bind(DemoService).toSelf();
+    const service = container.get(DemoService);
+
+    expect(isReactive(service)).toBe(true);
+  });
+});
+
+describe('Raw 装饰器 — class 用法（带括号 @Raw()）', () => {
+  it('通过 DI 容器获取实例，整个实例不被转为 reactive', () => {
+    @Raw()
+    @Injectable()
+    class DemoService {
+      public data = { value: 1 };
+    }
+
+    const container = createContainer();
+    container.bind(DemoService).toSelf();
+    const service = container.get(DemoService);
+
+    expect(isReactive(service)).toBe(false);
+  });
+
+  it('实例属性中的对象也不被 reactive 代理（markRaw 整体保护）', () => {
+    @Raw()
+    @Injectable()
+    class DemoService {
+      public nested = { count: 42 };
+    }
+
+    const container = createContainer();
+    container.bind(DemoService).toSelf();
+    const service = container.get(DemoService);
+
+    expect(isReactive(service.nested)).toBe(false);
+    expect(service.nested.count).toBe(42);
   });
 });

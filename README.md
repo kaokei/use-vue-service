@@ -25,18 +25,3 @@
 ## Todo List
 
 1. 改成tsdown来打包代码
-
-3. 所有使用@Inject的代码都需要@Injectable
-4. useService可以从declareAppProviders+declareRootProviders中获取服务
-5. useAppService可以从declareRootProviders中获取服务
-2. @Inject(FIND_CHILD_SERVICE)
-public findService!: FIND_CHILD_SERVICE;
-
-- 问题2.7
-- 问题3.1
-- 问题3.6
-
-useAppService 能否直接获取app中的service，跳过组件中同名service
-@Computed装饰器 返回值
-@Raw装饰器 单元测试
-可以考虑改名为 @kaokei/vena
