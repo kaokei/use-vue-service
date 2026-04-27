@@ -31,7 +31,7 @@ import { declareProviders } from '@kaokei/use-vue-service';
 declareProviders([ServiceA, ServiceB]);
 
 // FunctionProvider 用法：传入函数，自由绑定
-declareProviders((container) => {
+declareProviders(container => {
   container.bind(ServiceA).toSelf();
   container.bind(TOKEN).toConstantValue('hello');
 });
@@ -59,6 +59,7 @@ function declareProviders(providers: NewableProvider): void;
 在当前组件中声明服务提供者。
 
 行为逻辑：
+
 - 如果当前组件已经声明过容器（重复调用 `declareProviders`），则直接在已有容器上追加绑定。
 - 如果当前组件尚未声明容器，则创建一个子容器（继承父级容器的所有绑定），在子容器上绑定新的服务，并通过 Vue 的 `provide` 将子容器注入组件树。组件卸载时自动销毁子容器。
 
@@ -137,6 +138,7 @@ function declareAppProviders(providers: NewableProvider, app: App): void;
 观察下方的伪代码就能知道这里使用的是`app.provide`方法代替了`provide`方法。
 
 行为逻辑：
+
 - 如果该 App 已经有容器（之前调用过 `declareAppProviders`），则直接追加绑定。
 - 如果该 App 尚未有容器，则以全局根容器为 parent 创建子容器，绑定服务，并通过 `app.provide` 将容器注入该 App 的组件树。App 卸载时自动销毁容器。
 
@@ -443,24 +445,48 @@ class DemoService {
 demoService.setup();
 ```
 
-需要手动停止副作用时：
+需要手动停止副作用时，有两种处理类型的方式，选其一即可。
+
+方式一：在方法签名上显式声明返回 `EffectScope`，方法体末尾添加占位 `return`，调用侧无需强制转换：
 
 ```ts
 import type { EffectScope } from 'vue';
+import { watchEffect } from 'vue';
 
 class DemoService {
   @RunInScope
   public startWatch(): EffectScope {
-    watchEffect(() => { /* ... */ });
+    watchEffect(() => {
+      /* ... */
+    });
     return null as unknown as EffectScope; // 占位，实际返回值由装饰器接管
   }
 }
 
+const scope = demoService.startWatch();
+scope.stop();
+```
+
+方式二：方法签名保持默认 `void`，在调用侧强制转换类型：
+
+```ts
+import type { EffectScope } from 'vue';
+import { watchEffect } from 'vue';
+
+class DemoService {
+  @RunInScope
+  public startWatch() {
+    watchEffect(() => {
+      /* ... */
+    });
+  }
+}
+
 const scope = demoService.startWatch() as unknown as EffectScope;
-// 不再需要时手动停止
 scope.stop();
 ```
 
 ::: tip 关于返回类型
-绝大多数场景无需关注返回值，直接调用方法即可。只有需要手动管理 scope 时，才需要处理类型问题：由于 TypeScript 装饰器目前无法自动修改被装饰方法的返回类型，可在方法签名上显式声明返回 `EffectScope`，并在方法体末尾添加 `return null as unknown as EffectScope` 占位，这样调用侧可以直接获得正确的类型推断。
+绝大多数场景无需关注返回值，直接调用方法即可。只有需要手动管理 scope 时，才需要处理类型问题。
+这个类型问题主要是由于 TypeScript 装饰器目前无法自动修改被装饰方法的返回类型。
 :::
