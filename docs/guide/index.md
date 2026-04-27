@@ -188,29 +188,29 @@ class RawService {
 
 ### @RunInScope
 
-在 `EffectScope` 中运行方法，自动管理副作用生命周期。每次调用被装饰方法时，会在实例的根 Scope 内创建一个新的子 Scope，并在子 Scope 中执行方法体，返回该子 Scope 供用户管理。支持 `@RunInScope` 和 `@RunInScope()` 两种用法。
+在 `EffectScope` 中运行方法，自动管理副作用生命周期。每次调用被装饰方法时，会在实例的根 Scope 内创建一个新的子 Scope，并在子 Scope 中执行方法体，返回该子 Scope。支持 `@RunInScope` 和 `@RunInScope()` 两种用法。
+
+与 `@PostConstruct` 不同，`@RunInScope` **不会自动调用**被装饰的方法，需要用户主动调用才会生效。
+
+绝大多数场景下不需要关注返回的 `EffectScope`，直接调用方法即可——实例销毁时所有副作用会自动清理。只有需要提前手动停止某次调用产生的副作用时，才需要保留返回值。
 
 ```ts
 import { RunInScope } from '@kaokei/use-vue-service';
 import { watchEffect } from 'vue';
-import type { EffectScope } from 'vue';
 
 class TimerService {
   public count = 0;
 
   @RunInScope
-  public startWatch(): EffectScope {
+  public startWatch() {
     watchEffect(() => {
       console.log('count 变化了：', this.count);
     });
-    return null as any; // 占位，实际返回值由装饰器接管
   }
 }
 
-// 使用时
-const scope = timerService.startWatch() as unknown as EffectScope;
-// 需要清理时
-scope.stop();
+// 主动调用后，watchEffect 才开始运行
+timerService.startWatch();
 ```
 
 ## Token 常量

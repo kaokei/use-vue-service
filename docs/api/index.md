@@ -407,6 +407,8 @@ public setup() {
 
 `@RunInScope` 装饰器用于在 Vue 的 `EffectScope` 中运行方法，自动管理副作用生命周期。支持 `@RunInScope` 和 `@RunInScope()` 两种用法，效果完全一致。
 
+注意：`@RunInScope` 与 `@PostConstruct` 不同，它**不会自动调用**被装饰的方法。装饰器只是将原方法包裹在 `scope.run()` 中并返回新创建的 `EffectScope`，后续仍需由用户主动调用该方法才会生效。
+
 ### 功能说明
 
 每次调用被装饰方法时：
@@ -416,12 +418,13 @@ public setup() {
 3. 在 Child_Scope 中执行原始方法体
 4. 返回 Child_Scope 给调用者
 
-返回的 `EffectScope` 可以用于手动停止副作用。当实例销毁时，Root_Scope 会被自动清理，其下所有 Child_Scope 中的 `computed`、`watch`、`watchEffect` 等副作用也会一并销毁。
+当实例销毁时，Root_Scope 会被自动清理，其下所有 Child_Scope 中的 `computed`、`watch`、`watchEffect` 等副作用也会一并销毁。**绝大多数场景下不需要手动管理返回的 `EffectScope`**，只有确实需要提前停止某次调用产生的副作用时，才需要保留返回值并手动调用 `scope.stop()`。
 
 ### 使用示例
 
+常规用法（不关心返回值）：
+
 ```ts
-import type { EffectScope } from 'vue';
 import { watchEffect } from 'vue';
 import { RunInScope } from '@kaokei/use-vue-service';
 
@@ -429,25 +432,35 @@ class DemoService {
   public count = 0;
 
   @RunInScope
-  public setup(): EffectScope {
+  public setup() {
     watchEffect(() => {
       console.log('count 变化了：', this.count);
     });
-    return null as unknown as EffectScope;
   }
 }
+
+// 主动调用后，watchEffect 才开始运行
+demoService.setup();
 ```
 
-手动停止副作用：
+需要手动停止副作用时：
 
 ```ts
-// 调用被装饰方法，返回 EffectScope
-const scope = demoService.setup() as unknown as EffectScope;
+import type { EffectScope } from 'vue';
 
-// 当不再需要副作用时，手动停止
+class DemoService {
+  @RunInScope
+  public startWatch(): EffectScope {
+    watchEffect(() => { /* ... */ });
+    return null as unknown as EffectScope; // 占位，实际返回值由装饰器接管
+  }
+}
+
+const scope = demoService.startWatch() as unknown as EffectScope;
+// 不再需要时手动停止
 scope.stop();
 ```
 
 ::: tip 关于返回类型
-由于 TypeScript 装饰器目前无法自动修改被装饰方法的返回类型，原始方法返回 `void`，但装饰器在运行时将返回值替换为 `EffectScope`。推荐在方法签名上显式声明返回 `EffectScope`，并在方法体末尾添加 `return null as unknown as EffectScope` 占位，这样调用侧可以直接获得正确的类型推断。
+绝大多数场景无需关注返回值，直接调用方法即可。只有需要手动管理 scope 时，才需要处理类型问题：由于 TypeScript 装饰器目前无法自动修改被装饰方法的返回类型，可在方法签名上显式声明返回 `EffectScope`，并在方法体末尾添加 `return null as unknown as EffectScope` 占位，这样调用侧可以直接获得正确的类型推断。
 :::
