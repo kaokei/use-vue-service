@@ -75,12 +75,24 @@ const countService = useService(CountService);
 
 本库提供三组 API，分别对应三种不同的服务作用域。每组包含一个"声明"函数和一个"获取"函数。
 
+### 容器层级与查找规则
+
+三组 API 背后的容器存在继承关系：**根容器 → App 容器 → 组件容器**。容器查找遵循就近原则，并沿层级向上回退：
+
+- `useService` —— 从当前组件容器开始，沿组件树向上查找，最终回退到 App 容器，再回退到根容器。因此它能读取三组 API 声明的所有服务。
+- `useAppService` —— 从 App 容器开始查找，可回退到根容器。因此它能读取 `declareAppProviders` 和 `declareRootProviders` 声明的服务，但读取不到其他组件内通过 `declareProviders` 声明的服务。
+- `useRootService` —— 直接操作根容器，只能读取 `declareRootProviders` 声明的服务。
+
+::: tip 三组 API 并非完全独立
+`useService` 的查找链覆盖了全部三层容器，推荐在组件内优先使用 `useService`。`useRootService` 和 `useAppService` 主要用于组件树之外（如 main.ts、插件初始化等场景）。
+:::
+
 ### 组件级：useService / declareProviders
 
 组件级作用域是最常用的方式。容器通过 Vue 的 `provide/inject` 机制在组件树中传递。
 
 - `declareProviders(providers)` —— 在当前组件创建一个子容器（继承父级容器），组件卸载时自动销毁。
-- `useService(token)` —— 从当前组件或最近的祖先组件的容器中获取服务实例。
+- `useService(token)` —— 从当前组件或最近的祖先组件的容器中获取服务实例，最终可回退到根容器。
 
 ```ts
 import { declareProviders, useService } from '@kaokei/use-vue-service';
@@ -96,7 +108,7 @@ const countService = useService(CountService);
 全局根级作用域直接操作全局的根容器，不依赖 Vue 组件树，可以在任何地方调用。
 
 - `declareRootProviders(providers)` —— 在全局根容器上声明服务提供者，绑定的服务在整个应用中全局共享。
-- `useRootService(token)` —— 从全局根容器中获取服务实例。
+- `useRootService(token)` —— 只从全局根容器中获取服务实例，不会查找其他容器。
 
 ```ts
 import { declareRootProviders, useRootService } from '@kaokei/use-vue-service';
@@ -111,7 +123,7 @@ const config = useRootService(GlobalConfigService);
 App 级作用域通过 `app.runWithContext` 在指定 Vue App 实例的上下文中操作容器，适用于多 App 实例场景。
 
 - `declareAppProviders(providers, app)` —— 在指定 App 实例的上下文中声明服务提供者。
-- `useAppService(token, app)` —— 在指定 App 实例的上下文中获取服务实例。
+- `useAppService(token, app)` —— 从 App 容器中获取服务实例，找不到时可回退到根容器，但不会查找组件容器。
 - `declareAppProvidersPlugin(providers)` —— 返回一个 Vue 插件，可直接用于 `app.use()`。
 
 ```ts

@@ -79,10 +79,9 @@ container.bind(ClassName).toSelf();
 function useService<T>(token: CommonToken<T>): T;
 ```
 
-`useService`方法和`declareProviders`方法是一对。
-也就是`declareProviders`方法声明的服务，需要通过`useService`来获取。
+在组件内获取服务实例时最常用的方法。
 
-查找顺序：先检查当前组件自身是否声明了容器，如果没有，则沿组件树向上查找最近的祖先组件的容器。如果整个组件树中都没有提供容器，则回退到全局的根容器。
+查找顺序：先检查当前组件自身是否声明了容器，如果没有，则沿组件树向上查找最近的祖先组件的容器，再回退到 App 容器，最终回退到全局根容器。因此 `useService` 能读取三组 API（`declareProviders`、`declareAppProviders`、`declareRootProviders`）声明的所有服务。
 
 `useService`的伪代码如下：
 
@@ -115,8 +114,7 @@ root_container.bind(ClassName).toSelf();
 function useRootService<T>(token: CommonToken<T>): T;
 ```
 
-`useRootService`方法和`declareRootProviders`方法是一对。
-也就是`declareRootProviders`方法声明的服务，需要通过`useRootService`来获取。
+`useRootService` 直接操作全局根容器，只能读取 `declareRootProviders` 声明的服务，不会查找 App 容器或组件容器。适用于组件树之外的场景（如 main.ts、工具函数等）。
 
 `useRootService`的伪代码如下：
 
@@ -161,8 +159,7 @@ app.runWithContext(() => {
 function useAppService<T>(token: CommonToken<T>, app: App): T;
 ```
 
-`useAppService`方法和`declareAppProviders`方法是一对。
-也就是`declareAppProviders`方法声明的服务，需要通过`useAppService`来获取。
+在 App 容器中获取服务实例。查找范围从 App 容器开始，找不到时可回退到全局根容器，因此能读取 `declareAppProviders` 和 `declareRootProviders` 声明的服务。由于不在组件的 `provide/inject` 链上，无法读取组件内通过 `declareProviders` 声明的服务。
 
 `useAppService`的伪代码如下：
 
