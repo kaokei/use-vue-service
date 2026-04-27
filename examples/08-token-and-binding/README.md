@@ -8,6 +8,7 @@
 - `FunctionProvider` — `declareProviders` 的函数形式参数
 - `toConstantValue` — 绑定静态常量值
 - `toDynamicValue` — 绑定动态工厂值
+- `to(Class)` vs `toSelf()` — 两种等价的类绑定方式
 
 ## 关键代码
 
@@ -36,9 +37,21 @@ const config = useService(CONFIG);    // { env: string; debug: boolean }
 - `FunctionProvider` 接收 `container` 实例，可以自由调用 `bind()` API
 - `toConstantValue` 绑定固定值，`toDynamicValue` 绑定工厂函数（首次获取时执行，单例）
 
+## to 与 toSelf 的区别
+
+```ts
+// 两者完全等价：
+container.bind(CountService).to(CountService);
+container.bind(CountService).toSelf();
+```
+
+- `to(Class)` 更灵活，可以将标识符绑定到不同的实现类（如接口与实现分离）
+- `toSelf()` 是简写，适用于标识符和实现类是同一个类的场景
+
 ## 文件结构
 
 - `tokens.ts` — 定义 Token 标识符
+- `CountService.ts` — 用于演示 to/toSelf 的计数服务
 - `App.vue` — 使用 FunctionProvider 绑定值并获取
 
 ## 运行

@@ -3,48 +3,57 @@
  * Token 系统与自定义绑定示例
  *
  * 演示内容：
- * 1. 使用 Token 实例作为服务标识符（而非 class）
- * 2. 使用 FunctionProvider（函数形式）进行自定义绑定
- * 3. toConstantValue 绑定静态常量值
- * 4. toDynamicValue 绑定动态工厂值
- *
- * FunctionProvider 是 declareProviders 的函数形式参数，
- * 接收 container 实例，允许直接调用 container.bind() API 进行灵活绑定。
- * 这种方式适用于绑定非类类型的值（字符串、对象等）。
+ * 1. Token<T> 作为服务标识符
+ * 2. FunctionProvider — toConstantValue / toDynamicValue
+ * 3. to(Class) vs toSelf() 两种类绑定方式
  */
 import { declareProviders, useService } from '@kaokei/use-vue-service';
 import { API_URL, CONFIG } from './tokens';
+import { CountService } from './CountService';
 
-// 使用 FunctionProvider 形式声明服务
-// 传入一个函数，参数为 container 实例，可以自由调用绑定 API
+// 用法1：FunctionProvider 形式，使用 Token 标识符
 declareProviders((container) => {
-  // toConstantValue：绑定一个静态常量值
+  // toConstantValue：绑定静态常量值
   container.bind(API_URL).toConstantValue('https://api.example.com');
 
-  // toDynamicValue：绑定一个工厂函数，首次获取时执行（单例，只执行一次）
+  // toDynamicValue：绑定工厂函数（单例，只执行一次）
   container.bind(CONFIG).toDynamicValue(() => ({
     env: 'production',
     debug: false,
   }));
+
+  // to(Class)：将标识符绑定到指定实现类
+  container.bind(CountService).to(CountService);
 });
 
-// 通过 Token 获取绑定的值，类型自动推导
 const apiUrl = useService(API_URL);
 const config = useService(CONFIG);
+const serviceViaTo = useService(CountService);
 </script>
 
 <template>
   <div>
     <h1>08 - Token 系统与自定义绑定</h1>
-    <p>演示 Token 实例、FunctionProvider、toConstantValue、toDynamicValue</p>
 
-    <h2>API 地址（toConstantValue）</h2>
-    <p>{{ apiUrl }}</p>
+    <section>
+      <h2>Token + toConstantValue</h2>
+      <p>API 地址：<strong>{{ apiUrl }}</strong></p>
+    </section>
 
-    <h2>应用配置（toDynamicValue）</h2>
-    <ul>
-      <li>环境：{{ config.env }}</li>
-      <li>调试模式：{{ config.debug ? '开启' : '关闭' }}</li>
-    </ul>
+    <section>
+      <h2>Token + toDynamicValue</h2>
+      <p>环境：{{ config.env }}</p>
+      <p>调试模式：{{ config.debug ? '开启' : '关闭' }}</p>
+    </section>
+
+    <section>
+      <h2>to(Class) vs toSelf()</h2>
+      <p>
+        <code>container.bind(CountService).to(CountService)</code> 与
+        <code>container.bind(CountService).toSelf()</code> 完全等价。
+      </p>
+      <p>通过 <code>to(CountService)</code> 获取的计数：{{ serviceViaTo.count }}</p>
+      <button @click="serviceViaTo.addOne">加一</button>
+    </section>
   </div>
 </template>

@@ -33,6 +33,8 @@ const countService = useService(CountService);
 - 服务类不需要任何装饰器，普通 class 就可以被 DI 容器管理
 - `declareProviders` 在当前组件建立容器，子组件也可以通过 `useService` 获取同一实例
 - 服务实例已被 `reactive` 包装，修改属性会自动触发视图更新
+- **服务单例性**：同一组件内多次调用 `useService(SameService)` 始终返回同一实例
+- **追加绑定**：多次调用 `declareProviders` 不会覆盖已有服务，而是在同一容器上追加新绑定
 
 ## 运行
 

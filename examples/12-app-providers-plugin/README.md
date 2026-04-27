@@ -7,6 +7,7 @@
 - `declareAppProvidersPlugin` — 返回一个 Vue 插件，通过 `app.use()` 安装
 - App 级服务在整个应用范围内共享
 - 所有组件都可以通过 `useService` 获取，无需在组件内调用 `declareProviders`
+- `useAppService(token, app)` — 显式指定 app 实例从 App 级容器获取服务
 
 ## 关键代码
 
@@ -29,6 +30,8 @@ const configService = useService(AppConfigService);
 - `declareAppProvidersPlugin` 是声明全局共享服务的推荐方式
 - 以 Vue 插件形式集成，使用简洁
 - 根组件和子组件获取到的是同一个服务实例
+- `useService` 与 `useAppService` 在组件树中获取同一 App 级服务时，返回的是同一实例
+- `useAppService` 适合在组件外部（路由守卫、工具函数）显式指定 app 实例来获取 App 级服务
 
 ## 文件结构
 
