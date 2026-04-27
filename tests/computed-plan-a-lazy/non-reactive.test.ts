@@ -6,10 +6,12 @@ import { Computed as ComputedPlanALazy } from '@/index';
  * ⚠️ 本测试为研究性测试，结论不影响实现方案选择。
  * 在实际使用中，DI_Container 始终通过 onActivation 钩子将服务实例转换为 Reactive_Proxy，
  * 因此非 reactive 场景不会在生产环境中出现。
+ *
+ * 非 reactive 场景下，首次和后续访问均返回 ComputedRef 对象本身（无 Auto_Unwrap）。
  */
 describe('Plan_A_Lazy — 非 reactive 场景（研究性测试）', () => {
   // 测试：非 reactive 实例上的 getter 行为（需求 9.1）
-  it('非 reactive 实例上的 getter 行为', () => {
+  it('非 reactive 实例上的 getter 行为', async () => {
     class DemoService {
       public id = 1;
 
@@ -23,14 +25,15 @@ describe('Plan_A_Lazy — 非 reactive 场景（研究性测试）', () => {
 
     // 在非 reactive 实例上直接访问 getter
     // 装饰器返回的新 getter 仍然会执行，创建 ComputedRef 并赋值为同名数据属性
+    // 非 reactive 场景无 Auto_Unwrap，首次返回 ComputedRef 对象本身
+    const { isRef } = await import('vue');
     const value = demo.age;
 
-    // 应返回正确的计算结果
-    expect(value).toBe(11);
+    expect(isRef(value)).toBe(true);
   });
 
   // 测试：非 reactive 场景下的缓存行为（需求 9.2）
-  it('非 reactive 场景下的缓存行为', () => {
+  it('非 reactive 场景下的缓存行为', async () => {
     const computeFn = vi.fn();
 
     class DemoService {
@@ -44,34 +47,22 @@ describe('Plan_A_Lazy — 非 reactive 场景（研究性测试）', () => {
     }
 
     const demo = new DemoService();
+    const { isRef } = await import('vue');
 
-    // 首次访问
-    expect(demo.age).toBe(11);
-    expect(computeFn).toHaveBeenCalledTimes(1);
+    // 首次访问：非 reactive 场景无 Auto_Unwrap，返回 ComputedRef 对象本身
+    // ComputedRef 是懒计算，仅创建但未求值，computeFn 尚未被调用
+    expect(isRef(demo.age)).toBe(true);
+    expect(computeFn).toHaveBeenCalledTimes(0);
 
-    // 后续访问 — 在非 reactive 场景下，ComputedRef 已创建为数据属性
-    // 但由于没有 reactive 代理，不会自动解包，行为可能与 reactive 场景不同
-    // 记录实际行为
+    // 后续访问 — 数据属性是 ComputedRef 对象，同样无 Auto_Unwrap
     const secondAccess = demo.age;
     expect(secondAccess).toBeDefined();
 
     // 修改依赖属性
     demo.id = 2;
 
-    // 在非 reactive 场景下，Plan_A_Lazy 的新 getter 会在首次访问时创建 ComputedRef
-    // 并将其赋值为同名数据属性。后续访问时直接读取数据属性。
-    // 由于实例未经 reactive() 包装，ComputedRef 不会被自动解包，
-    // 但数据属性覆盖了 getter，后续访问的行为取决于 ComputedRef 内部的响应式追踪。
-    // 在非 reactive 场景下，原始实例的属性不是响应式的，
-    // 但 ComputedRef 内部通过 getter 函数直接读取 this.id，
-    // 所以行为可能因实现而异。
+    // 后续访问仍然返回 ComputedRef 对象本身
     const afterChange = demo.age;
-
-    // 记录实际行为：
-    // 在非 reactive 场景下，Plan_A_Lazy 首次访问后通过 Object.defineProperty
-    // 在实例上创建了同名数据属性（值为 ComputedRef 对象）。
-    // 后续访问 demo.age 直接读取该数据属性，由于没有 reactive 代理的 Auto_Unwrap，
-    // 返回的是 ComputedRef 对象本身而非解包后的值。
-    expect(typeof afterChange).toBe('object');
+    expect(isRef(afterChange)).toBe(true);
   });
 });

@@ -9,7 +9,7 @@ import { getEffectScope } from './scope.ts';
 // 1. 通过 getEffectScope(this) 获取或创建 EffectScope
 // 2. 在 scope.run() 中调用 computed() 创建 ComputedRef
 // 3. 在原始实例上通过 Object.defineProperty 创建同名数据属性，覆盖原型链上的 getter
-// 4. 返回 computedRef.value（首次返回值）
+// 4. 返回 computedRef（首次和后续均依赖 reactive 的 Auto_Unwrap 自动解包）
 // 后续访问时，reactive 代理直接读取数据属性并通过 Auto_Unwrap 自动解包。
 //
 // setter 支持：如果原型链上存在同名 setter，使用 writable computed（computed({ get, set })）。
@@ -62,8 +62,8 @@ function computedDecorator(
       enumerable: true,
     });
 
-    // 首次返回值
-    return computedRef!.value;
+    // 首次返回 computedRef，与后续访问时 reactive Auto_Unwrap 的行为一致
+    return computedRef;
   };
 }
 

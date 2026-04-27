@@ -72,25 +72,27 @@ describe('test20', () => {
 
     expect(spyOnGetAge).not.toHaveBeenCalled();
 
-    // 首次访问：触发新 getter，创建 ComputedRef 并写入实例，返回解包后的值
-    expect(reactiveDemo.age).toBe(111);
-
-    expect(spyOnGetAge).toHaveBeenCalledOnce();
-
-    reactiveDemo.id = 2;
-
-    expect(spyOnGetAge).toHaveBeenCalledOnce();
-
-    // 后续访问：非 reactive 场景下，数据属性是 ComputedRef 对象本身（无 Auto_Unwrap）
-    // 所以返回的是 ComputedRef 对象，而非解包后的值
+    // 首次访问：触发新 getter，创建 ComputedRef 并写入实例
+    // 非 reactive 场景无 Auto_Unwrap，返回 ComputedRef 对象本身
     const { isRef } = await import('vue');
     expect(isRef(reactiveDemo.age)).toBe(true);
 
-    expect(spyOnGetAge).toHaveBeenCalledTimes(1);
+    // ComputedRef 是懒计算，仅创建但未求值，getAge 尚未被调用
+    expect(spyOnGetAge).toHaveBeenCalledTimes(0);
+
+    reactiveDemo.id = 2;
+
+    expect(spyOnGetAge).toHaveBeenCalledTimes(0);
+
+    // 后续访问：非 reactive 场景下，数据属性是 ComputedRef 对象本身（无 Auto_Unwrap）
+    // 所以返回的是 ComputedRef 对象，而非解包后的值
+    expect(isRef(reactiveDemo.age)).toBe(true);
+
+    expect(spyOnGetAge).toHaveBeenCalledTimes(0);
 
     expect(isRef(reactiveDemo.age)).toBe(true);
 
-    expect(spyOnGetAge).toHaveBeenCalledTimes(1);
+    expect(spyOnGetAge).toHaveBeenCalledTimes(0);
   });
 
   it('get DemoService instance', async () => {
