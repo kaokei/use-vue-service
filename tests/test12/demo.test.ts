@@ -16,6 +16,6 @@ describe('test12', () => {
 
     expect(() => {
       useService(DemoService);
-    }).toThrow("useService 只能在 setup 中使用");
+    }).toThrow("useService must inside setup.");
   });
 });

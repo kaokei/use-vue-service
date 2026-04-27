@@ -36,4 +36,7 @@ public findService!: FIND_CHILD_SERVICE;
 - 问题3.1
 - 问题3.6
 
+useAppService 能否直接获取app中的service，跳过组件中同名service
+@Computed装饰器 返回值
+@Raw装饰器 单元测试
 可以考虑改名为 @kaokei/vena

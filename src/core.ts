@@ -100,7 +100,7 @@ function getCurrentContainer(): Container | undefined {
  */
 function assertInjectionContext(callerName: string): void {
   if (!hasInjectionContext()) {
-    throw new Error(`${callerName} 只能在 setup 中使用`);
+    throw new Error(`${callerName} must inside setup.`);
   }
 }
 
