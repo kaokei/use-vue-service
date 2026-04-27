@@ -324,7 +324,7 @@ public chart = {};
 
 ### 装饰目标
 
-`@Raw` 支持两种装饰目标：
+`@Raw` 支持三种装饰目标：
 
 **普通 field 装饰器：**
 
@@ -353,6 +353,19 @@ class ChartService {
   accessor editorInstance = {};
 }
 ```
+
+**class 装饰器：**
+
+```ts
+import { Raw } from '@kaokei/use-vue-service';
+
+@Raw
+class RawService {
+  public data = {};
+}
+```
+
+当 `@Raw` 装饰整个 class 时，该类的实例被激活时不会被 `reactive()` 包裹，整个实例保持原始对象状态，不参与任何响应式追踪。适用于需要完全脱离 Vue 响应式系统的服务类。
 
 ### 使用示例
 

@@ -150,7 +150,7 @@ class UserService {
 
 ### @Raw
 
-标记属性不参与 Vue 响应式追踪。当服务实例被 `reactive()` 包裹后，被 `@Raw` 装饰的属性值会自动调用 `markRaw`，确保该属性永远不会被 Vue 的响应式系统代理。支持 `@Raw` 和 `@Raw()` 两种用法，支持普通 field 和 auto-accessor 两种装饰目标。
+标记属性或整个类不参与 Vue 响应式追踪。支持 `@Raw` 和 `@Raw()` 两种用法，支持普通 field、auto-accessor、class 三种装饰目标。
 
 适用于复杂的第三方 SDK 对象（如 ECharts 实例、Monaco Editor 实例等），避免转为响应式导致的性能问题或功能异常。
 
@@ -158,13 +158,19 @@ class UserService {
 import { Raw } from '@kaokei/use-vue-service';
 
 class ChartService {
-  // 普通 field 用法
+  // 普通 field 用法：该属性值自动调用 markRaw，不被 Vue 代理
   @Raw
   public chartInstance: any = null;
 
-  // auto-accessor 用法
+  // auto-accessor 用法：读写时均保持 raw
   @Raw
   accessor editorInstance: any = null;
+}
+
+// class 用法：整个实例不被 reactive() 包裹
+@Raw
+class RawService {
+  public data = {};
 }
 ```
 
