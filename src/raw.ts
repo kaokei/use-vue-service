@@ -26,9 +26,9 @@ function rawFieldDecorator(
   context: ClassFieldDecoratorContext
 ): (initialValue: unknown) => unknown {
   const propertyName = context.name;
-  let cachedValue: unknown;
 
   context.addInitializer(function (this: any) {
+    let cachedValue = this[propertyName];
     Object.defineProperty(this, propertyName, {
       configurable: true,
       enumerable: true,
@@ -42,11 +42,7 @@ function rawFieldDecorator(
   });
 
   // 返回 initializer 函数，将字段初始值通过 ensureRaw 标记
-  return (initialValue: unknown) => {
-    const ret = ensureRaw(initialValue);
-    cachedValue = ret;
-    return ret;
-  };
+  return ensureRaw;
 }
 
 function rawAccessorDecorator(
