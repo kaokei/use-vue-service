@@ -33,7 +33,7 @@ public get doubleCount() { return this.count * 2; }
 
 getter 装饰器，将 class 的 getter 属性转换为 Vue 的 `computed` 响应式计算属性。支持只读和可写（writable）两种形式。如果原型链上存在同名 setter，则自动创建 `computed({ get, set })`。
 
-[详细说明](/api/#computed)
+[详细说明](../api/index.md#computed)
 
 ---
 
@@ -97,7 +97,7 @@ class RawService {
 类形式通过 `context.metadata` 写入标记，元数据机制由 `@Injectable` 激活，因此必须配合 `@Injectable()` 使用。
 :::
 
-[详细说明](/api/#raw)
+[详细说明](../api/index.md#raw)
 
 ---
 
@@ -115,4 +115,4 @@ public setup() { watchEffect(() => { /* ... */ }); }
 
 方法装饰器，将方法体包裹在一个新的 Vue `EffectScope` 中执行，并返回该 `EffectScope`。方法内的 `watchEffect`、`watch`、`computed` 等副作用统一由该 scope 管理。**不会自动调用**被装饰的方法，需要用户主动调用。
 
-[详细说明](/api/#runinscope)
+[详细说明](../api/index.md#runinscope)
