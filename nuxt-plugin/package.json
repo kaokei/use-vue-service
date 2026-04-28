@@ -21,8 +21,6 @@
     "prepare": "nuxt-module-build build --stub"
   },
   "dependencies": {
-    "@kaokei/di": "^5.0.8",
-    "@kaokei/use-vue-service": "^4.0.2",
     "@nuxt/kit": "^4.4.2"
   },
   "devDependencies": {
@@ -31,7 +29,9 @@
     "nuxt": "^3.17.1"
   },
   "peerDependencies": {
-    "nuxt": "^3.0.0"
+    "nuxt": "^3.0.0",
+    "@kaokei/di": "^5.0.8",
+    "@kaokei/use-vue-service": "^4.0.2"
   },
   "author": "kaokei",
   "license": "MIT"
