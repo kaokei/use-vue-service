@@ -24,5 +24,6 @@ URL 格式：`https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tre
 | 16-service-inheritance    | 服务继承：多层类继承中 @Inject、@PostConstruct、@Computed 的行为       | [打开](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/16-service-inheritance)    |
 | 17-useappservice          | useAppService vs useService：多层嵌套时的查找层级差异                  | [打开](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/17-useappservice)          |
 | 18-post-construct-run-in-scope | @PostConstruct 与 @RunInScope 配合：实例化时自动建立响应式监听，useService 即监听 | [打开](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/18-post-construct-run-in-scope) |
+| 19-nuxt-auto-imports          | Nuxt 自动导入：通过 @kaokei/nuxt-use-vue-service 插件实现所有 API 零 import 自动注入 | [打开](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/19-nuxt-auto-imports)          |
 
 每个示例目录包含独立的 `package.json`（依赖已发布的 `@kaokei/use-vue-service` 和 `@kaokei/di` 版本）和 `tsconfig.json`，与主包构建流程完全隔离，可直接在 CodeSandbox 中运行。

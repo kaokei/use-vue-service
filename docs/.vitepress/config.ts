@@ -112,6 +112,7 @@ export default defineConfig({
             { text: '前端发展各个阶段', link: '/note/25.前端发展各个阶段' },
             { text: '前端常见库的理解', link: '/note/26.前端常见库的理解' },
             { text: '代码批判性分析与改进建议', link: '/note/27.代码批判性分析与改进建议' },
+            { text: 'Raw装饰器field实现方案分析', link: '/note/28.Raw装饰器field实现方案分析' },
           ],
         },
         {

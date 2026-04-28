@@ -14,7 +14,7 @@
   "dependencies": {
     "@kaokei/di": "^5.0.8",
     "@kaokei/nuxt-use-vue-service": "^1.0.1",
-    "@kaokei/use-vue-service": "^4.0.2",
+    "@kaokei/use-vue-service": "^4.0.3",
     "nuxt": "^4.4.2",
     "vue": "^3.5.13"
   },

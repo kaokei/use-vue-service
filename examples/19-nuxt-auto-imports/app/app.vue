@@ -93,8 +93,8 @@ const findChildrenToken = FIND_CHILDREN_SERVICES
       <p style="font-size: 12px; color: #666">
         这两个 Token 常量已自动导入（无需 import）：
       </p>
-      <pre style="font-size: 12px">{{ String(findChildToken) }}</pre>
-      <pre style="font-size: 12px">{{ String(findChildrenToken) }}</pre>
+      <pre style="font-size: 12px">typeof findChildToken === {{ typeof findChildToken }}</pre>
+      <pre style="font-size: 12px">typeof findChildrenToken === {{ typeof findChildrenToken }}</pre>
     </section>
   </div>
 </template>
