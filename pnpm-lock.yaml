@@ -458,6 +458,31 @@ importers:
         specifier: ^6.0.0
         version: 6.4.2(@types/node@22.19.17)(jiti@2.6.1)(terser@5.46.2)(yaml@2.8.3)
 
+  examples/18-post-construct-run-in-scope:
+    dependencies:
+      '@kaokei/di':
+        specifier: ^5.0.0
+        version: 5.0.8
+      '@kaokei/use-vue-service':
+        specifier: ^4.0.0
+        version: 4.0.2(@kaokei/di@5.0.8)
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.33(typescript@5.9.3)
+    devDependencies:
+      '@babel/plugin-proposal-decorators':
+        specifier: ^7.29.0
+        version: 7.29.0(@babel/core@7.29.0)
+      '@rollup/plugin-babel':
+        specifier: ^7.0.0
+        version: 7.0.0(@babel/core@7.29.0)(rollup@4.60.2)
+      '@vitejs/plugin-vue':
+        specifier: ^6.0.0
+        version: 6.0.6(vite@6.4.2(@types/node@22.19.17)(jiti@2.6.1)(terser@5.46.2)(yaml@2.8.3))(vue@3.5.33(typescript@5.9.3))
+      vite:
+        specifier: ^6.0.0
+        version: 6.4.2(@types/node@22.19.17)(jiti@2.6.1)(terser@5.46.2)(yaml@2.8.3)
+
 packages:
 
   '@algolia/abtesting@1.17.0':
