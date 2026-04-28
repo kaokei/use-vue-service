@@ -2,13 +2,13 @@
 
 本库同时透传导出了 `@kaokei/di` 的全部装饰器（`@Injectable`、`@Inject`、`@PostConstruct`、`@PreDestroy`、`@Self`、`@SkipSelf`、`@Optional`、`@LazyInject`、`@autobind`），可直接从 `@kaokei/use-vue-service` 导入使用。详细说明请参阅 [@kaokei/di 装饰器文档](https://di.kaokei.com/decorator/)。
 
-| 装饰器             | 类型            | 无括号调用 | 有括号调用 | 依赖 `@Injectable` | 依赖 `@Inject` | 可在 `decorate()` 中使用 |
-| ------------------ | --------------- | :--------: | :--------: | :----------------: | :------------: | :----------------------: |
-| `@Computed`        | getter 装饰器   |     ✓      |     ✓      |         ✗          |       ✗        |            ✓             |
-| `@Raw`（field）    | field 装饰器    |     ✓      |     ✓      |         ✗          |       ✗        |            ✗             |
-| `@Raw`（accessor） | accessor 装饰器 |     ✓      |     ✓      |         ✗          |       ✗        |            ✓             |
-| `@Raw`（class）    | 类装饰器        |     ✓      |     ✓      |         ✓          |       ✗        |            ✓             |
-| `@RunInScope`      | 方法装饰器      |     ✓      |     ✓      |         ✗          |       ✗        |            ✓             |
+| 装饰器             | 无括号调用 | 有括号调用 | 依赖 `@Injectable` | 依赖 `@Inject` | 支持 `decorate()` |
+| ------------------ | :--------: | :--------: | :----------------: | :------------: | :----------------------: |
+| `@Computed`<br/>（getter） |     ✓      |     ✓      |         ✗          |       ✗        |            ✓             |
+| `@Raw`<br/>（field）       |     ✓      |     ✓      |         ✗          |       ✗        |            ✗             |
+| `@Raw`<br/>（accessor）    |     ✓      |     ✓      |         ✗          |       ✗        |            ✓             |
+| `@Raw`<br/>（class）       |     ✓      |     ✓      |         ✓          |       ✗        |            ✓             |
+| `@RunInScope`<br/>（method） |     ✓      |     ✓      |         ✗          |       ✗        |            ✓             |
 
 **说明：**
 
