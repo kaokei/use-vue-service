@@ -21,11 +21,11 @@
   "devDependencies": {
     "@nuxt/module-builder": "^1.0.2",
     "@nuxt/schema": "^4.4.2",
-    "nuxt": "^3.17.1"
+    "nuxt": "^4.4.2"
   },
   "peerDependencies": {
     "@kaokei/di": "^5.0.8",
-    "@kaokei/use-vue-service": "^4.0.2"
+    "@kaokei/use-vue-service": "^4.0.3"
   },
   "publishConfig": {
     "access": "public"
