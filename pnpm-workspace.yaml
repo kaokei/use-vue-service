@@ -1,2 +1,4 @@
 packages:
   - 'examples/*'
+  - 'nuxt-plugin'
+  - 'devtools'
