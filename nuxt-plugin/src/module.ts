@@ -36,12 +36,9 @@ export default defineNuxtModule({
       { from: FROM, name: 'PostConstruct' },
       { from: FROM, name: 'PreDestroy' },
       { from: FROM, name: 'Injectable' },
-      { from: FROM, name: 'decorate' },
       { from: FROM, name: 'LazyInject' },
       { from: FROM, name: 'createLazyInject' },
       { from: FROM, name: 'autobind' },
-      { from: FROM, name: 'Container' },
-      { from: FROM, name: 'Binding' },
       // --- 类型导入 ---
       { from: FROM, name: 'TokenType', type: true },
       { from: FROM, name: 'FindChildService', type: true },
