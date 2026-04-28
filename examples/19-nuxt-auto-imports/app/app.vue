@@ -21,15 +21,19 @@ import { ThemeService } from '~/services/ThemeService'
 // Token — 无需 import，由插件自动导入
 const APP_TITLE_TOKEN = new Token<string>('APP_TITLE')
 
-// declareAppProviders — 注册 App 级别服务（全局单例）
-declareAppProviders([
-  { provide: APP_TITLE_TOKEN, useValue: 'Nuxt Auto Imports Demo' },
-  ThemeService,
-])
+// useNuxtApp().vueApp 获取 Vue app 实例，传给 App 级 API
+const { vueApp } = useNuxtApp()
 
-// useAppService — 获取 App 级别服务
-const appTitle = useAppService(APP_TITLE_TOKEN)
-const themeService = useAppService(ThemeService)
+// declareAppProviders — 注册 App 级别服务（全局单例），需传入 app 实例
+// Token 绑定需用函数形式（Provider = Newable[] | (container) => void）
+declareAppProviders((container) => {
+  container.bind(APP_TITLE_TOKEN).toConstantValue('Nuxt Auto Imports Demo')
+  container.bind(ThemeService).toSelf()
+}, vueApp)
+
+// useAppService — 获取 App 级别服务，需传入 app 实例
+const appTitle = useAppService(APP_TITLE_TOKEN, vueApp)
+const themeService = useAppService(ThemeService, vueApp)
 
 // declareProviders — 在当前组件注册服务容器
 declareProviders([CountService, LoggerService])
