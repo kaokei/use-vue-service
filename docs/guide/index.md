@@ -2,7 +2,7 @@
 
 ## 简介
 
-`@kaokei/use-vue-service` 是一个轻量级的适用于 Vue 3 项目的状态管理库。当前版本为 **4.0.0**，依赖 `@kaokei/di` 版本 **^5.0.4**。
+`@kaokei/use-vue-service` 是一个轻量级的适用于 Vue 3 项目的状态管理库。当前版本为 **4.0.2**，依赖 `@kaokei/di` 版本 **^5.0.8**。
 
 本库基于 [@kaokei/di](https://github.com/kaokei/di) 开发，支持依赖注入能力。
 
@@ -19,7 +19,7 @@ npm install @kaokei/di @kaokei/use-vue-service
 本库使用 TC39 Stage 3 标准装饰器语法，TypeScript 5.0+ 默认支持，**无需** 在 `tsconfig.json` 中配置 `experimentalDecorators`。
 
 ::: tip 关于装饰器
-本库在旧版本需要配置 `"experimentalDecorators": true`。目前最新的4.0.0 版本已迁移到 Stage 3 装饰器，不再需要任何额外配置。
+本库在旧版本需要配置 `"experimentalDecorators": true`。目前最新的4.x 版本已迁移到 Stage 3 装饰器，不再需要任何额外配置。
 :::
 
 ## 基本使用

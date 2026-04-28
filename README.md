@@ -25,3 +25,5 @@
 ## Todo List
 
 1. 改成tsdown来打包代码
+2. 开发devtools工具-浏览器插件
+3. 开发nuxt插件，自动导入API

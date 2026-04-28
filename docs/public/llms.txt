@@ -4,7 +4,7 @@
 
 本库基于 [@kaokei/di](https://github.com/kaokei/di) 开发，通过依赖注入实现面向服务编程和领域驱动开发，可以代替 vuex/pinia。
 
-- 版本：4.0.1
+- 版本：4.0.2
 - 许可证：MIT
 - GitHub：https://github.com/kaokei/use-vue-service
 - npm：https://www.npmjs.com/package/@kaokei/use-vue-service
@@ -22,38 +22,43 @@ npm install @kaokei/di @kaokei/use-vue-service
 
 本库将 Angular 的"服务 + 依赖注入"模式引入 Vue 3。通过类来声明服务，利用 Vue 的 provide/inject 机制在组件树中传递 DI 容器，实现服务的声明、注入和共享。
 
-服务实例会自动被 `reactive()` 包裹，天然具备 Vue 响应式能力。
+服务实例会自动被 `reactive()` 包裹，天然具备 Vue 响应式能力。本库采用 opt-out 响应式策略：所有属性默认响应式，只有需要排除的属性才使用 `@Raw` 标记。
 
 ## 三组核心 API
 
+三组 API 背后的容器存在继承关系：**根容器 → App 容器 → 组件容器**。
+
 ### 组件级：useService / declareProviders
 - `declareProviders(providers)` — 在当前组件创建子容器，组件卸载时自动销毁
-- `useService(token)` — 从当前组件或最近祖先组件的容器中获取服务实例
+- `useService(token)` — 从当前组件或最近祖先组件的容器中获取服务实例，最终可回退到 App 容器，再回退到根容器
 
 ### 全局根级：useRootService / declareRootProviders
 - `declareRootProviders(providers)` — 在全局根容器上声明服务，全局共享
-- `useRootService(token)` — 从全局根容器中获取服务实例，不依赖组件树
+- `useRootService(token)` — 只从全局根容器中获取服务实例，不查找其他容器
 
 ### App 级：useAppService / declareAppProviders / declareAppProvidersPlugin
 - `declareAppProviders(providers, app)` — 在指定 App 实例上声明服务
-- `useAppService(token, app)` — 从指定 App 实例获取服务
+- `useAppService(token, app)` — 从 App 容器获取服务，可回退到根容器，不查找组件容器
 - `declareAppProvidersPlugin(providers)` — 返回 Vue 插件，用于 `app.use()`
 
 ## 装饰器
 
 ### @Computed
-将 getter 属性转换为 Vue computed 响应式计算属性。支持 `@Computed` 和 `@Computed()` 两种用法。
+将 getter 属性转换为 Vue computed 响应式计算属性。支持 `@Computed` 和 `@Computed()` 两种用法。采用懒创建策略，如果存在同名 setter 则自动创建 writable computed。
 
 ### @Raw
-标记属性不参与 Vue 响应式追踪，自动调用 markRaw。支持普通 field 和 auto-accessor。
+标记属性或整个类不参与 Vue 响应式追踪，自动调用 markRaw。支持三种装饰目标：
+- 普通 field 装饰器：`@Raw public chart = {}`
+- auto-accessor 装饰器：`@Raw accessor chart = {}`
+- class 装饰器：`@Raw class RawService {}` — 整个实例不被 `reactive()` 包裹
 
 ### @RunInScope
-在 EffectScope 中运行方法，自动管理副作用生命周期。返回 EffectScope 供手动停止。
+在 EffectScope 中运行方法，自动管理副作用生命周期。返回 Child_Scope 供手动停止。注意：**不会自动调用**被装饰的方法，需用户主动调用才会生效。
 
 ## Token 常量
 
-- `FIND_CHILD_SERVICE` — 查找子组件中声明的单个服务实例
-- `FIND_CHILDREN_SERVICES` — 查找子组件中声明的所有匹配服务实例
+- `FIND_CHILD_SERVICE` — 查找子组件中声明的单个服务实例（Token<FindChildService>）
+- `FIND_CHILDREN_SERVICES` — 查找子组件中声明的所有匹配服务实例（Token<FindChildrenServices>）
 
 ## 从 @kaokei/di 重新导出的 API
 
@@ -68,5 +73,4 @@ npm install @kaokei/di @kaokei/use-vue-service
 
 - [快速开始](https://github.com/kaokei/use-vue-service/blob/main/docs/guide/index.md)
 - [API 文档](https://github.com/kaokei/use-vue-service/blob/main/docs/api/index.md)
-- [示例代码](https://github.com/kaokei/use-vue-service/blob/main/docs/examples/index.md)
 - [完整 LLM 文档](https://use-vue-service.kaokei.com/llms-full.txt)
