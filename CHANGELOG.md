@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.3](https://github.com/kaokei/use-vue-service/compare/v4.0.2...v4.0.3) (2026-04-28)
+
+
+### Features
+
+* **examples:** add example 19 - nuxt auto imports demo ([73e4452](https://github.com/kaokei/use-vue-service/commit/73e44521ab0461bc4a63aa3a6891c565b7dd573c))
+* **nuxt-plugin:** implement zero-config auto-imports module ([f284b3a](https://github.com/kaokei/use-vue-service/commit/f284b3aa25b0e92828c9d198ff4a49181b1f1d3c))
+
+
+### Bug Fixes
+
+* **examples/19:** add missing deps and fix declareAppProviders/useAppService calls ([ea83071](https://github.com/kaokei/use-vue-service/commit/ea83071ed38f8f08ed71f49cc6926568d35cdf08))
+* **nuxt-plugin:** fix build config and align exports with @pinia/nuxt ([6e6648c](https://github.com/kaokei/use-vue-service/commit/6e6648cdaa1a2f2256daea408a6f0605224df38d))
+* **nuxt-plugin:** move @kaokei/di and @kaokei/use-vue-service to peerDependencies ([283ce0d](https://github.com/kaokei/use-vue-service/commit/283ce0dbf5d8e6171dc2afd170b034dfd09cb444))
+* **nuxt-plugin:** move @nuxt/kit to dependencies and trim auto-import list ([0830fac](https://github.com/kaokei/use-vue-service/commit/0830fac5333ad56c665e19702b1f4c5c3df762d8))
+* **nuxt-plugin:** remove nuxt from peerDependencies, align with @pinia/nuxt ([f16a3e9](https://github.com/kaokei/use-vue-service/commit/f16a3e9e5c30df400dec54dddf978ba0dbd5d237))
+* **nuxt-plugin:** support Nuxt 4 compatibility, bump to 1.0.1 ([cc6fe7f](https://github.com/kaokei/use-vue-service/commit/cc6fe7f8160840880b46dcdd71a81090c0ed04df))
+
 ### [4.0.2](https://github.com/kaokei/use-vue-service/compare/v4.0.1...v4.0.2) (2026-04-27)
 
 ### [4.0.1](https://github.com/kaokei/use-vue-service/compare/v4.0.0...v4.0.1) (2026-04-12)
