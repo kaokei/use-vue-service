@@ -24,12 +24,11 @@ export function ensureRaw(val: unknown): unknown {
 function rawFieldDecorator(
   _value: any,
   context: ClassFieldDecoratorContext
-): void {
+): (initialValue: unknown) => unknown {
   const propertyName = context.name;
+  let cachedValue: unknown;
 
   context.addInitializer(function (this: any) {
-    let cachedValue: unknown;
-
     Object.defineProperty(this, propertyName, {
       configurable: true,
       enumerable: true,
@@ -41,6 +40,13 @@ function rawFieldDecorator(
       },
     });
   });
+
+  // 返回 initializer 函数，将字段初始值通过 ensureRaw 标记
+  return (initialValue: unknown) => {
+    const ret = ensureRaw(initialValue);
+    cachedValue = ret;
+    return ret;
+  };
 }
 
 function rawAccessorDecorator(
@@ -72,18 +78,12 @@ export function Raw(): (
     | ClassAccessorDecoratorContext
     | ClassDecoratorContext
 ) => any;
-export function Raw(
-  value: any,
-  context: ClassFieldDecoratorContext
-): void;
+export function Raw(value: any, context: ClassFieldDecoratorContext): void;
 export function Raw(
   value: any,
   context: ClassAccessorDecoratorContext
 ): ClassAccessorDecoratorResult<any, any>;
-export function Raw(
-  value: any,
-  context: ClassDecoratorContext
-): void;
+export function Raw(value: any, context: ClassDecoratorContext): void;
 export function Raw(value?: any, context?: any): any {
   if (context?.kind === 'field') return rawFieldDecorator(value, context);
   if (context?.kind === 'accessor') return rawAccessorDecorator(value, context);
