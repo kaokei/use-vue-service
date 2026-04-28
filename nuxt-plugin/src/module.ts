@@ -9,7 +9,7 @@ const module: NuxtModule = defineNuxtModule({
     name: MODULE_NAME,
     configKey: 'useVueService',
     compatibility: {
-      nuxt: '^3.0.0 || ^4.0.0',
+      nuxt: '^3.0.0 || ^4.0.0 || ^5.0.0',
     },
   },
   setup() {
