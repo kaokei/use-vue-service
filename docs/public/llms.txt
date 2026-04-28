@@ -47,9 +47,9 @@ npm install @kaokei/di @kaokei/use-vue-service
 将 getter 属性转换为 Vue computed 响应式计算属性。支持 `@Computed` 和 `@Computed()` 两种用法。采用懒创建策略，如果存在同名 setter 则自动创建 writable computed。
 
 ### @Raw
-标记属性或整个类不参与 Vue 响应式追踪，自动调用 markRaw。支持三种装饰目标：
-- 普通 field 装饰器：`@Raw public chart = {}`
-- auto-accessor 装饰器：`@Raw accessor chart = {}`
+标记属性或整个类不参与 Vue 响应式追踪，自动调用 markRaw。支持两种调用形式（`@Raw` 和 `@Raw()`）和三种装饰目标：
+- field 装饰器：`@Raw public chart = {}` — 初始值和后续赋值均自动 markRaw
+- accessor 装饰器：`@Raw accessor chart = {}` — 读写均经由原始对象（toRaw）
 - class 装饰器：`@Raw class RawService {}` — 整个实例不被 `reactive()` 包裹
 
 ### @RunInScope
@@ -57,8 +57,10 @@ npm install @kaokei/di @kaokei/use-vue-service
 
 ## Token 常量
 
-- `FIND_CHILD_SERVICE` — 查找子组件中声明的单个服务实例（Token<FindChildService>）
-- `FIND_CHILDREN_SERVICES` — 查找子组件中声明的所有匹配服务实例（Token<FindChildrenServices>）
+这两个 Token 用于在**子孙容器树**中查找指定 token 对应的服务实例，查找方向与 `useService` 相反。注意：查找基于容器树而非组件树，查找起点是调用方实际拿到的容器所在节点（可能是祖先组件的容器）。
+
+- `FIND_CHILD_SERVICE` — 查找子孙容器树中绑定了指定 token 的第一个服务实例（Token<FindChildService>）
+- `FIND_CHILDREN_SERVICES` — 查找子孙容器树中绑定了指定 token 的所有服务实例（Token<FindChildrenServices>）
 
 ## 从 @kaokei/di 重新导出的 API
 
