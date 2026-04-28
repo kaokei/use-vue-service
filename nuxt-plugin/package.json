@@ -1,6 +1,6 @@
 {
   "name": "@kaokei/nuxt-use-vue-service",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "description": "Nuxt module for @kaokei/use-vue-service — zero-config auto-imports",
   "main": "./dist/module.mjs",
