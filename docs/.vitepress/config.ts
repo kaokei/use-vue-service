@@ -54,6 +54,7 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Guide', link: '/guide/' },
       { text: 'API', link: '/api/' },
+      { text: 'Decorator', link: '/decorator/' },
       { text: 'Example', link: '/examples' },
       { text: 'Note', link: '/note/00.README' },
     ],
