@@ -15,7 +15,7 @@ import * as path from 'path';
  */
 
 // Nuxt 示例使用不同的项目结构，不适用于 Vite 示例的通用规范检查
-const EXCLUDED_DIRS = ['13-nuxt-decorators'];
+const EXCLUDED_DIRS = ['13-nuxt-decorators', '19-nuxt-auto-imports'];
 
 // 获取所有示例目录（匹配 XX-name 模式，排除非 Vite 示例）
 const examplesDir = path.resolve(__dirname, '../../examples');

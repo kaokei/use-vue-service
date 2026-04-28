@@ -35,6 +35,9 @@ declareAppProviders((container) => {
 const appTitle = useAppService(APP_TITLE_TOKEN, vueApp)
 const themeService = useAppService(ThemeService, vueApp)
 
+console.log('test appTitle => ', appTitle);
+console.log('test themeService => ', themeService);
+
 // declareProviders — 在当前组件注册服务容器
 declareProviders([CountService, LoggerService])
 
