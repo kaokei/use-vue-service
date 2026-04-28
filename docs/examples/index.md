@@ -23,5 +23,6 @@ URL 格式：`https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tre
 | 15-service-singleton      | 服务单例性：多次 declareProviders 追加绑定，多次 useService 返回同一实例 | [打开](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/15-service-singleton)      |
 | 16-service-inheritance    | 服务继承：多层类继承中 @Inject、@PostConstruct、@Computed 的行为       | [打开](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/16-service-inheritance)    |
 | 17-useappservice          | useAppService vs useService：多层嵌套时的查找层级差异                  | [打开](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/17-useappservice)          |
+| 18-post-construct-run-in-scope | @PostConstruct 与 @RunInScope 配合：实例化时自动建立响应式监听，useService 即监听 | [打开](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/18-post-construct-run-in-scope) |
 
 每个示例目录包含独立的 `package.json`（依赖已发布的 `@kaokei/use-vue-service` 和 `@kaokei/di` 版本）和 `tsconfig.json`，与主包构建流程完全隔离，可直接在 CodeSandbox 中运行。
