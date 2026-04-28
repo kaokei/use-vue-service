@@ -1,9 +1,10 @@
 import { defineNuxtModule, addImports } from '@nuxt/kit'
+import type { NuxtModule } from '@nuxt/schema'
 
 const MODULE_NAME = 'use-vue-service'
 const FROM = '@kaokei/use-vue-service'
 
-export default defineNuxtModule({
+const module: NuxtModule = defineNuxtModule({
   meta: {
     name: MODULE_NAME,
     configKey: 'useVueService',
@@ -46,3 +47,5 @@ export default defineNuxtModule({
     ])
   },
 })
+
+export default module

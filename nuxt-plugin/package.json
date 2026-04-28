@@ -3,14 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Nuxt module for @kaokei/use-vue-service — zero-config auto-imports",
-  "main": "./dist/module.cjs",
-  "module": "./dist/module.mjs",
-  "types": "./dist/module.d.ts",
+  "main": "./dist/module.mjs",
   "exports": {
-    ".": {
-      "import": "./dist/module.mjs",
-      "require": "./dist/module.cjs"
-    }
+    ".": "./dist/module.mjs"
   },
   "files": [
     "dist"
@@ -31,6 +26,9 @@
   "peerDependencies": {
     "@kaokei/di": "^5.0.8",
     "@kaokei/use-vue-service": "^4.0.2"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "author": "kaokei",
   "license": "MIT"
