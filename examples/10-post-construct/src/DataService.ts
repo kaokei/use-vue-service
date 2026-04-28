@@ -24,7 +24,7 @@ export class DataService {
    * 被 @PostConstruct 装饰后，该方法会在实例化完成、依赖注入完毕后自动调用。
    * 不需要在组件中手动调用 init()。
    */
-  @PostConstruct
+  @PostConstruct()
   public init() {
     this.initialized = true;
     this.data = ['苹果', '香蕉', '橙子'];
