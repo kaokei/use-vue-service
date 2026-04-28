@@ -1,0 +1,38 @@
+{
+  "name": "@kaokei/nuxt-use-vue-service",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Nuxt module for @kaokei/use-vue-service — zero-config auto-imports",
+  "main": "./dist/module.cjs",
+  "module": "./dist/module.mjs",
+  "types": "./dist/module.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "nuxt-module-build build",
+    "dev": "nuxt-module-build build --stub",
+    "prepare": "nuxt-module-build build --stub"
+  },
+  "dependencies": {
+    "@kaokei/di": "^5.0.8",
+    "@kaokei/use-vue-service": "^4.0.2"
+  },
+  "devDependencies": {
+    "@nuxt/kit": "^4.4.2",
+    "@nuxt/module-builder": "^0.9.3",
+    "@nuxt/schema": "^4.4.2",
+    "nuxt": "^3.17.1"
+  },
+  "peerDependencies": {
+    "nuxt": "^3.0.0"
+  },
+  "author": "kaokei",
+  "license": "MIT"
+}
