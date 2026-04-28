@@ -62,56 +62,61 @@ export default defineConfig({
     sidebar: {
       '/note/': [
         {
-          text: 'Note',
+          text: '核心概念',
           items: [
             { text: '组件和服务互相访问', link: '/note/00.README' },
             { text: '不同场景', link: '/note/01.不同场景' },
-            {
-              text: '父组件与子组件的理解',
-              link: '/note/02.父组件与子组件的理解',
-            },
-            {
-              text: '子组件获取父组件服务',
-              link: '/note/03.子组件获取父组件服务',
-            },
-            {
-              text: '父组件获取子组件服务',
-              link: '/note/04.父组件获取子组件服务',
-            },
+            { text: '父组件与子组件的理解', link: '/note/02.父组件与子组件的理解' },
+            { text: '子组件获取父组件服务', link: '/note/03.子组件获取父组件服务' },
+            { text: '父组件获取子组件服务', link: '/note/04.父组件获取子组件服务' },
+          ],
+        },
+        {
+          text: '响应式与装饰器',
+          items: [
             { text: '响应式方案', link: '/note/05.响应式方案' },
             { text: '装饰器', link: '/note/06.装饰器' },
-            { text: 'SSR-deepseek', link: '/note/07.SSR-deepseek' },
-            { text: 'SSR-angular', link: '/note/08.SSR-angular' },
-            { text: 'SSR-pinia', link: '/note/09.SSR-pinia' },
-            { text: 'SSR', link: '/note/10.SSR' },
-            { text: 'computed缓存陷阱', link: '/note/11.computed缓存陷阱' },
-            {
-              text: 'TC39-Stage3-装饰器类型详解',
-              link: '/note/12.TC39-Stage3-装饰器类型详解',
-            },
-            {
-              text: 'Legacy-experimentalDecorators-装饰器类型详解',
-              link: '/note/13.Legacy-experimentalDecorators-装饰器类型详解',
-            },
-            {
-              text: 'Computed装饰器只适用于getter属性',
-              link: '/note/14.Computed装饰器只适用于getter属性',
-            },
-            {
-              text: 'computed-comparison',
-              link: '/note/15.computed-comparison',
-            },
-            { text: '最佳实践', link: '/note/16.最佳实践' },
-            { text: '前端框架浅显对比', link: '/note/17.前端框架浅显对比' },
-            { text: '前端发展各个阶段', link: '/note/18.前端发展各个阶段' },
-            { text: '前端常见库的理解', link: '/note/19.前端常见库的理解' },
-            { text: '组件间通信方式', link: '/note/20.组件间通信方式' },
-            { text: '组件与服务', link: '/note/21.组件与服务' },
-            { text: '响应式实现分析', link: '/note/22.响应式实现分析' },
-            {
-              text: 'autobind的必要性分析.md',
-              link: '/note/23.autobind的必要性分析.md',
-            },
+            { text: 'TC39-Stage3-装饰器类型详解', link: '/note/07.TC39-Stage3-装饰器类型详解' },
+            { text: 'Legacy-experimentalDecorators-装饰器类型详解', link: '/note/08.Legacy-experimentalDecorators-装饰器类型详解' },
+            { text: 'Computed装饰器只适用于getter属性', link: '/note/09.Computed装饰器只适用于getter属性' },
+            { text: 'computed缓存陷阱', link: '/note/10.computed缓存陷阱' },
+            { text: 'computed-comparison', link: '/note/11.computed-comparison' },
+          ],
+        },
+        {
+          text: 'SSR',
+          items: [
+            { text: 'SSR', link: '/note/12.SSR' },
+            { text: 'SSR-deepseek', link: '/note/13.SSR-deepseek' },
+            { text: 'SSR-angular', link: '/note/14.SSR-angular' },
+            { text: 'SSR-pinia', link: '/note/15.SSR-pinia' },
+            { text: 'SSR完整分析与Hydration方案', link: '/note/16.SSR完整分析与Hydration方案' },
+            { text: 'SSR最佳实践', link: '/note/17.SSR最佳实践' },
+          ],
+        },
+        {
+          text: '最佳实践与架构',
+          items: [
+            { text: '最佳实践', link: '/note/18.最佳实践' },
+            { text: '组件间通信方式', link: '/note/19.组件间通信方式' },
+            { text: '组件与服务', link: '/note/20.组件与服务' },
+            { text: '服务间通信方案', link: '/note/21.服务间通信方案' },
+            { text: 'autobind的必要性分析', link: '/note/22.autobind的必要性分析' },
+            { text: '响应式实现分析', link: '/note/23.响应式实现分析' },
+          ],
+        },
+        {
+          text: '背景知识',
+          items: [
+            { text: '前端框架浅显对比', link: '/note/24.前端框架浅显对比' },
+            { text: '前端发展各个阶段', link: '/note/25.前端发展各个阶段' },
+            { text: '前端常见库的理解', link: '/note/26.前端常见库的理解' },
+            { text: '代码批判性分析与改进建议', link: '/note/27.代码批判性分析与改进建议' },
+          ],
+        },
+        {
+          text: '工具',
+          items: [
             { text: '基本命令', link: '/note/99.基本命令' },
           ],
         },

@@ -215,26 +215,30 @@ timerService.startWatch();
 
 ## Token 常量
 
-本库导出两个预定义的 Token 常量，用于在父子组件之间查找服务实例。
+本库导出两个预定义的 Token 常量，专用于**父组件主动向下查找子孙组件中声明的服务实例**。这与 `useService` 沿组件树向上查找的方向相反——`useService` 是子孙组件获取祖先组件的服务，而这两个 Token 是父组件获取子孙组件的服务。
+
+> 以上描述是从组件树角度的粗粒度理解，实际查找基于容器树而非组件树，存在查找起点偏移的细节。准确的查找原理请参考 [API 文档：查找原理](/api/#查找原理)。
 
 ### FIND_CHILD_SERVICE
 
-`FIND_CHILD_SERVICE` 是一个 `Token<FindChildService>` 实例。通过该 Token 获取的函数可以根据指定的 token 查找子组件中声明的单个服务实例。如果未找到则返回 `undefined`。
+`FIND_CHILD_SERVICE` 是一个 `Token<FindChildService>` 实例。在父组件中通过该 Token 获取一个工具函数，调用该函数可以查找**当前组件的子孙组件**中绑定了指定 token 的第一个服务实例。如果未找到则返回 `undefined`。
 
 ```ts
 import { useService, FIND_CHILD_SERVICE } from '@kaokei/use-vue-service';
 
+// 在父组件中调用，向下查找子孙组件中的 SomeService 实例
 const findChild = useService(FIND_CHILD_SERVICE);
 const childService = findChild(SomeService);
 ```
 
 ### FIND_CHILDREN_SERVICES
 
-`FIND_CHILDREN_SERVICES` 是一个 `Token<FindChildrenServices>` 实例。通过该 Token 获取的函数可以根据指定的 token 查找子组件中声明的所有匹配服务实例，返回一个数组。
+`FIND_CHILDREN_SERVICES` 是一个 `Token<FindChildrenServices>` 实例。在父组件中通过该 Token 获取一个工具函数，调用该函数可以查找**当前组件的子孙组件**中绑定了指定 token 的所有服务实例，返回一个数组。
 
 ```ts
 import { useService, FIND_CHILDREN_SERVICES } from '@kaokei/use-vue-service';
 
+// 在父组件中调用，向下查找所有子孙组件中的 SomeService 实例
 const findChildren = useService(FIND_CHILDREN_SERVICES);
 const allChildServices = findChildren(SomeService);
 ```

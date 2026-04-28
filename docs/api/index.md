@@ -202,9 +202,9 @@ const findService = useService(FIND_CHILD_SERVICE);
 const service = findService(Token);
 ```
 
-首先通过 useService 获取一个工具方法，该工具方法用于查找当前组件的子孙组件中绑定的 token 服务。返回找到的第一个服务实例。
+通过 `useService` 获取一个工具函数，调用该函数可以在**子孙容器树**中查找绑定了指定 token 的第一个服务实例，找不到则返回 `undefined`。
 
-FIND_CHILD_SERVICE 本身是一个 token，所以也可以用在服务中。
+`FIND_CHILD_SERVICE` 本身是一个 token，所以也可以用在服务中。
 
 ```ts
 class DemoService {
@@ -218,6 +218,28 @@ class DemoService {
 }
 ```
 
+### 查找原理
+
+查找的底层是**容器树**，而非组件树。并不是每一个组件节点都有绑定的容器——只有调用过 `declareProviders` 的组件才会创建并持有容器。
+
+`FIND_CHILD_SERVICE` 是通过 `toDynamicValue` 绑定在容器上的，工厂函数中的 `context.container` 就是该绑定所在的容器。因此 `findService(Token)` 的查找起点是**持有该容器的组件节点的子容器树**，而不一定是调用 `useService(FIND_CHILD_SERVICE)` 的那个组件。
+
+具体来说，`useService` 会沿组件树向上查找最近的容器。如果当前组件没有绑定容器，则会继续向上找到某个祖先组件的容器，并从该容器上获取 `findService` 函数。此时 `findService` 的查找起点就是那个**祖先组件的容器**，而不是当前组件。
+
+```
+ParentComp (绑定了容器 A)
+  └── CurrentComp (未绑定容器，useService 向上找到容器 A)
+        ├── ChildComp1 (绑定了容器 B，持有 ChildService1)
+        └── ChildComp2 (绑定了容器 C，持有 ChildService2)
+  └── SiblingComp (绑定了容器 D，持有 SiblingService)
+```
+
+上例中，在 `CurrentComp` 中调用 `useService(FIND_CHILD_SERVICE)` 获取到的 `findService` 实际来自容器 A，其查找起点是容器 A 的子容器树，即容器 B、C、D 都在查找范围内——这可能导致找到的并不是预期的 `ChildService1` 或 `ChildService2`，而是意外命中了 `SiblingService`（如果它也绑定了同名 token）。
+
+::: warning 查找起点取决于容器，而非组件
+如果系统中同一个 token 在多个不同节点上都有绑定，需要注意实际查找起点可能比预期更靠上。如果要确保查找起点就是当前组件，可以在当前组件中调用 `declareProviders([])` 绑定一个空容器，这样 `useService` 就能拿到当前组件自己的容器，查找范围也随之精确到当前组件的子孙。
+:::
+
 ## FIND_CHILDREN_SERVICES
 
 ```ts
@@ -225,7 +247,7 @@ const findAllService = useService(FIND_CHILDREN_SERVICES);
 const services = findAllService(Token);
 ```
 
-功能同上，返回指定 token 服务的多个实例组成的数组。FIND_CHILDREN_SERVICES 本身是一个 token，所以也可以用在服务中。
+功能与 `FIND_CHILD_SERVICE` 相同，区别在于返回子孙容器树中绑定了指定 token 的**所有**服务实例组成的数组，而非仅第一个。`FIND_CHILDREN_SERVICES` 本身是一个 token，所以也可以用在服务中。
 
 ```ts
 class DemoService {
@@ -238,6 +260,8 @@ class DemoService {
   }
 }
 ```
+
+查找原理与 `FIND_CHILD_SERVICE` 完全一致，同样受容器树起点的影响，详见上方说明。
 
 ## Computed
 
@@ -303,17 +327,7 @@ class UserService {
 
 ## Raw
 
-```ts
-// 用法一：不带括号
-@Raw
-public chart = {};
-
-// 用法二：带括号
-@Raw()
-public chart = {};
-```
-
-`@Raw` 装饰器用于标记属性不参与 Vue 的响应式追踪。支持 `@Raw` 和 `@Raw()` 两种用法，效果完全一致。
+`@Raw` 装饰器用于将属性或整个类排除在 Vue 响应式系统之外。支持 `@Raw` 和 `@Raw()` 两种调用形式，效果完全一致。
 
 ### 设计理念
 
@@ -321,64 +335,26 @@ public chart = {};
 
 当某些属性不适合参与响应式追踪时（如第三方 SDK 实例），才需要主动使用 `@Raw` 将其排除。
 
-### 功能说明
+### 场景一：field 装饰器
 
-当服务实例被 `reactive()` 包裹后，默认所有属性都会被递归转为响应式对象。对于复杂的第三方 SDK 对象（如 ECharts 实例、Monaco Editor 实例等），转为响应式会导致性能问题甚至功能异常。
-
-使用 `@Raw` 装饰的属性，无论初始值还是后续赋值，都会自动调用 `markRaw`，确保该属性值永远不会被 Vue 的响应式系统代理。
-
-### 装饰目标
-
-`@Raw` 支持三种装饰目标：
-
-**普通 field 装饰器：**
+装饰普通类字段，使该字段的值永远不被 Vue 响应式系统代理。无论是初始赋值还是后续赋值，都会自动调用 `markRaw`。
 
 ```ts
-import { Raw } from '@kaokei/use-vue-service';
-
-class ChartService {
-  @Raw
-  public chartInstance = {};
-
-  @Raw()
-  public editorInstance = {};
-}
-```
-
-**auto-accessor 装饰器：**
-
-```ts
-import { Raw } from '@kaokei/use-vue-service';
-
-class ChartService {
-  @Raw
-  accessor chartInstance = {};
-
-  @Raw()
-  accessor editorInstance = {};
-}
-```
-
-**class 装饰器：**
-
-```ts
-import { Raw } from '@kaokei/use-vue-service';
-
+// 不带括号
 @Raw
-class RawService {
-  public data = {};
-}
+public chartInstance = {};
+
+// 带括号
+@Raw()
+public chartInstance = {};
 ```
 
-当 `@Raw` 装饰整个 class 时，该类的实例被激活时不会被 `reactive()` 包裹，整个实例保持原始对象状态，不参与任何响应式追踪。适用于需要完全脱离 Vue 响应式系统的服务类。
-
-### 使用示例
+使用示例：
 
 ```ts
 import { Raw } from '@kaokei/use-vue-service';
 
 class MapService {
-  // 地图实例不参与响应式追踪
   @Raw
   public mapInstance: any = null;
 
@@ -388,6 +364,69 @@ class MapService {
     // 赋值时自动调用 markRaw，确保 mapInstance 不被代理
     this.mapInstance = new SomeMapSDK(el);
   }
+}
+```
+
+### 场景二：accessor 装饰器
+
+装饰 `accessor` 关键字声明的自动访问器字段，读取和写入都经由原始对象（`toRaw`），确保值不被响应式系统代理。
+
+```ts
+// 不带括号
+@Raw
+accessor chartInstance = {};
+
+// 带括号
+@Raw()
+accessor chartInstance = {};
+```
+
+使用示例：
+
+```ts
+import { Raw } from '@kaokei/use-vue-service';
+
+class ChartService {
+  @Raw
+  accessor chartInstance: any = null;
+
+  @Raw()
+  accessor editorInstance: any = null;
+
+  public initChart(el: HTMLElement) {
+    this.chartInstance = new ECharts(el);
+    this.editorInstance = new MonacoEditor(el);
+  }
+}
+```
+
+### 场景三：class 装饰器
+
+装饰整个类，该类的实例在激活时不会被 `reactive()` 包裹，整个实例保持原始对象状态，完全脱离 Vue 响应式系统。适用于整个服务都不需要响应式的场景。
+
+```ts
+// 不带括号
+@Raw
+class RawService {
+  public data = {};
+}
+
+// 带括号
+@Raw()
+class RawService {
+  public data = {};
+}
+```
+
+使用示例：
+
+```ts
+import { Raw } from '@kaokei/use-vue-service';
+
+@Raw
+class ConfigService {
+  public apiUrl = 'https://api.example.com';
+  public timeout = 5000;
 }
 ```
 
