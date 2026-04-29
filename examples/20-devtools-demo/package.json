@@ -1,0 +1,22 @@
+{
+  "name": "use-vue-service-example-20-devtools-demo",
+  "version": "1.0.0",
+  "description": "DevTools 体验：vite-plugin-vue-devtools 集成演示",
+  "type": "module",
+  "scripts": {
+    "start": "vite"
+  },
+  "dependencies": {
+    "@kaokei/di": "^5.0.0",
+    "@kaokei/devtools-use-vue-service": "workspace:*",
+    "@kaokei/use-vue-service": "^4.0.0",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.29.0",
+    "@rollup/plugin-babel": "^7.0.0",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "vite": "^6.0.0",
+    "vite-plugin-vue-devtools": "^7.0.0"
+  }
+}

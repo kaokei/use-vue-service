@@ -1,0 +1,21 @@
+{
+  "name": "use-vue-service-example-21-nuxt-devtools-demo",
+  "version": "1.0.0",
+  "description": "Nuxt DevTools 体验演示",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "start": "nuxt dev"
+  },
+  "dependencies": {
+    "@kaokei/devtools-use-vue-service": "workspace:*",
+    "@kaokei/nuxt-use-vue-service": "^1.0.2",
+    "@kaokei/use-vue-service": "^4.0.0",
+    "nuxt": "^4.4.2",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0"
+  }
+}
