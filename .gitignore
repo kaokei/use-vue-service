@@ -40,3 +40,10 @@ storybook-static
 .nuxt
 .output
 dist
+
+.windsurf/
+.qwen/
+.kiro/
+.gemini/
+.claude/
+.workbuddy/
