@@ -2,16 +2,12 @@
   "name": "@kaokei/devtools-use-vue-service",
   "version": "1.0.0",
   "type": "module",
-  "description": "Vite devtools plugin for @kaokei/use-vue-service",
+  "description": "DevTools plugin for @kaokei/use-vue-service",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./vite": {
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
@@ -23,13 +19,16 @@
     "build": "vite build",
     "dev": "vite build --watch"
   },
+  "dependencies": {
+    "@vue/devtools-api": "^8.1.1"
+  },
   "peerDependencies": {
-    "vite": "^5.0.0 || ^6.0.0",
-    "@kaokei/use-vue-service": "^4.0.0"
+    "vue": "^3.0.0"
   },
   "devDependencies": {
+    "typescript": "~5.6.3",
     "vite": "^6.0.0",
-    "typescript": "~5.6.3"
+    "vite-plugin-dts": "^4.5.3"
   },
   "author": "kaokei",
   "license": "MIT"
