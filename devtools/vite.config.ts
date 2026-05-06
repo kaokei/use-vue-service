@@ -5,12 +5,20 @@ export default defineConfig({
   plugins: [dts()],
   build: {
     lib: {
-      entry: 'src/index.ts',
+      entry: {
+        index: 'src/index.ts',
+        'vite-plugin': 'src/vite-plugin.ts',
+      },
       formats: ['es', 'cjs'],
-      fileName: (format) => format === 'cjs' ? 'index.cjs' : 'index.js',
     },
     rollupOptions: {
-      external: ['vue', '@vue/devtools-api', '@kaokei/di', '@kaokei/use-vue-service'],
+      external: [
+        'vue',
+        '@vue/devtools-api',
+        'vite',
+        '@kaokei/di',
+        '@kaokei/use-vue-service',
+      ],
     },
   },
 })

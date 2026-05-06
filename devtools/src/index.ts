@@ -5,21 +5,28 @@
  * 1. 自定义 Inspector 面板：展示容器树和绑定/服务状态
  * 2. 组件 Inspect 增强：在组件面板中显示容器关联信息
  *
- * 使用方式：
- * ```ts
- * import { setupDevtools } from '@kaokei/devtools-use-vue-service'
- *
- * const app = createApp(App)
- * app.use(setupDevtools)
- * ```
- *
- * 或在 vite-plugin-vue-devtools 环境中自动安装：
+ * 使用方式一（推荐，零业务侵入）：
  * ```ts
  * // vite.config.ts
  * import VueDevTools from 'vite-plugin-vue-devtools'
- * plugins: [VueDevTools()]
+ * import { useVueServiceDevtools } from '@kaokei/devtools-use-vue-service/vite'
+ *
+ * export default defineConfig({
+ *   plugins: [
+ *     vue(),
+ *     VueDevTools(),
+ *     useVueServiceDevtools(),
+ *   ],
+ * })
  * ```
- * 此时只需在 main.ts 中调用 setupDevtools(app) 即可。
+ *
+ * 使用方式二（手动调用，向后兼容）：
+ * ```ts
+ * // main.ts
+ * import { setupDevtools } from '@kaokei/devtools-use-vue-service'
+ * const app = createApp(App)
+ * setupDevtools(app)
+ * ```
  */
 
 import type { App } from 'vue'
