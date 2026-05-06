@@ -248,14 +248,6 @@ export function declareAppProviders(providers: Provider, app: App) {
 }
 
 /**
- * @internal DevTools 专用，获取全局根容器引用。
- * 不属于稳定公共 API，仅供 @kaokei/devtools-use-vue-service 使用。
- */
-export function __getDevtoolsRootContainer(): Container {
-  return ROOT_CONTAINER;
-}
-
-/**
  * declareAppProviders 的 Vue 插件形式。
  * 返回一个符合 Vue 插件接口的函数，可直接用于 app.use()。
  *

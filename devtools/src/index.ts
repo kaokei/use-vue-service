@@ -35,7 +35,7 @@ import { nextTick, watch } from 'vue'
 import { setupDevToolsPlugin } from '@vue/devtools-api'
 import { INSPECTOR_ID, getInspectorTree, getInspectorState, setDevtoolsApp } from './inspector'
 import { registerComponentHooks } from './component-hooks'
-import { __getDevtoolsRootContainer } from '@kaokei/use-vue-service'
+import { captureRootContainer, getRootContainer } from './core/root-container'
 import { getActivatedBindings } from './core/binding-reader'
 import { isInternalToken } from './core/types'
 
@@ -62,6 +62,9 @@ export function setupDevtools(app: App): void {
     (api: DevtoolsApi) => {
       // 0. 保存 app 引用，供 Inspector 模块识别 app 作用域容器
       setDevtoolsApp(app)
+
+      // 0.1 通过 FunctionProvider 捕获 ROOT_CONTAINER 引用
+      captureRootContainer()
 
       // 1. 注册自定义 Inspector
       api.addInspector({
@@ -133,7 +136,7 @@ function setupReactiveWatch(api: DevtoolsApi): void {
  * 作为 watch 的监听源。只收集非函数的数据属性。
  */
 function collectAllServiceStates(): Record<string, any> {
-  const rootContainer = __getDevtoolsRootContainer()
+  const rootContainer = getRootContainer()
   if (!rootContainer) return {}
 
   const snapshot: Record<string, any> = {}
