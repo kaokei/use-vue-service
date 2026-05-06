@@ -56,6 +56,7 @@ export function setupDevtools(app: App): void {
       label: 'use-vue-service',
       packageName: '@kaokei/devtools-use-vue-service',
       homepage: 'https://github.com/kaokei/use-vue-service',
+      logo: 'i-carbon-tree-view',
       app,
       componentStateTypes: ['UVS 容器'],
     },
@@ -70,7 +71,6 @@ export function setupDevtools(app: App): void {
       api.addInspector({
         id: INSPECTOR_ID,
         label: 'Services',
-        icon: 'storage',
       })
 
       // 2. Inspector 树数据
