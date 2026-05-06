@@ -53,14 +53,6 @@ export interface ServiceStateInfo {
 }
 
 /**
- * 内部用于遍历时跟踪容器到 ID 的映射
- */
-export interface ContainerIdMap {
-  containerToId: Map<Container, string>
-  idToContainer: Map<string, Container>
-}
-
-/**
  * Token 类型判断
  * Token 实例有 name 属性且不是函数；类构造函数是函数
  */

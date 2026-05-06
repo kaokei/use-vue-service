@@ -159,11 +159,6 @@ export function declareProviders(providers: Provider) {
     const parent = getProvideContainer();
     const container = createContainer(parent);
     bindProviders(container, providers);
-    // 标记容器所属组件名，供 DevTools 读取
-    const instance = getCurrentInstance() as any;
-    if (instance) {
-      ;(container as any).__uvs_component_name__ = instance.type?.name || instance.type?.__name || 'Anonymous';
-    }
     provide(CONTAINER_TOKEN, container);
     onUnmounted(() => {
       container.destroy();
