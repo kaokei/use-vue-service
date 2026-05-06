@@ -9,7 +9,7 @@
   "dependencies": {
     "@kaokei/di": "^5.0.0",
     "@kaokei/devtools-use-vue-service": "workspace:*",
-    "@kaokei/use-vue-service": "^4.0.0",
+    "@kaokei/use-vue-service": "workspace:*",
     "vue": "^3.5.13"
   },
   "devDependencies": {
