@@ -8,7 +8,7 @@
 import type { Container } from '@kaokei/di'
 import { __getDevtoolsRootContainer } from '@kaokei/use-vue-service'
 import type { ContainerInfo, BindingInfo, ContainerIdMap } from './core/types'
-import { buildContainerTree, findContainerById, buildIdMap, getContainerScope, getBindingCount } from './core/container-tree'
+import { buildContainerTree, findContainerById, buildIdMap, getContainerScope, getBindingCount, getComponentName } from './core/container-tree'
 import { getBindings, getActivatedBindings } from './core/binding-reader'
 import { extractServiceState } from './core/state-extractor'
 import { getTokenName } from './core/types'
@@ -94,44 +94,59 @@ export function getInspectorState(nodeId: string): InspectorStateResult {
     return { state: {} }
   }
 
-  // 分组：容器信息 + 绑定列表 + 服务状态
+  const scope = getContainerScope(container)
+  const componentName = getComponentName(container)
+
+  // 分组：容器信息 + Services
+  const containerInfo: Array<{ key: string; value: any }> = [
+    { key: '作用域', value: scope },
+  ]
+  if (componentName) {
+    containerInfo.push({ key: '组件', value: componentName })
+  }
+  containerInfo.push(
+    { key: '绑定数量', value: getBindingCount(container) },
+    { key: '子容器数量', value: container.getChildren()?.size ?? 0 },
+    { key: '是否已销毁', value: container._destroyed },
+  )
+
   const state: InspectorStateResult = {
     state: {
-      '容器信息': [
-        { key: '作用域', value: getContainerScope(container) },
-        { key: '绑定数量', value: getBindingCount(container) },
-        { key: '子容器数量', value: container.getChildren()?.size ?? 0 },
-        { key: '是否已销毁', value: container._destroyed },
-      ],
+      '容器信息': containerInfo,
     },
   }
 
-  // 绑定列表
+  // 合并展示：绑定列表 + 服务状态 → 统一的 Services 分组
   const bindings = getBindings(container, nodeId)
   if (bindings.length > 0) {
-    state.state['绑定列表'] = bindings.map(b => ({
-      key: b.tokenName,
-      value: {
-        _custom: {
-          display: formatBindingDisplay(b),
-          value: b,
-          tooltip: formatBindingTooltip(b),
-        },
-      },
-    }))
-  }
+    // 获取已激活服务的实例映射
+    const activatedMap = new Map<string, any>()
+    for (const { tokenName, binding } of getActivatedBindings(container)) {
+      activatedMap.set(tokenName, binding.cache)
+    }
 
-  // 已激活的服务状态
-  const activated = getActivatedBindings(container)
-  if (activated.length > 0) {
-    state.state['服务状态'] = activated.map(({ tokenName, binding, token }) => {
-      const instance = binding.cache
-      const serviceState = extractServiceState(instance)
+    state.state['Services'] = bindings.map(b => {
+      const instance = activatedMap.get(b.tokenName)
+      const serviceState = instance ? extractServiceState(instance) : null
+
+      // 构建合并展示值
+      const display = formatServiceDisplay(b, serviceState)
       return {
-        key: tokenName,
-        value: Object.keys(serviceState).length > 0
-          ? serviceState
-          : '(无响应式状态)',
+        key: b.tokenName,
+        value: {
+          _custom: {
+            display,
+            value: {
+              绑定类型: b.bindingType,
+              状态: b.status,
+              ...(b.isTransient ? { 作用域: 'transient' } : {}),
+              ...(serviceState && Object.keys(serviceState).length > 0
+                ? { 响应式状态: serviceState }
+                : {}),
+            },
+            tooltip: formatServiceTooltip(b),
+          },
+        },
       }
     })
   }
@@ -141,21 +156,24 @@ export function getInspectorState(nodeId: string): InspectorStateResult {
 
 // ── 格式化工具 ──────────────────────────────────────────────
 
-function formatBindingDisplay(b: BindingInfo): string {
+function formatServiceDisplay(b: BindingInfo, serviceState: Record<string, any> | null): string {
   const parts: string[] = [b.bindingType]
   if (b.isTransient) parts.push('transient')
   if (b.hasCache) parts.push('✓ cached')
   parts.push(`[${b.status}]`)
+  if (serviceState && Object.keys(serviceState).length > 0) {
+    const keys = Object.keys(serviceState).join(', ')
+    parts.push(`{ ${keys} }`)
+  }
   return parts.join(' · ')
 }
 
-function formatBindingTooltip(b: BindingInfo): string {
+function formatServiceTooltip(b: BindingInfo): string {
   return [
-    `Token: ${b.tokenName} (${b.tokenType})`,
-    `Binding Type: ${b.bindingType}`,
-    `Status: ${b.status}`,
+    `绑定类型: ${b.bindingType}`,
+    `状态: ${b.status}`,
     `Transient: ${b.isTransient}`,
-    `Has Cache: ${b.hasCache}`,
+    `已缓存: ${b.hasCache}`,
   ].join('\n')
 }
 

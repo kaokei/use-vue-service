@@ -1,6 +1,6 @@
 import type { Container, Binding, CommonToken } from '@kaokei/di'
 import type { BindingInfo } from './types'
-import { getTokenName, getTokenType, getBindingTypeName, getBindingStatusName } from './types'
+import { getTokenName, getTokenType, getBindingTypeName, getBindingStatusName, isInternalToken } from './types'
 
 /**
  * 读取容器中所有绑定，转换为 BindingInfo 列表。
@@ -58,14 +58,4 @@ export function getActivatedBindings(container: Container): Array<{
   }
 
   return result
-}
-
-/**
- * 判断是否为内部 token（不应对用户展示）
- */
-function isInternalToken(token: CommonToken): boolean {
-  if (typeof token === 'function') return false
-  // Token 实例的 name 属性
-  const name = (token as any).name
-  return name === 'FIND_CHILD_SERVICE' || name === 'FIND_CHILDREN_SERVICES'
 }

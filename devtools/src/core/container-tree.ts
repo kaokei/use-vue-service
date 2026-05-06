@@ -1,5 +1,6 @@
 import type { Container } from '@kaokei/di'
 import type { ContainerInfo, ContainerIdMap, BindingInfo } from './types'
+import { isInternalToken } from './types'
 
 /**
  * 从根容器开始遍历，构建完整的容器树信息。
@@ -40,28 +41,45 @@ export function buildIdMap(rootContainer: Container): ContainerIdMap {
 }
 
 /**
- * 获取容器的绑定数量（用于标签展示）
+ * 获取容器的用户可见绑定数量（过滤内部 token）。
+ * 仅统计当前容器直接绑定的服务，不包含子容器的绑定。
  */
 export function getBindingCount(container: Container): number {
-  return container._bindings.size
+  let count = 0
+  for (const [token] of container._bindings) {
+    if (!isInternalToken(token)) count++
+  }
+  return count
 }
 
 /**
- * 判断容器的作用域
- * - root：没有 parent
- * - app：parent 是 root（第一层子容器）
- * - component：更深层的容器
+ * 判断容器的作用域。
  *
- * 注意：这是一个启发式判断。由于 declareAppProviders 创建的容器
- * 和 declareProviders 在根组件创建的容器都是 root 的直接子容器，
- * MVP 阶段统一标记为 'app'，后续可通过 __uvs_scope__ 标记精确区分。
+ * 优先读取容器上的 __uvs_scope__ 标记（由 declareProviders/declareAppProviders 设置），
+ * 回退到基于层级的启发式判断。
+ *
+ * - root：ROOT_CONTAINER，没有 parent
+ * - app：declareAppProviders 创建的容器（__uvs_scope__ === 'app'）
+ * - component：declareProviders 在组件中创建的容器（__uvs_scope__ === 'component'）
  */
 export function getContainerScope(
   container: Container
 ): ContainerInfo['scope'] {
+  // 优先使用显式标记
+  const explicitScope = (container as any).__uvs_scope__
+  if (explicitScope === 'root' || explicitScope === 'app' || explicitScope === 'component') {
+    return explicitScope
+  }
+  // 回退：启发式判断
   if (!container.parent) return 'root'
-  if (!container.parent.parent) return 'app'
   return 'component'
+}
+
+/**
+ * 获取容器关联的组件名（仅 component 作用域有值）
+ */
+export function getComponentName(container: Container): string | undefined {
+  return (container as any).__uvs_component_name__
 }
 
 /**
@@ -104,6 +122,10 @@ function buildNode(
 
 /**
  * 生成节点的显示标签
+ *
+ * - root → "Root Container"
+ * - app → "App Container"
+ * - component → "<ComponentName> Container"（如果知道组件名）或 "Component Container"
  */
 function getNodeLabel(
   container: Container,
@@ -116,9 +138,14 @@ function getNodeLabel(
   switch (scope) {
     case 'root':
       return 'Root Container' + suffix
-    case 'app':
+    case 'app': {
       return 'App Container' + suffix
-    case 'component':
-      return 'Component Container' + suffix
+    }
+    case 'component': {
+      const componentName = getComponentName(container)
+      return componentName
+        ? `<${componentName}> Container` + suffix
+        : 'Component Container' + suffix
+    }
   }
 }
