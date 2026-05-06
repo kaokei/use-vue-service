@@ -88,3 +88,14 @@ export function getBindingTypeName(binding: Binding): BindingInfo['bindingType']
 export function getBindingStatusName(binding: Binding): BindingInfo['status'] {
   return binding.status as BindingInfo['status']
 }
+
+/**
+ * 判断是否为内部 token（不应对用户展示）。
+ * FIND_CHILD_SERVICE / FIND_CHILDREN_SERVICES 是库内部使用的动态值绑定，
+ * 不属于用户声明的服务。
+ */
+export function isInternalToken(token: CommonToken): boolean {
+  if (typeof token === 'function') return false
+  const name = (token as any).name
+  return name === 'FIND_CHILD_SERVICE' || name === 'FIND_CHILDREN_SERVICES'
+}
