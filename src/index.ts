@@ -11,7 +11,7 @@ export {
   __getDevtoolsRootContainer,
 } from './core.ts';
 
-export { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES } from './constants.ts';
+export { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES, CONTAINER_TOKEN } from './constants.ts';
 
 export type { FindChildService, FindChildrenServices } from './interface.ts';
 
