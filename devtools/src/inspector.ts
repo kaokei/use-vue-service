@@ -10,12 +10,13 @@
 
 import type { App } from 'vue'
 import type { Container } from '@kaokei/di'
-import { __getDevtoolsRootContainer, CONTAINER_TOKEN } from '@kaokei/use-vue-service'
+import { CONTAINER_TOKEN } from '@kaokei/use-vue-service'
 import { buildContainerTreeFromComponents, type ContainerTreeNode } from './core/component-walker'
 import type { BindingInfo } from './core/types'
 import { getBindingCount, getContainerScope } from './core/container-tree'
 import { getBindings, getActivatedBindings } from './core/binding-reader'
 import { extractServiceState } from './core/state-extractor'
+import { getRootContainer } from './core/root-container'
 
 // ── Inspector 常量 ──────────────────────────────────────────
 
@@ -63,7 +64,7 @@ let _idToContainer: Map<string, Container> = new Map()
  * 从 Vue 组件树遍历，只保留关联了容器的组件。
  */
 export function getInspectorTree(): { rootNodes: InspectorTreeNode[] } {
-  const rootContainer = __getDevtoolsRootContainer()
+  const rootContainer = getRootContainer()
   if (!rootContainer || !_app) {
     return { rootNodes: [] }
   }

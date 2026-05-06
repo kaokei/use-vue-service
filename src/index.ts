@@ -8,7 +8,6 @@ export {
   useAppService,
   declareAppProviders,
   declareAppProvidersPlugin,
-  __getDevtoolsRootContainer,
 } from './core.ts';
 
 export { FIND_CHILD_SERVICE, FIND_CHILDREN_SERVICES, CONTAINER_TOKEN } from './constants.ts';

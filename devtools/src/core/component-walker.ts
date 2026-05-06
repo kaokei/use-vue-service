@@ -32,7 +32,7 @@ export interface ContainerTreeNode {
  * 从 Vue App 实例遍历组件树，构建容器视图树。
  *
  * 构建逻辑：
- * 1. Root Container：从 __getDevtoolsRootContainer() 获取，始终作为根节点
+ * 1. Root Container：通过 declareRootProviders + FunctionProvider 获取，始终作为根节点
  * 2. App Container：从 app._context.provides[CONTAINER_TOKEN] 获取（declareAppProviders 创建），作为 Root 的子节点
  * 3. App Component Container：从 app._instance.provides[CONTAINER_TOKEN] 获取（declareProviders 创建），作为上一层的子节点
  * 4. 其他 Component Container：遍历组件树，找到 hasOwn(provides, CONTAINER_TOKEN) 的组件
@@ -75,9 +75,7 @@ export function buildContainerTreeFromComponents(
   const rootInstance = (app as any)._instance
   if (rootInstance) {
     const rootOwnContainer = getOwnContainer(rootInstance)
-    // 仅当 App 组件有自己声明的容器，且该容器与 App Container 不同时才创建节点
-    // （App Container 由 declareAppProviders 创建，App 组件容器由 declareProviders 创建，二者不同）
-    if (rootOwnContainer && rootOwnContainer !== appContainer) {
+    if (rootOwnContainer) {
       const componentName = getComponentNameFromInstance(rootInstance)
       const appCompNode: ContainerTreeNode = {
         id: 'app-component',
