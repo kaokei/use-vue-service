@@ -17,6 +17,6 @@
     "@rollup/plugin-babel": "^7.0.0",
     "@vitejs/plugin-vue": "^6.0.0",
     "vite": "^6.0.0",
-    "vite-plugin-vue-devtools": "^7.0.0"
+    "vite-plugin-vue-devtools": "^8.1.1"
   }
 }
