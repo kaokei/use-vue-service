@@ -10,7 +10,7 @@ export default defineConfig({
       fileName: (format) => format === 'cjs' ? 'index.cjs' : 'index.js',
     },
     rollupOptions: {
-      external: ['vue', '@vue/devtools-api'],
+      external: ['vue', '@vue/devtools-api', '@kaokei/di', '@kaokei/use-vue-service'],
     },
   },
 })

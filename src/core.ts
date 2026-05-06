@@ -160,6 +160,9 @@ export function declareProviders(providers: Provider) {
     const container = createContainer(parent);
     bindProviders(container, providers);
     provide(CONTAINER_TOKEN, container);
+    // devtools 钩子：将容器引用写入组件实例，供 Vue DevTools 读取
+    const instance = getCurrentInstance() as any;
+    if (instance) instance.__uvs_container__ = container;
     onUnmounted(() => {
       container.destroy();
     });
@@ -245,6 +248,14 @@ export function declareAppProviders(providers: Provider, app: App) {
       });
     }
   });
+}
+
+/**
+ * @internal DevTools 专用，获取全局根容器引用。
+ * 不属于稳定公共 API，仅供 @kaokei/devtools-use-vue-service 使用。
+ */
+export function __getDevtoolsRootContainer(): Container {
+  return ROOT_CONTAINER;
 }
 
 /**

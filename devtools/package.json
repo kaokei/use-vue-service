@@ -20,6 +20,8 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
+    "@kaokei/di": "^5.0.8",
+    "@kaokei/use-vue-service": "workspace:*",
     "@vue/devtools-api": "^8.1.1"
   },
   "peerDependencies": {

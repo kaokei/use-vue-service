@@ -77,6 +77,12 @@ importers:
 
   devtools:
     dependencies:
+      '@kaokei/di':
+        specifier: ^5.0.8
+        version: 5.0.8
+      '@kaokei/use-vue-service':
+        specifier: workspace:*
+        version: link:..
       '@vue/devtools-api':
         specifier: ^8.1.1
         version: 8.1.1
@@ -533,8 +539,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.8
       '@kaokei/use-vue-service':
-        specifier: ^4.0.0
-        version: 4.0.3(@kaokei/di@5.0.8)
+        specifier: workspace:*
+        version: link:../..
       vue:
         specifier: ^3.5.13
         version: 3.5.33(typescript@5.9.3)
