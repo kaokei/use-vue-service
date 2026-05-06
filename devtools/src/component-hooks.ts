@@ -1,42 +1,95 @@
 /**
  * 组件钩子模块
  *
- * 在 Vue DevTools 的组件 Inspector 中追加容器信息，
- * 实现组件→容器的映射展示。
+ * 在 Vue DevTools Components 面板中增强组件展示：
+ * 1. visitComponentTree：在组件树节点上添加 tag 标签（如 "Container"）
+ * 2. inspectComponent：在组件 state 中追加容器信息分组
  *
- * 实现方式参照 Pinia 的 _pStores 模式：
- * declareProviders 在组件实例上写入 __uvs_container__，
- * 此模块在 inspectComponent 钩子中读取该属性。
+ * 容器关联方式：
+ * 通过 componentInstance.provides 上的 CONTAINER_TOKEN 查找容器，
+ * 与主库 getCurrentContainer() 使用相同机制。
+ * 使用 hasOwn 检查确保只匹配组件自身声明的容器，而非从父组件继承的。
  */
 
 import type { Container } from '@kaokei/di'
-import { getTokenName } from './core/types'
-import { getBindingCount, getContainerScope } from './core/container-tree'
+import { CONTAINER_TOKEN } from '@kaokei/use-vue-service'
+import { getBindingCount } from './core/container-tree'
 import { getBindings } from './core/binding-reader'
 
 /**
- * 注册组件 Inspect 钩子。
- * 当用户在 Vue DevTools 组件面板中选中某个组件时，
- * 在该组件的 state 中追加「UVS 容器」分组。
+ * 从组件实例的 provides 中获取该组件自身声明的容器。
+ *
+ * 原理与主库 getCurrentContainer() 一致：
+ * - Vue 的 provide 机制使用 Object.create(parentProvides) 创建子 provides
+ * - hasOwn 检查可以精确区分"自己声明的容器"和"从父组件继承的容器"
+ * - 这正是 DevTools 组件面板 "provided" 区域中显示的 Symbol(CONTAINER_TOKEN)
+ */
+function getOwnContainer(instance: any): Container | undefined {
+  const provides = instance?.provides
+  if (!provides) return undefined
+  // hasOwn 确保只匹配组件自己 provide 的容器，不含原型链继承的
+  if (Object.hasOwn(provides, CONTAINER_TOKEN)) {
+    return provides[CONTAINER_TOKEN] as Container
+  }
+  return undefined
+}
+
+/**
+ * 判断容器的作用域。
+ *
+ * 基于 provide 存储位置判断：
+ * - 组件 provide → instance.provides[CONTAINER_TOKEN]（Object.create 创建的对象）
+ * - app.provide → app._context.provides[CONTAINER_TOKEN]（普通对象）
+ *
+ * 通过 componentInstance 可访问 appContext.provides，
+ * 判断容器是否来自 app.provide。
+ */
+function getScopeFromInstance(instance: any, container: Container): 'app' | 'component' {
+  const appProvides = instance?.appContext?.provides
+  if (appProvides && Object.hasOwn(appProvides, CONTAINER_TOKEN) && appProvides[CONTAINER_TOKEN] === container) {
+    return 'app'
+  }
+  return 'component'
+}
+
+/**
+ * 注册组件相关钩子。
  */
 export function registerComponentHooks(
   api: DevtoolsApi
 ): void {
+  // 1. 组件树 tag：有容器的组件标记 "Container" 标签
+  api.on.visitComponentTree((payload: VisitComponentTreePayload) => {
+    const instance = payload.componentInstance
+    if (!instance) return
+
+    const container = getOwnContainer(instance)
+    if (!container) return
+
+    const bindingCount = getBindingCount(container)
+    payload.treeNode.tags.push({
+      label: bindingCount > 0 ? `container (${bindingCount})` : 'container',
+      textColor: 0xffffff,    // 白色文字
+      backgroundColor: 0x42b883, // Vue 绿
+      tooltip: `该组件声明了 ${bindingCount} 个服务`,
+    })
+  })
+
+  // 2. 组件 state：选中组件时追加容器信息分组
   api.on.inspectComponent((payload) => {
     const instance = payload.componentInstance
     if (!instance) return
 
-    const container: Container | undefined = (instance as any).__uvs_container__
+    const container = getOwnContainer(instance)
     if (!container) return
 
-    // 容器基本信息
-    const scope = getContainerScope(container)
+    const scope = getScopeFromInstance(instance, container)
     const bindingCount = getBindingCount(container)
     const bindings = getBindings(container)
 
     payload.instanceData.state.push({
       type: 'UVS 容器',
-      key: '__uvs_container__',
+      key: 'container',
       value: {
         作用域: scope,
         绑定数量: bindingCount,
@@ -47,11 +100,28 @@ export function registerComponentHooks(
   })
 }
 
-/**
- * 类型：与 @vue/devtools-api 的 setupDevToolsPlugin 回调参数对齐
- */
+// ── 类型定义 ──────────────────────────────────────────────
+
+interface VisitComponentTreePayload {
+  app: any
+  componentInstance: any
+  treeNode: {
+    tags: InspectorNodeTag[]
+    [key: string]: any
+  }
+  filter: string
+}
+
+interface InspectorNodeTag {
+  label: string
+  textColor: number
+  backgroundColor: number
+  tooltip?: string
+}
+
 interface DevtoolsApi {
   on: {
+    visitComponentTree: (cb: (payload: VisitComponentTreePayload) => void) => void
     inspectComponent: (cb: (payload: any) => void) => void
   }
   addInspector: (options: any) => void

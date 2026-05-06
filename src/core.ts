@@ -43,8 +43,6 @@ import type {
 
 // 默认Container，对应declareRootProviders/useRootService
 const ROOT_CONTAINER = createContainer();
-// 标记根容器作用域，供 DevTools 读取
-;(ROOT_CONTAINER as any).__uvs_scope__ = 'root';
 
 /**
  * 将服务提供者绑定到指定的 DI 容器上。
@@ -161,13 +159,10 @@ export function declareProviders(providers: Provider) {
     const parent = getProvideContainer();
     const container = createContainer(parent);
     bindProviders(container, providers);
-    // 标记容器作用域和所属组件名，供 DevTools 读取
-    ;(container as any).__uvs_scope__ = 'component';
+    // 标记容器所属组件名，供 DevTools 读取
     const instance = getCurrentInstance() as any;
     if (instance) {
       ;(container as any).__uvs_component_name__ = instance.type?.name || instance.type?.__name || 'Anonymous';
-      // devtools 钩子：将容器引用写入组件实例，供 Vue DevTools 读取
-      instance.__uvs_container__ = container;
     }
     provide(CONTAINER_TOKEN, container);
     onUnmounted(() => {
@@ -249,8 +244,6 @@ export function declareAppProviders(providers: Provider, app: App) {
     } else {
       const container = createContainer(ROOT_CONTAINER);
       bindProviders(container, providers);
-      // 标记容器作用域，供 DevTools 读取
-      ;(container as any).__uvs_scope__ = 'app';
       app.provide(CONTAINER_TOKEN, container);
       app.onUnmount(() => {
         container.destroy();

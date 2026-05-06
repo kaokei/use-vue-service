@@ -5,8 +5,9 @@
  * 映射为 Vue DevTools Inspector API 需要的数据格式。
  */
 
+import type { App } from 'vue'
 import type { Container } from '@kaokei/di'
-import { __getDevtoolsRootContainer } from '@kaokei/use-vue-service'
+import { __getDevtoolsRootContainer, CONTAINER_TOKEN } from '@kaokei/use-vue-service'
 import type { ContainerInfo, BindingInfo, ContainerIdMap } from './core/types'
 import { buildContainerTree, findContainerById, buildIdMap, getContainerScope, getBindingCount, getComponentName } from './core/container-tree'
 import { getBindings, getActivatedBindings } from './core/binding-reader'
@@ -16,6 +17,32 @@ import { getTokenName } from './core/types'
 // ── Inspector 常量 ──────────────────────────────────────────
 
 export const INSPECTOR_ID = 'uvs-services'
+
+// ── App 引用 ──────────────────────────────────────────────
+
+/**
+ * 保存 Vue App 引用，用于从 app._context.provides 识别 app 作用域容器。
+ * 由 setupDevtools() 在插件初始化时设置。
+ */
+let _app: App | null = null
+
+export function setDevtoolsApp(app: App): void {
+  _app = app
+}
+
+/**
+ * 从 app._context.provides 中获取 app 作用域容器（如果有）。
+ * 延迟解析：每次调用时实时读取，确保获取到最新的值。
+ */
+function getAppContainer(): Container | undefined {
+  if (!_app) return undefined
+  const provides = (_app as any)._context?.provides
+  if (!provides) return undefined
+  if (Object.hasOwn(provides, CONTAINER_TOKEN)) {
+    return provides[CONTAINER_TOKEN] as Container
+  }
+  return undefined
+}
 
 // ── Inspector Tree ──────────────────────────────────────────
 
@@ -29,8 +56,9 @@ export function getInspectorTree(): { rootNodes: InspectorTreeNode[] } {
     return { rootNodes: [] }
   }
 
+  const appContainer = getAppContainer()
   const idMap: ContainerIdMap = { containerToId: new Map(), idToContainer: new Map() }
-  const tree = buildContainerTree(rootContainer, idMap)
+  const tree = buildContainerTree(rootContainer, idMap, appContainer)
 
   // 缓存 idMap 供 getInspectorState 使用
   ;(getInspectorTree as any).__idMap = idMap
@@ -89,12 +117,13 @@ export function getInspectorState(nodeId: string): InspectorStateResult {
     return { state: {} }
   }
 
-  const container = findContainerById(rootContainer, nodeId)
+  const appContainer = getAppContainer()
+  const container = findContainerById(rootContainer, nodeId, appContainer)
   if (!container) {
     return { state: {} }
   }
 
-  const scope = getContainerScope(container)
+  const scope = getContainerScope(container, appContainer)
   const componentName = getComponentName(container)
 
   // 分组：容器信息 + Services
@@ -116,7 +145,7 @@ export function getInspectorState(nodeId: string): InspectorStateResult {
     },
   }
 
-  // 合并展示：绑定列表 + 服务状态 → 统一的 Services 分组
+  // Services 分组：右侧只显示绑定类型+状态，展开直接显示属性名-属性值
   const bindings = getBindings(container, nodeId)
   if (bindings.length > 0) {
     // 获取已激活服务的实例映射
@@ -129,21 +158,19 @@ export function getInspectorState(nodeId: string): InspectorStateResult {
       const instance = activatedMap.get(b.tokenName)
       const serviceState = instance ? extractServiceState(instance) : null
 
-      // 构建合并展示值
-      const display = formatServiceDisplay(b, serviceState)
+      // 右侧展示：绑定类型+状态
+      const display = formatServiceDisplay(b)
+      // 展开后展示：只有响应式状态属性名-属性值，不含元信息（已在右侧展示）
+      const expandValue: Record<string, any> = serviceState && Object.keys(serviceState).length > 0
+        ? { ...serviceState }
+        : {}
+
       return {
         key: b.tokenName,
         value: {
           _custom: {
             display,
-            value: {
-              绑定类型: b.bindingType,
-              状态: b.status,
-              ...(b.isTransient ? { 作用域: 'transient' } : {}),
-              ...(serviceState && Object.keys(serviceState).length > 0
-                ? { 响应式状态: serviceState }
-                : {}),
-            },
+            value: Object.keys(expandValue).length > 0 ? expandValue : undefined,
             tooltip: formatServiceTooltip(b),
           },
         },
@@ -156,15 +183,15 @@ export function getInspectorState(nodeId: string): InspectorStateResult {
 
 // ── 格式化工具 ──────────────────────────────────────────────
 
-function formatServiceDisplay(b: BindingInfo, serviceState: Record<string, any> | null): string {
+/**
+ * 格式化服务右侧展示文本：只显示绑定类型+状态
+ * 例如：toSelf · ✓ cached · [activated]
+ */
+function formatServiceDisplay(b: BindingInfo): string {
   const parts: string[] = [b.bindingType]
   if (b.isTransient) parts.push('transient')
   if (b.hasCache) parts.push('✓ cached')
   parts.push(`[${b.status}]`)
-  if (serviceState && Object.keys(serviceState).length > 0) {
-    const keys = Object.keys(serviceState).join(', ')
-    parts.push(`{ ${keys} }`)
-  }
   return parts.join(' · ')
 }
 

@@ -5,15 +5,18 @@ import { isInternalToken } from './types'
 /**
  * 从根容器开始遍历，构建完整的容器树信息。
  * 同时建立 container ↔ id 双向映射，供后续查询使用。
+ *
+ * @param appContainer - 通过 app.provide 注册的容器，用于区分 app/component 作用域
  */
 export function buildContainerTree(
   rootContainer: Container,
-  idMap?: ContainerIdMap
+  idMap?: ContainerIdMap,
+  appContainer?: Container
 ): ContainerInfo {
   if (!idMap) {
     idMap = { containerToId: new Map(), idToContainer: new Map() }
   }
-  return buildNode(rootContainer, 'root', 0, idMap)
+  return buildNode(rootContainer, 'root', 0, idMap, appContainer)
 }
 
 /**
@@ -21,22 +24,23 @@ export function buildContainerTree(
  */
 export function findContainerById(
   rootContainer: Container,
-  id: string
+  id: string,
+  appContainer?: Container
 ): Container | undefined {
-  const idMap = buildIdMap(rootContainer)
+  const idMap = buildIdMap(rootContainer, appContainer)
   return idMap.idToContainer.get(id)
 }
 
 /**
  * 构建容器到 ID 的双向映射
  */
-export function buildIdMap(rootContainer: Container): ContainerIdMap {
+export function buildIdMap(rootContainer: Container, appContainer?: Container): ContainerIdMap {
   const idMap: ContainerIdMap = {
     containerToId: new Map(),
     idToContainer: new Map(),
   }
   // 遍历整棵树以构建映射
-  buildNode(rootContainer, 'root', 0, idMap)
+  buildNode(rootContainer, 'root', 0, idMap, appContainer)
   return idMap
 }
 
@@ -55,23 +59,20 @@ export function getBindingCount(container: Container): number {
 /**
  * 判断容器的作用域。
  *
- * 优先读取容器上的 __uvs_scope__ 标记（由 declareProviders/declareAppProviders 设置），
- * 回退到基于层级的启发式判断。
+ * 基于 provide 机制判断，无需增加私有属性来标记：
+ * - root：没有 parent 的容器（ROOT_CONTAINER）
+ * - app：通过 app.provide 注册的容器（app._context.provides[CONTAINER_TOKEN]）
+ * - component：其余所有有 parent 的容器
  *
- * - root：ROOT_CONTAINER，没有 parent
- * - app：declareAppProviders 创建的容器（__uvs_scope__ === 'app'）
- * - component：declareProviders 在组件中创建的容器（__uvs_scope__ === 'component'）
+ * @param container - 要判断的容器
+ * @param appContainer - app.provide 注册的容器引用（可选）
  */
 export function getContainerScope(
-  container: Container
+  container: Container,
+  appContainer?: Container
 ): ContainerInfo['scope'] {
-  // 优先使用显式标记
-  const explicitScope = (container as any).__uvs_scope__
-  if (explicitScope === 'root' || explicitScope === 'app' || explicitScope === 'component') {
-    return explicitScope
-  }
-  // 回退：启发式判断
   if (!container.parent) return 'root'
+  if (appContainer && container === appContainer) return 'app'
   return 'component'
 }
 
@@ -89,12 +90,13 @@ function buildNode(
   container: Container,
   id: string,
   depth: number,
-  idMap: ContainerIdMap
+  idMap: ContainerIdMap,
+  appContainer?: Container
 ): ContainerInfo {
   idMap.containerToId.set(container, id)
   idMap.idToContainer.set(id, container)
 
-  const scope = getContainerScope(container)
+  const scope = getContainerScope(container, appContainer)
   const label = getNodeLabel(container, scope, id)
   const bindings: BindingInfo[] = [] // 绑定信息由 binding-reader 模块单独构建
 
@@ -105,7 +107,7 @@ function buildNode(
     for (const child of childSet) {
       if (child._destroyed) continue
       const childId = `${id}-${childIndex}`
-      children.push(buildNode(child, childId, depth + 1, idMap))
+      children.push(buildNode(child, childId, depth + 1, idMap, appContainer))
       childIndex++
     }
   }
