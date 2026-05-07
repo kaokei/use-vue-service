@@ -64,7 +64,7 @@ export function buildContainerTreeFromComponents(
 
   // App 容器：如果存在（declareAppProviders），作为 Root 的直接子节点
   if (appContainer) {
-    const label = appLabel ?? 'App Container'
+    const label = 'App Container'
     const appNode: ContainerTreeNode = {
       id: 'app',
       label,

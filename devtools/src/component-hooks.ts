@@ -3,7 +3,8 @@
  *
  * 在 Vue DevTools Components 面板中增强组件展示：
  * 1. visitComponentTree：在组件树节点上添加 tag 标签（如 "Container"）
- * 2. inspectComponent：在组件 state 中追加容器信息分组
+ * 2. inspectComponent：在组件 state 中追加 Services 分组，
+ *    展示该组件容器中所有绑定的服务实例状态
  *
  * 容器关联方式：
  * 通过 componentInstance.provides 上的 CONTAINER_TOKEN 查找容器，
@@ -14,7 +15,9 @@
 import type { Container } from '@kaokei/di'
 import { CONTAINER_TOKEN } from '@kaokei/use-vue-service'
 import { getBindingCount } from './core/container-tree'
-import { getBindings } from './core/binding-reader'
+import { getBindings, getActivatedBindings } from './core/binding-reader'
+import { extractServiceState } from './core/state-extractor'
+import type { BindingInfo } from './core/types'
 
 /**
  * 从组件实例的 provides 中获取该组件自身声明的容器。
@@ -32,24 +35,6 @@ function getOwnContainer(instance: any): Container | undefined {
     return provides[CONTAINER_TOKEN] as Container
   }
   return undefined
-}
-
-/**
- * 判断容器的作用域。
- *
- * 基于 provide 存储位置判断：
- * - 组件 provide → instance.provides[CONTAINER_TOKEN]（Object.create 创建的对象）
- * - app.provide → app._context.provides[CONTAINER_TOKEN]（普通对象）
- *
- * 通过 componentInstance 可访问 appContext.provides，
- * 判断容器是否来自 app.provide。
- */
-function getScopeFromInstance(instance: any, container: Container): 'app' | 'component' {
-  const appProvides = instance?.appContext?.provides
-  if (appProvides && Object.hasOwn(appProvides, CONTAINER_TOKEN) && appProvides[CONTAINER_TOKEN] === container) {
-    return 'app'
-  }
-  return 'component'
 }
 
 /**
@@ -89,7 +74,7 @@ export function registerComponentHooks(
     })
   })
 
-  // 2. 组件 state：选中组件时追加容器信息分组
+  // 2. 组件 state：选中组件时追加 Services 分组
   api.on.inspectComponent((payload) => {
     const instance = payload.componentInstance
     if (!instance) return
@@ -97,21 +82,53 @@ export function registerComponentHooks(
     const container = getOwnContainer(instance)
     if (!container) return
 
-    const scope = getScopeFromInstance(instance, container)
-    const bindingCount = getBindingCount(container)
     const bindings = getBindings(container)
+    if (bindings.length === 0) return
 
-    payload.instanceData.state.push({
-      type: 'UVS 容器',
-      key: 'container',
-      value: {
-        作用域: scope,
-        绑定数量: bindingCount,
-        子容器数量: container.getChildren()?.size ?? 0,
-        已声明服务: bindings.map(b => b.tokenName),
-      },
-    } as any)
+    const activatedMap = new Map<string, any>()
+    for (const { tokenName, binding } of getActivatedBindings(container)) {
+      activatedMap.set(tokenName, binding.cache)
+    }
+
+    for (const b of bindings) {
+      const instance = activatedMap.get(b.tokenName)
+      const serviceState = instance ? extractServiceState(instance) : null
+
+      const display = formatServiceDisplay(b)
+      const expandValue: Record<string, any> = serviceState && Object.keys(serviceState).length > 0
+        ? { ...serviceState }
+        : {}
+
+      payload.instanceData.state.push({
+        type: 'Services',
+        key: b.tokenName,
+        value: {
+          _custom: {
+            display,
+            value: Object.keys(expandValue).length > 0 ? expandValue : undefined,
+            tooltip: formatServiceTooltip(b),
+          },
+        },
+      })
+    }
   })
+}
+
+function formatServiceDisplay(b: BindingInfo): string {
+  const parts: string[] = [b.bindingType]
+  if (b.isTransient) parts.push('transient')
+  if (b.hasCache) parts.push('✓ cached')
+  parts.push(`[${b.status}]`)
+  return parts.join(' · ')
+}
+
+function formatServiceTooltip(b: BindingInfo): string {
+  return [
+    `绑定类型: ${b.bindingType}`,
+    `状态: ${b.status}`,
+    `Transient: ${b.isTransient}`,
+    `已缓存: ${b.hasCache}`,
+  ].join('\n')
 }
 
 // ── 类型定义 ──────────────────────────────────────────────

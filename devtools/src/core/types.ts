@@ -60,7 +60,8 @@ export function getTokenName(token: CommonToken): string {
   if (typeof token === 'function') {
     return token.name || 'Anonymous'
   }
-  return (token as any).name || 'Unknown'
+  const name = (token as any).name || 'Unknown'
+  return `Token<${name}>`
 }
 
 export function getTokenType(token: CommonToken): 'class' | 'token' {
