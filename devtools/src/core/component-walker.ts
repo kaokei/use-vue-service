@@ -64,7 +64,7 @@ export function buildContainerTreeFromComponents(
 
   // App 容器：如果存在（declareAppProviders），作为 Root 的直接子节点
   if (appContainer) {
-    const label = appLabel ? `${appLabel} Container` : 'App Container'
+    const label = appLabel ?? 'App Container'
     const appNode: ContainerTreeNode = {
       id: 'app',
       label,
@@ -86,8 +86,8 @@ export function buildContainerTreeFromComponents(
       const appCompNode: ContainerTreeNode = {
         id: 'app-component',
         label: componentName
-          ? `<${componentName}> Container`
-          : '<App> Container',
+          ? `<${componentName}>`
+          : '<App>',
         scope: 'component',
         container: rootOwnContainer,
         children: [],
@@ -135,8 +135,8 @@ function walkComponentTree(
       const node: ContainerTreeNode = {
         id: nodeId,
         label: componentName
-          ? `<${componentName}> Container`
-          : 'Component Container',
+          ? `<${componentName}>`
+          : '<Anonymous>',
         scope: 'component',
         container,
         children: [],
