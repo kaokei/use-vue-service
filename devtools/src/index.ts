@@ -106,7 +106,7 @@ export function setupDevtools(app: App): void {
         icon: 'device-hub',
       })
 
-      // 2. Inspector 树/状态 hooks（仅注册一次，共享 hooks）
+      // 2. Inspector 树/状态 + 组件增强 hooks（仅注册一次，共享 hooks）
       if (!_inspectorHooksRegistered) {
         _inspectorHooksRegistered = true
 
@@ -121,10 +121,10 @@ export function setupDevtools(app: App): void {
           const result = getInspectorState(payload.nodeId)
           payload.state = result.state
         })
-      }
 
-      // 3. 组件 Inspect 增强（每个 app 注册，需要 per-app api 引用）
-      registerComponentHooks(api as any)
+        // 组件 Inspect 增强（回调不依赖 per-app api，全局注册一次即可）
+        registerComponentHooks(api as any)
+      }
 
       // 4. 响应式 watch（仅设置一次，遍历 ROOT_CONTAINER 覆盖所有 app）
       if (!_watchRegistered) {
