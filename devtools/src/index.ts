@@ -3,8 +3,8 @@
  *
  * Vue DevTools 插件，为 @kaokei/use-vue-service 提供：
  * 1. 自定义 Inspector 面板：展示容器树和绑定/服务状态
- * 2. 组件 Inspect 增强：在组件面板中显示容器关联信息
- * 3. 实时更新：服务状态变化时自动推送刷新到 DevTools
+ * 2. 组件 Inspect 增强：在组件面板中显示服务实例状态
+ * 3. 按需响应式 watch：仅追踪当前选中容器的 reactive 服务实例
  * 4. 多 App 实例支持：同一页面多个 Vue 实例共享 ROOT_CONTAINER
  *
  * 使用方式一（推荐，零业务侵入）：
@@ -40,12 +40,11 @@
  */
 
 import type { App } from 'vue'
-import { nextTick, watch } from 'vue'
+import { nextTick, watch, isReactive, effectScope, type EffectScope } from 'vue'
 import { setupDevToolsPlugin } from '@vue/devtools-api'
-import { INSPECTOR_ID, getInspectorTree, getInspectorState, setDevtoolsApp } from './inspector'
+import { INSPECTOR_ID, getInspectorTree, getInspectorState, setDevtoolsApp, getContainerByNodeId } from './inspector'
 import { registerComponentHooks } from './component-hooks'
-import { captureRootContainer, getRootContainer } from './core/root-container'
-import { getActivatedBindings } from './core/binding-reader'
+import { captureRootContainer } from './core/root-container'
 import { isInternalToken } from './core/types'
 
 /**
@@ -61,22 +60,122 @@ type DevtoolsApi = Parameters<Parameters<typeof setupDevToolsPlugin>[1]>[0]
  */
 let _inspectorHooksRegistered = false
 
-/**
- * 响应式 watch 只需设置一次，因为它遍历 ROOT_CONTAINER 覆盖所有 app。
- */
-let _watchRegistered = false
+// ── 按需 watch 管理 ─────────────────────────────────────────
 
 /**
- * 保存第一个 api 引用，用于响应式 watch 推送更新。
+ * Inspector 面板（Services tab）选中容器的响应式 watch。
+ * 用户选中新容器时切换 watch，仅追踪当前选中容器的 reactive 服务实例。
+ * 容器销毁时自动停止，防止内存泄漏。
  */
-let _firstApi: DevtoolsApi | null = null
+let _inspectorScope: EffectScope | null = null
+let _inspectorContainer: any = null
+
+/**
+ * Components 面板选中组件关联容器的响应式 watch。
+ * 用户选中新组件时切换 watch，仅追踪当前组件容器的 reactive 服务实例。
+ */
+let _componentScope: EffectScope | null = null
+let _componentContainer: any = null
+let _componentInstance: any = null
+
+/**
+ * 停止 Inspector 面板的响应式 watch。
+ */
+function stopInspectorWatch() {
+  if (_inspectorScope) {
+    _inspectorScope.stop()
+    _inspectorScope = null
+    _inspectorContainer = null
+  }
+}
+
+/**
+ * 为 Inspector 面板选中的容器的所有 reactive 服务实例设置 watch。
+ * 仅追踪 isReactive() 返回 true 的实例（跳过 markRaw 包裹的非响应式对象）。
+ * 同一容器不重复设置；容器销毁时自动停止 watch，防止内存泄漏。
+ */
+function startInspectorWatch(container: any, api: DevtoolsApi) {
+  if (container === _inspectorContainer) return
+
+  stopInspectorWatch()
+  _inspectorContainer = container
+
+  const scope = effectScope()
+  _inspectorScope = scope
+
+  scope.run(() => {
+    for (const [token, binding] of container._bindings) {
+      if (isInternalToken(token)) continue
+      if (binding.status === 'activated' && binding.cache !== undefined) {
+        const instance = binding.cache
+        if (instance && typeof instance === 'object' && isReactive(instance)) {
+          watch(instance, () => {
+            if (container._destroyed) {
+              stopInspectorWatch()
+              return
+            }
+            api.sendInspectorState(INSPECTOR_ID)
+          }, { deep: true, flush: 'post' })
+        }
+      }
+    }
+  })
+}
+
+/**
+ * 停止 Components 面板的响应式 watch。
+ */
+function stopComponentWatch() {
+  if (_componentScope) {
+    _componentScope.stop()
+    _componentScope = null
+    _componentContainer = null
+    _componentInstance = null
+  }
+}
+
+/**
+ * 为 Components 面板选中组件关联的容器的所有 reactive 服务实例设置 watch。
+ * 仅追踪 isReactive() 返回 true 的实例。
+ * 同一容器不重复设置；容器销毁时自动停止 watch，防止内存泄漏。
+ */
+function startComponentWatch(container: any, componentInstance: any, api: DevtoolsApi) {
+  if (container === _componentContainer) return
+
+  stopComponentWatch()
+  _componentContainer = container
+  _componentInstance = componentInstance
+
+  const scope = effectScope()
+  _componentScope = scope
+
+  scope.run(() => {
+    for (const [token, binding] of container._bindings) {
+      if (isInternalToken(token)) continue
+      if (binding.status === 'activated' && binding.cache !== undefined) {
+        const instance = binding.cache
+        if (instance && typeof instance === 'object' && isReactive(instance)) {
+          watch(instance, () => {
+            if (container._destroyed) {
+              stopComponentWatch()
+              return
+            }
+            if (_componentInstance) {
+              api.notifyComponentUpdate(_componentInstance)
+            }
+          }, { deep: true, flush: 'post' })
+        }
+      }
+    }
+  })
+}
 
 /**
  * 安装 Vue DevTools 插件。
  *
  * 支持多 App 实例：每个 Vue App 调用一次即可。
- * 内部通过守卫机制确保 hooks 和 watch 只注册一次，
- * 而 addInspector 和 registerComponentHooks 为每个 app 注册。
+ * 内部通过守卫机制确保 hooks 只注册一次，
+ * 而 addInspector 为每个 app 注册。
  *
  * @param app - Vue App 实例
  */
@@ -92,12 +191,9 @@ export function setupDevtools(app: App): void {
       packageName: '@kaokei/devtools-use-vue-service',
       homepage: 'https://github.com/kaokei/use-vue-service',
       app,
-      componentStateTypes: ['UVS 容器'],
+      componentStateTypes: ['Services'],
     },
     (api: DevtoolsApi) => {
-      // 保存第一个 api 引用
-      if (!_firstApi) _firstApi = api
-
       // 1. 注册自定义 Inspector（每个 app 必须注册，
       //    因为 getActiveInspectors 按 app 过滤）
       api.addInspector({
@@ -120,19 +216,29 @@ export function setupDevtools(app: App): void {
           if (payload.inspectorId !== INSPECTOR_ID) return
           const result = getInspectorState(payload.nodeId)
           payload.state = result.state
+
+          // 按需 watch：选中容器时切换 Inspector 面板的追踪
+          const container = getContainerByNodeId(payload.nodeId)
+          if (container && !container._destroyed) {
+            startInspectorWatch(container, api)
+          } else {
+            stopInspectorWatch()
+          }
         })
 
         // 组件 Inspect 增强（回调不依赖 per-app api，全局注册一次即可）
-        registerComponentHooks(api as any)
+        registerComponentHooks(api as any, {
+          onSelectContainer: (container, instance) => {
+            if (container && !container._destroyed) {
+              startComponentWatch(container, instance, api)
+            } else {
+              stopComponentWatch()
+            }
+          },
+        })
       }
 
-      // 4. 响应式 watch（仅设置一次，遍历 ROOT_CONTAINER 覆盖所有 app）
-      if (!_watchRegistered) {
-        _watchRegistered = true
-        setupReactiveWatch(api)
-      }
-
-      // 5. 初始化后刷新当前 app 的组件树 + inspector 树
+      // 3. 初始化后刷新当前 app 的组件树 + inspector 树
       nextTick(() => {
         const rootInstance = (app as any)._instance
         if (rootInstance) {
@@ -142,82 +248,6 @@ export function setupDevtools(app: App): void {
       })
     },
   )
-}
-
-/**
- * 通过 Vue 的 watch 深度监听容器树中所有已激活服务的 reactive 实例，
- * 当状态变化时自动推送刷新到 DevTools Inspector 面板。
- *
- * 原理：
- * - 服务实例被 @kaokei/use-vue-service 的 activationHandle 包裹为 reactive()
- * - watch({ deep: true }) 可以追踪 reactive 对象内部所有属性的变化
- * - 变化时调用 api.sendInspectorState() 会触发 on.getInspectorState 回调重新读取数据
- */
-function setupReactiveWatch(api: DevtoolsApi): void {
-  // 使用 getter 函数让 watch 每次都比较最新状态
-  watch(
-    () => collectAllServiceStates(),
-    () => {
-      api.sendInspectorState(INSPECTOR_ID)
-      api.sendInspectorTree(INSPECTOR_ID)
-    },
-    { deep: true },
-  )
-}
-
-/**
- * 收集所有容器中已激活服务的 reactive 状态快照，
- * 作为 watch 的监听源。只收集非函数的数据属性。
- *
- * 遍历 ROOT_CONTAINER 的整棵容器树，自然覆盖所有 app 的容器。
- */
-function collectAllServiceStates(): Record<string, any> {
-  const rootContainer = getRootContainer()
-  if (!rootContainer) return {}
-
-  const snapshot: Record<string, any> = {}
-  let index = 0
-
-  // 递归遍历容器树
-  function traverseContainer(container: any): void {
-    if (container._destroyed) return
-
-    const bindings = container._bindings
-    if (bindings) {
-      for (const [token, binding] of bindings) {
-        // 跳过内部 token
-        if (isInternalToken(token)) continue
-        // 只收集已激活且有缓存的服务实例
-        if (binding.status === 'activated' && binding.cache !== undefined) {
-          const instance = binding.cache
-          if (instance && typeof instance === 'object') {
-            // 只收集数据属性（排除方法），触发 deep watch
-            const dataKeys: Record<string, any> = {}
-            for (const key of Object.keys(instance)) {
-              if (key.startsWith('_') || key.startsWith('__')) continue
-              const value = instance[key]
-              if (typeof value !== 'function') {
-                dataKeys[key] = value
-              }
-            }
-            snapshot[`s${index}`] = dataKeys
-            index++
-          }
-        }
-      }
-    }
-
-    // 递归子容器
-    const children = container.getChildren?.()
-    if (children) {
-      for (const child of children) {
-        traverseContainer(child)
-      }
-    }
-  }
-
-  traverseContainer(rootContainer)
-  return snapshot
 }
 
 // 重导出核心类型，方便高级用户使用
