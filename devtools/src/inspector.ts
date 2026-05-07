@@ -116,6 +116,14 @@ function prefixNodeIds(node: ContainerTreeNode, prefix: string): void {
  */
 let _idToContainer: Map<string, Container> = new Map()
 
+/**
+ * 通过 nodeId 查找对应的 Container 实例。
+ * 供按需 watch 机制使用：选中节点时获取容器引用。
+ */
+export function getContainerByNodeId(nodeId: string): Container | undefined {
+  return _idToContainer.get(nodeId)
+}
+
 // ── Inspector Tree ──────────────────────────────────────────
 
 /**
