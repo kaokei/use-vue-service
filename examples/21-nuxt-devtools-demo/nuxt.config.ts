@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-  modules: ['@kaokei/nuxt-use-vue-service'],
+  modules: ['@kaokei/nuxt-use-vue-service', '@pinia/nuxt'],
 
   experimental: {
     decorators: true,

@@ -1,6 +1,6 @@
 {
   "name": "@kaokei/devtools-use-vue-service",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "DevTools plugin for @kaokei/use-vue-service",
   "main": "./dist/index.cjs",
@@ -14,10 +14,6 @@
     "./vite": {
       "import": "./dist/vite-plugin.js",
       "require": "./dist/vite-plugin.cjs"
-    },
-    "./nuxt": {
-      "import": "./dist/nuxt-plugin.js",
-      "require": "./dist/nuxt-plugin.cjs"
     }
   },
   "files": [

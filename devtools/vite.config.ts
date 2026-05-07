@@ -8,7 +8,6 @@ export default defineConfig({
       entry: {
         index: 'src/index.ts',
         'vite-plugin': 'src/vite-plugin.ts',
-        'nuxt-plugin': 'src/nuxt-plugin.ts',
       },
       formats: ['es', 'cjs'],
     },
