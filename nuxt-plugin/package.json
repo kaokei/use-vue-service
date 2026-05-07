@@ -16,6 +16,7 @@
     "prepare": "nuxt-module-build build"
   },
   "dependencies": {
+    "@nuxt/devtools-kit": "^3.2.4",
     "@nuxt/kit": "^4.4.2"
   },
   "devDependencies": {

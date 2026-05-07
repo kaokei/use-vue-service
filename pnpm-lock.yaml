@@ -591,6 +591,9 @@ importers:
       '@kaokei/use-vue-service':
         specifier: ^4.0.4
         version: 4.0.4(@kaokei/di@5.0.8)
+      '@nuxt/devtools-kit':
+        specifier: ^3.2.4
+        version: 3.2.4(magicast@0.5.2)(vite@7.3.3(@types/node@22.19.17)(jiti@2.7.0)(terser@5.46.2)(yaml@2.8.4))
       '@nuxt/kit':
         specifier: ^4.4.2
         version: 4.4.4(magicast@0.5.2)

@@ -14,6 +14,10 @@
     "./vite": {
       "import": "./dist/vite-plugin.js",
       "require": "./dist/vite-plugin.cjs"
+    },
+    "./nuxt": {
+      "import": "./dist/nuxt-plugin.js",
+      "require": "./dist/nuxt-plugin.cjs"
     }
   },
   "files": [
