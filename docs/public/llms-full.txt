@@ -4,7 +4,7 @@
 
 本库基于 [@kaokei/di](https://github.com/kaokei/di) 开发，通过依赖注入实现面向服务编程和领域驱动开发，可以代替 vuex/pinia。通过类来声明服务，对 TypeScript 支持非常好。
 
-- 版本：4.0.2
+- 版本：4.0.4
 - 许可证：MIT
 - GitHub：https://github.com/kaokei/use-vue-service
 - npm：https://www.npmjs.com/package/@kaokei/use-vue-service

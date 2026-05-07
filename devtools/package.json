@@ -29,7 +29,7 @@
   "peerDependencies": {
     "vue": "^3.0.0",
     "@kaokei/di": "^5.0.8",
-    "@kaokei/use-vue-service": "^4.0.3",
+    "@kaokei/use-vue-service": "^4.0.4",
     "@vue/devtools-api": "^8.1.1"
   },
   "devDependencies": {

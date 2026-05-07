@@ -2,7 +2,7 @@
 
 ## 简介
 
-`@kaokei/use-vue-service` 是一个轻量级的适用于 Vue 3 项目的状态管理库。当前版本为 **4.0.2**，依赖 `@kaokei/di` 版本 **^5.0.8**。
+`@kaokei/use-vue-service` 是一个轻量级的适用于 Vue 3 项目的状态管理库。当前版本为 **4.0.4**，依赖 `@kaokei/di` 版本 **^5.0.8**。
 
 本库基于 [@kaokei/di](https://github.com/kaokei/di) 开发，支持依赖注入能力。
 
