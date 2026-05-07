@@ -92,10 +92,10 @@ function getContainerScopeGlobal(container: Container): 'root' | 'app' | 'compon
  * 为 app 生成人类可读的标签。
  * 优先使用根组件名，否则用序号。
  */
-function getAppLabel(app: App, index: number): string {
+function getAppLabel(app: App, _index: number): string {
   const rootInstance = (app as any)._instance
   const rootComponentName = rootInstance?.type?.name || rootInstance?.type?.__name
-  return rootComponentName ? `App (${rootComponentName})` : `App ${index + 1}`
+  return rootComponentName ?? `App ${_index + 1}`
 }
 
 /**
@@ -179,37 +179,9 @@ function buildIdMap(node: ContainerTreeNode): void {
  * ContainerTreeNode → InspectorTreeNode 转换
  */
 function treeNodeToInspectorNode(node: ContainerTreeNode): InspectorTreeNode {
-  const tags: InspectorTreeNodeTag[] = []
-
-  // 作用域标签
-  const scopeColors: Record<string, string> = {
-    root: '#42b883',
-    app: '#35495e',
-    component: '#ff8c00',
-  }
-  tags.push({
-    label: node.scope,
-    textColor: 0xffffff,
-    backgroundColor: hexToRgbInt(scopeColors[node.scope] || '#999'),
-  })
-
-  // 绑定数量标签（有绑定时显示）
-  const bindingCount = getBindingCount(node.container)
-  if (bindingCount > 0) {
-    tags.push({
-      label: `${bindingCount} services`,
-      textColor: 0xffffff,
-      backgroundColor: 0x666666,
-    })
-  }
-
-  // 标签：追加绑定数量后缀
-  const bindingSuffix = bindingCount > 0 ? ` (${bindingCount} services)` : ''
-
   return {
     id: node.id,
-    label: node.label + bindingSuffix,
-    tags,
+    label: node.label,
     children: node.children.map(child => treeNodeToInspectorNode(child)),
   }
 }
@@ -297,28 +269,12 @@ function formatServiceTooltip(b: BindingInfo): string {
   ].join('\n')
 }
 
-function hexToRgbInt(hex: string): number {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-  if (!result) return 0x999999
-  const r = parseInt(result[1], 16)
-  const g = parseInt(result[2], 16)
-  const b = parseInt(result[3], 16)
-  return (r << 16) | (g << 8) | b
-}
-
 // ── 类型定义 ──────────────────────────────────────────────
 
 interface InspectorTreeNode {
   id: string
   label: string
-  tags?: InspectorTreeNodeTag[]
   children?: InspectorTreeNode[]
-}
-
-interface InspectorTreeNodeTag {
-  label: string
-  textColor: number
-  backgroundColor: number
 }
 
 interface InspectorStateResult {

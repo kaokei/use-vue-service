@@ -1,10 +1,16 @@
 import { createApp } from 'vue'
-import { declareAppProvidersPlugin } from '@kaokei/use-vue-service'
+import { declareAppProvidersPlugin, declareRootProviders } from '@kaokei/use-vue-service'
 import App1 from './app1/App.vue'
 import App2 from './app2/App.vue'
 import App3 from './app3/App.vue'
 import { ThemeService } from './services/ThemeService'
 import { LoggerService } from './services/LoggerService'
+import { RootCountService, ROOT_COUNT_TOKEN } from './services/RootCountService'
+
+// 全局根容器绑定服务（使用 Token 避免与组件级 CountService 同名）
+declareRootProviders(container => {
+  container.bind(ROOT_COUNT_TOKEN).to(RootCountService)
+})
 
 // App 1: 深层嵌套测试 (5 层组件，有 App Container)
 const app1 = createApp(App1)
