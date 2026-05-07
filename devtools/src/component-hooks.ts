@@ -53,6 +53,12 @@ function getScopeFromInstance(instance: any, container: Container): 'app' | 'com
 }
 
 /**
+ * container tag 的背景色标识，用于在 visitComponentTree 回调中
+ * 识别并清除之前添加的 tag，防止多 App 切换时 tag 累积。
+ */
+const CONTAINER_TAG_BG_COLOR = 0x42b883
+
+/**
  * 注册组件相关钩子。
  */
 export function registerComponentHooks(
@@ -63,14 +69,22 @@ export function registerComponentHooks(
     const instance = payload.componentInstance
     if (!instance) return
 
+    // 先清除之前添加的 container tag，防止切换 App 时 tag 累积
+    const tags = payload.treeNode.tags
+    for (let i = tags.length - 1; i >= 0; i--) {
+      if (tags[i].backgroundColor === CONTAINER_TAG_BG_COLOR) {
+        tags.splice(i, 1)
+      }
+    }
+
     const container = getOwnContainer(instance)
     if (!container) return
 
     const bindingCount = getBindingCount(container)
-    payload.treeNode.tags.push({
+    tags.push({
       label: bindingCount > 0 ? `container (${bindingCount})` : 'container',
       textColor: 0xffffff,    // 白色文字
-      backgroundColor: 0x42b883, // Vue 绿
+      backgroundColor: CONTAINER_TAG_BG_COLOR, // Vue 绿
       tooltip: `该组件声明了 ${bindingCount} 个服务`,
     })
   })
