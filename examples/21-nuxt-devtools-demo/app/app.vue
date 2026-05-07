@@ -7,12 +7,23 @@ declareProviders([CountService, UserService])
 
 const counter = useService(CountService)
 const user = useService(UserService)
+
+// Pinia store
+const piniaCounter = useCounterStore()
 </script>
 
 <template>
   <div style="font-family: sans-serif; padding: 24px; max-width: 640px;">
     <h1>21 - Nuxt DevTools 体验</h1>
     <p style="color: #666;">点击右下角的 Nuxt DevTools 按钮 → "Components" 标签页查看组件树和状态</p>
+
+    <section style="margin-top: 24px; padding: 16px; background: #f5f5f5; border-radius: 6px;">
+      <h2>Pinia Store（counterStore）</h2>
+      <p>计数：<strong>{{ piniaCounter.count }}</strong>，doubled：<strong>{{ piniaCounter.doubled }}</strong></p>
+      <button @click="piniaCounter.increment">+1</button>
+      <button @click="piniaCounter.decrement" style="margin-left: 8px;">-1</button>
+      <button @click="piniaCounter.reset" style="margin-left: 8px;">重置</button>
+    </section>
 
     <section style="margin-top: 24px; padding: 16px; background: #f5f5f5; border-radius: 6px;">
       <h2>用户服务（根容器）</h2>

@@ -1,5 +1,4 @@
-import { defineNuxtModule, addImports, addPlugin, addServerHandler } from '@nuxt/kit'
-import { addCustomTab } from '@nuxt/devtools-kit'
+import { defineNuxtModule, addImports, addPlugin } from '@nuxt/kit'
 import { fileURLToPath } from 'node:url'
 import { resolve, dirname } from 'node:path'
 import type { NuxtModule } from '@nuxt/schema'
@@ -8,7 +7,7 @@ import type { NuxtModule } from '@nuxt/schema'
 
 export interface ModuleOptions {
   /**
-   * 是否启用 Nuxt DevTools 集成（Services Tab + 组件审查增强）。
+   * 是否启用 DevTools 集成（组件审查增强：container 标签 + Services 分组）。
    * @default true
    */
   devtools?: boolean
@@ -62,37 +61,15 @@ const module: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
       { from: FROM, name: 'FindChildrenServices', type: true },
     ])
 
-    // 2. DevTools 集成（可通过 devtools: false 禁用）
+    // 2. DevTools 客户端插件（可通过 devtools: false 禁用）
     if (options.devtools !== false) {
       const __dirname = dirname(fileURLToPath(import.meta.url))
       const runtimeDir = resolve(__dirname, 'runtime')
 
-      // 2a. 注册客户端插件：初始化 setupDevtools + postMessage 桥接
       addPlugin({
         src: resolve(runtimeDir, 'devtools-client'),
         mode: 'client',
       })
-
-      // 2b. Nuxt DevTools 自定义 Tab + 面板路由
-      try {
-        addCustomTab({
-          name: 'use-vue-service',
-          title: 'Services',
-          icon: 'i-carbon-container-services',
-          view: {
-            type: 'iframe',
-            src: '/__nuxt_devtools__/use-vue-service/panel',
-            persistent: false,
-          },
-        })
-
-        addServerHandler({
-          route: '/__nuxt_devtools__/use-vue-service/panel',
-          handler: resolve(runtimeDir, 'panel-handler'),
-        })
-      } catch {
-        // @nuxt/devtools 未安装时静默忽略
-      }
     }
   },
 })
