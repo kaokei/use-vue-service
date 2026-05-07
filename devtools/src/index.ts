@@ -5,6 +5,7 @@
  * 1. 自定义 Inspector 面板：展示容器树和绑定/服务状态
  * 2. 组件 Inspect 增强：在组件面板中显示容器关联信息
  * 3. 实时更新：服务状态变化时自动推送刷新到 DevTools
+ * 4. 多 App 实例支持：同一页面多个 Vue 实例共享 ROOT_CONTAINER
  *
  * 使用方式一（推荐，零业务侵入）：
  * ```ts
@@ -28,6 +29,14 @@
  * const app = createApp(App)
  * setupDevtools(app)
  * ```
+ *
+ * 多 App 场景：
+ * ```ts
+ * const app1 = createApp(App1)
+ * const app2 = createApp(App2)
+ * setupDevtools(app1)  // 每个 app 调用一次
+ * setupDevtools(app2)
+ * ```
  */
 
 import type { App } from 'vue'
@@ -44,67 +53,92 @@ import { isInternalToken } from './core/types'
  */
 type DevtoolsApi = Parameters<Parameters<typeof setupDevToolsPlugin>[1]>[0]
 
+// ── 一次性注册守卫 ─────────────────────────────────────────
+
+/**
+ * Inspector 树/状态 hooks 是共享的，只需注册一次。
+ * 多 app 时 setupDevToolsPlugin 会被多次调用，但 hooks 不应重复注册。
+ */
+let _inspectorHooksRegistered = false
+
+/**
+ * 响应式 watch 只需设置一次，因为它遍历 ROOT_CONTAINER 覆盖所有 app。
+ */
+let _watchRegistered = false
+
+/**
+ * 保存第一个 api 引用，用于响应式 watch 推送更新。
+ */
+let _firstApi: DevtoolsApi | null = null
+
 /**
  * 安装 Vue DevTools 插件。
+ *
+ * 支持多 App 实例：每个 Vue App 调用一次即可。
+ * 内部通过守卫机制确保 hooks 和 watch 只注册一次，
+ * 而 addInspector 和 registerComponentHooks 为每个 app 注册。
  *
  * @param app - Vue App 实例
  */
 export function setupDevtools(app: App): void {
+  // 始终：保存 app 引用 + 捕获 ROOT_CONTAINER
+  setDevtoolsApp(app)
+  captureRootContainer()
+
   setupDevToolsPlugin(
     {
       id: 'kaokei-use-vue-service',
       label: 'use-vue-service',
       packageName: '@kaokei/devtools-use-vue-service',
       homepage: 'https://github.com/kaokei/use-vue-service',
-      logo: 'i-carbon-tree-view',
       app,
       componentStateTypes: ['UVS 容器'],
     },
     (api: DevtoolsApi) => {
-      // 0. 保存 app 引用，供 Inspector 模块识别 app 作用域容器
-      setDevtoolsApp(app)
+      // 保存第一个 api 引用
+      if (!_firstApi) _firstApi = api
 
-      // 0.1 通过 FunctionProvider 捕获 ROOT_CONTAINER 引用
-      captureRootContainer()
-
-      // 1. 注册自定义 Inspector
+      // 1. 注册自定义 Inspector（每个 app 必须注册，
+      //    因为 getActiveInspectors 按 app 过滤）
       api.addInspector({
         id: INSPECTOR_ID,
         label: 'Services',
+        icon: 'device-hub',
       })
 
-      // 2. Inspector 树数据
-      api.on.getInspectorTree((payload) => {
-        if (payload.inspectorId !== INSPECTOR_ID) return
-        const result = getInspectorTree()
-        payload.rootNodes = result.rootNodes
-      })
+      // 2. Inspector 树/状态 hooks（仅注册一次，共享 hooks）
+      if (!_inspectorHooksRegistered) {
+        _inspectorHooksRegistered = true
 
-      // 3. Inspector 状态数据
-      api.on.getInspectorState((payload) => {
-        if (payload.inspectorId !== INSPECTOR_ID) return
-        const result = getInspectorState(payload.nodeId)
-        payload.state = result.state
-      })
+        api.on.getInspectorTree((payload) => {
+          if (payload.inspectorId !== INSPECTOR_ID) return
+          const result = getInspectorTree()
+          payload.rootNodes = result.rootNodes
+        })
 
-      // 4. 组件 Inspect 增强
+        api.on.getInspectorState((payload) => {
+          if (payload.inspectorId !== INSPECTOR_ID) return
+          const result = getInspectorState(payload.nodeId)
+          payload.state = result.state
+        })
+      }
+
+      // 3. 组件 Inspect 增强（每个 app 注册，需要 per-app api 引用）
       registerComponentHooks(api as any)
 
-      // 5. 实时更新：监听所有容器中已激活服务的响应式状态
-      setupReactiveWatch(api)
+      // 4. 响应式 watch（仅设置一次，遍历 ROOT_CONTAINER 覆盖所有 app）
+      if (!_watchRegistered) {
+        _watchRegistered = true
+        setupReactiveWatch(api)
+      }
 
-      // 6. 初始化后强制刷新组件树，确保 visitComponentTree tag 立即显示
-      //    原因：setupDevToolsPlugin 回调注册时，DevTools 组件树可能已渲染完毕，
-      //    visitComponentTree 回调尚未被调用过，导致 tag 不显示。
-      //    notifyComponentUpdate(instance) 会触发 debounceSendInspectorTree()，
-      //    重新遍历组件树并调用所有 visitComponentTree 回调。
-      //    注意：无参调用 notifyComponentUpdate() 会因 guard 检查直接 return，
-      //    必须传入有效的组件实例才能触发完整的组件树刷新。
+      // 5. 初始化后刷新当前 app 的组件树 + inspector 树
       nextTick(() => {
         const rootInstance = (app as any)._instance
         if (rootInstance) {
           api.notifyComponentUpdate(rootInstance)
         }
+        api.sendInspectorTree(INSPECTOR_ID)
       })
     },
   )
@@ -134,6 +168,8 @@ function setupReactiveWatch(api: DevtoolsApi): void {
 /**
  * 收集所有容器中已激活服务的 reactive 状态快照，
  * 作为 watch 的监听源。只收集非函数的数据属性。
+ *
+ * 遍历 ROOT_CONTAINER 的整棵容器树，自然覆盖所有 app 的容器。
  */
 function collectAllServiceStates(): Record<string, any> {
   const rootContainer = getRootContainer()

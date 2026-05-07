@@ -26,6 +26,8 @@ export interface ContainerTreeNode {
   container: Container
   /** 子节点 */
   children: ContainerTreeNode[]
+  /** 可选的 app 标签，用于区分多 app 场景 */
+  appLabel?: string
 }
 
 /**
@@ -39,10 +41,12 @@ export interface ContainerTreeNode {
  *
  * @param app - Vue App 实例
  * @param rootContainer - ROOT_CONTAINER 引用
+ * @param appLabel - 可选的 app 标签，用于区分多 app 场景中的 App Container 节点
  */
 export function buildContainerTreeFromComponents(
   app: App,
-  rootContainer: Container
+  rootContainer: Container,
+  appLabel?: string
 ): ContainerTreeNode {
   const appContainer = getAppContainer(app)
 
@@ -60,12 +64,14 @@ export function buildContainerTreeFromComponents(
 
   // App 容器：如果存在（declareAppProviders），作为 Root 的直接子节点
   if (appContainer) {
+    const label = appLabel ? `${appLabel} Container` : 'App Container'
     const appNode: ContainerTreeNode = {
       id: 'app',
-      label: 'App Container',
+      label,
       scope: 'app',
       container: appContainer,
       children: [],
+      appLabel,
     }
     root.children.push(appNode)
     currentParent = appNode
