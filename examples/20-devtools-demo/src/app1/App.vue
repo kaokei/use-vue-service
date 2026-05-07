@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import { declareAppProviders, declareProviders, useService } from '@kaokei/use-vue-service'
-import { CountService, UserService } from '../services'
-import { ThemeService } from '../services/ThemeService'
+import { declareProviders, useService } from '@kaokei/use-vue-service'
+import { CountService, UserService, ThemeService } from '../services'
 import Level2 from './Level2.vue'
 
-// App 级别容器：共享给所有子组件
-declareAppProviders([ThemeService])
-
-// 根组件自身容器
+// 根组件自身容器（ThemeService 由 App Container 提供，这里不重复声明）
 declareProviders([CountService, UserService])
 
 const counter = useService(CountService)
