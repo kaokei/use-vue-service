@@ -69,9 +69,6 @@ export function registerComponentHooks(
     const instance = payload.componentInstance
     if (!instance) return
 
-    // 默认展开有容器的组件节点
-    payload.treeNode.autoOpen = true
-
     // 先清除之前添加的 container tag，防止切换 App 时 tag 累积
     const tags = payload.treeNode.tags
     for (let i = tags.length - 1; i >= 0; i--) {
