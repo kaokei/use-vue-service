@@ -3,10 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>20-devtools-demo - use-vue-service</title>
+    <title>20-devtools-demo - Multi App</title>
+    <style>
+      body { font-family: sans-serif; margin: 0; background: #f5f5f5; }
+      .app-section { padding: 16px 24px; margin: 8px; border-radius: 8px; }
+      .app1 { background: #e8f5e9; border: 2px solid #4caf50; }
+      .app2 { background: #e3f2fd; border: 2px solid #2196f3; }
+      .app3 { background: #fff3e0; border: 2px solid #ff9800; }
+      h1 { margin: 0 0 8px; font-size: 18px; }
+      h2 { margin: 0 0 4px; font-size: 15px; color: #333; }
+      p { margin: 4px 0; font-size: 13px; color: #555; }
+      button { margin: 2px; padding: 4px 10px; font-size: 12px; cursor: pointer; }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <h1 style="padding: 16px 24px 0; font-size: 22px;">Multi App DevTools Demo</h1>
+    <p style="padding: 0 24px 8px; color: #999; font-size: 13px;">
+      点击右下角的 Vue DevTools 按钮打开调试面板，查看 Services Inspector 中的多 App 容器树
+    </p>
+
+    <div id="app1" class="app-section app1"></div>
+    <div id="app2" class="app-section app2"></div>
+    <div id="app3" class="app-section app3"></div>
+
     <script type="module" src="src/main.ts"></script>
   </body>
 </html>
