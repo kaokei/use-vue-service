@@ -47,8 +47,7 @@ const CONTAINER_TAG_BG_COLOR = 0x42b883
  * 注册组件相关钩子。
  */
 export function registerComponentHooks(
-  api: DevtoolsApi,
-  options?: ComponentHooksOptions
+  api: DevtoolsApi
 ): void {
   // 1. 组件树 tag：有容器的组件标记 "Container" 标签
   api.on.visitComponentTree((payload: VisitComponentTreePayload) => {
@@ -78,22 +77,13 @@ export function registerComponentHooks(
   // 2. 组件 state：选中组件时追加 Services 分组
   api.on.inspectComponent((payload) => {
     const instance = payload.componentInstance
-    if (!instance) {
-      options?.onSelectContainer?.(null, null)
-      return
-    }
+    if (!instance) return
 
     const container = getOwnContainer(instance)
-    if (!container) {
-      options?.onSelectContainer?.(null, null)
-      return
-    }
+    if (!container) return
 
     const bindings = getBindings(container)
-    if (bindings.length === 0) {
-      options?.onSelectContainer?.(container, instance)
-      return
-    }
+    if (bindings.length === 0) return
 
     const activatedMap = new Map<string, any>()
     for (const { tokenName, binding } of getActivatedBindings(container)) {
@@ -121,8 +111,6 @@ export function registerComponentHooks(
         },
       })
     }
-
-    options?.onSelectContainer?.(container, instance)
   })
 }
 
@@ -144,11 +132,6 @@ function formatServiceTooltip(b: BindingInfo): string {
 }
 
 // ── 类型定义 ──────────────────────────────────────────────
-
-interface ComponentHooksOptions {
-  /** 选中容器时的回调，用于按需启动响应式 watch */
-  onSelectContainer?: (container: Container | null, instance: any) => void
-}
 
 interface VisitComponentTreePayload {
   app: any

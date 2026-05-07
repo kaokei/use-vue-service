@@ -64,19 +64,10 @@ let _inspectorHooksRegistered = false
 
 /**
  * Inspector 面板（Services tab）选中容器的响应式 watch。
- * 用户选中新容器时切换 watch，仅追踪当前选中容器的 reactive 服务实例。
- * 容器销毁时自动停止，防止内存泄漏。
+ * 自定义 Inspector 没有自动刷新机制，需手动 watch 变更并推送。
  */
 let _inspectorScope: EffectScope | null = null
 let _inspectorContainer: any = null
-
-/**
- * Components 面板选中组件关联容器的响应式 watch。
- * 用户选中新组件时切换 watch，仅追踪当前组件容器的 reactive 服务实例。
- */
-let _componentScope: EffectScope | null = null
-let _componentContainer: any = null
-let _componentInstance: any = null
 
 /**
  * 停止 Inspector 面板的响应式 watch。
@@ -90,8 +81,8 @@ function stopInspectorWatch() {
 }
 
 /**
- * 为 Inspector 面板选中的容器的所有 reactive 服务实例设置 watch。
- * 仅追踪 isReactive() 返回 true 的实例（跳过 markRaw 包裹的非响应式对象）。
+ * 为 Inspector 面板选中容器的所有 reactive 服务实例设置 watch。
+ * 仅追踪 isReactive() 返回 true 的实例。
  * 同一容器不重复设置；容器销毁时自动停止 watch，防止内存泄漏。
  */
 function startInspectorWatch(container: any, api: DevtoolsApi) {
@@ -115,54 +106,6 @@ function startInspectorWatch(container: any, api: DevtoolsApi) {
               return
             }
             api.sendInspectorState(INSPECTOR_ID)
-          }, { deep: true, flush: 'post' })
-        }
-      }
-    }
-  })
-}
-
-/**
- * 停止 Components 面板的响应式 watch。
- */
-function stopComponentWatch() {
-  if (_componentScope) {
-    _componentScope.stop()
-    _componentScope = null
-    _componentContainer = null
-    _componentInstance = null
-  }
-}
-
-/**
- * 为 Components 面板选中组件关联的容器的所有 reactive 服务实例设置 watch。
- * 仅追踪 isReactive() 返回 true 的实例。
- * 同一容器不重复设置；容器销毁时自动停止 watch，防止内存泄漏。
- */
-function startComponentWatch(container: any, componentInstance: any, api: DevtoolsApi) {
-  if (container === _componentContainer) return
-
-  stopComponentWatch()
-  _componentContainer = container
-  _componentInstance = componentInstance
-
-  const scope = effectScope()
-  _componentScope = scope
-
-  scope.run(() => {
-    for (const [token, binding] of container._bindings) {
-      if (isInternalToken(token)) continue
-      if (binding.status === 'activated' && binding.cache !== undefined) {
-        const instance = binding.cache
-        if (instance && typeof instance === 'object' && isReactive(instance)) {
-          watch(instance, () => {
-            if (container._destroyed) {
-              stopComponentWatch()
-              return
-            }
-            if (_componentInstance) {
-              api.notifyComponentUpdate(_componentInstance)
-            }
           }, { deep: true, flush: 'post' })
         }
       }
@@ -227,15 +170,7 @@ export function setupDevtools(app: App): void {
         })
 
         // 组件 Inspect 增强（回调不依赖 per-app api，全局注册一次即可）
-        registerComponentHooks(api as any, {
-          onSelectContainer: (container, instance) => {
-            if (container && !container._destroyed) {
-              startComponentWatch(container, instance, api)
-            } else {
-              stopComponentWatch()
-            }
-          },
-        })
+        registerComponentHooks(api as any)
       }
 
       // 3. 初始化后刷新当前 app 的组件树 + inspector 树
