@@ -1,0 +1,44 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "use-vue-service",
+  "description": "Lightweight Vue 3 state management with dependency injection, inspired by Angular services. Replace Vuex/Pinia via class-based services and component-level DI for reactive state sharing.",
+  "branch": "main",
+  "folders": [
+    "docs",
+    "examples",
+    "src"
+  ],
+  "excludeFolders": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "tests",
+    ".git",
+    ".github",
+    ".vscode",
+    ".claude",
+    ".sisyphus",
+    ".kiro",
+    ".workbuddy",
+    "devtools",
+    "nuxt-plugin"
+  ],
+  "excludeFiles": [],
+  "rules": [
+    "Use class-based services with dependency injection instead of centralized stores like Pinia/Vuex",
+    "Three scope levels available: component-level (useService), global root (useRootService), app-level (useAppService)",
+    "Mark service classes with @Injectable() decorator to make them injectable via DI container",
+    "Use declareProviders() in component setup to bind services to component scope — service lifecycle then matches the component's",
+    "Retrieve reactive service instances via useService(), useRootService(), or useAppService() composables",
+    "This library re-exports all @kaokei/di APIs — use @kaokei/di for advanced DI patterns like tokens and bindings",
+    "Services support lifecycle via constructor (acts as post-construct initialization)"
+  ],
+  "previousVersions": [
+    { "tag": "v4.0.4", "title": "4.0.4" },
+    { "tag": "v4.0.3", "title": "4.0.3" },
+    { "tag": "v4.0.2", "title": "4.0.2" },
+    { "tag": "v4.0.1", "title": "4.0.1" },
+    { "tag": "v4.0.0", "title": "4.0.0" },
+    { "tag": "v3.0.0", "title": "3.0.0" }
+  ]
+}
