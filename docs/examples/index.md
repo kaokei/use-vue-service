@@ -25,5 +25,7 @@ URL 格式：`https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tre
 | [17-useappservice](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/17-useappservice)          | useAppService vs useService：多层嵌套时的查找层级差异                  |
 | [18-post-construct-run-in-scope](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/18-post-construct-run-in-scope) | @PostConstruct 与 @RunInScope 配合：实例化时自动建立响应式监听，useService 即监听 |
 | [19-nuxt-auto-imports](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/19-nuxt-auto-imports)          | Nuxt 自动导入：通过 @kaokei/nuxt-use-vue-service 插件实现所有 API 零 import 自动注入 |
+| [20-devtools-demo](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/20-devtools-demo)              | DevTools 集成：在 Vite 项目中展示 Services Inspector Tab 和组件审查增强 |
+| [21-nuxt-devtools-demo](https://codesandbox.io/p/sandbox/github/kaokei/use-vue-service/tree/main/examples/21-nuxt-devtools-demo)         | Nuxt DevTools：通过 @kaokei/nuxt-use-vue-service 自动获得组件审查增强 |
 
 每个示例目录包含独立的 `package.json`（依赖已发布的 `@kaokei/use-vue-service` 和 `@kaokei/di` 版本）和 `tsconfig.json`，与主包构建流程完全隔离，可直接在 CodeSandbox 中运行。

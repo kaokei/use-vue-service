@@ -117,6 +117,12 @@ function useRootService<T>(token: CommonToken<T>): T;
 
 `useRootService` 直接操作全局根容器，只能读取 `declareRootProviders` 声明的服务，不会查找 App 容器或组件容器。适用于组件树之外的场景（如 main.ts、工具函数等）。
 
+::: tip 组件内请优先使用 useService
+`useRootService` 并非 `declareRootProviders` 在组件内的专属配对 API。`useService` 的查找链最终也会回退到根容器，**组件内统一使用 `useService` 即可**，无需区分服务是通过哪组 `declare*` 声明的。
+
+只有极少数情况下才需要在组件内使用 `useRootService`：同一个 token 被 `declareProviders`/`declareAppProviders`/`declareRootProviders` 多次绑定，`useService` 因就近原则无法取到根容器中的实例时，才需要用 `useRootService` 明确指定从根容器获取。
+:::
+
 `useRootService`的伪代码如下：
 
 ```ts
@@ -130,6 +136,10 @@ return root_container.get(token);
 function declareAppProviders(providers: FunctionProvider, app: App): void;
 function declareAppProviders(providers: NewableProvider, app: App): void;
 ```
+
+::: warning 不适合在组件 setup 内调用
+`declareAppProviders` 需要显式传入 `app` 实例作为第二个参数。组件 setup 内通常没有 `app` 对象，实践中几乎没有场景会把 `app` 传递到组件内部，因此此 API 基本不会出现在组件 setup 中。推荐在 `main.ts` 中使用，或改用 `declareAppProvidersPlugin` 以 Vue 插件形式注册。
+:::
 
 参考`declareProviders`方法是用于组件内部声明绑定服务，后续通过`useService`获取对应的服务。
 `declareRootProviders`方法是全局声明绑定服务，后续通过`useRootService`获取对应的服务。
@@ -160,6 +170,10 @@ app.runWithContext(() => {
 ```ts
 function useAppService<T>(token: CommonToken<T>, app: App): T;
 ```
+
+::: warning 不适合在组件 setup 内调用
+`useAppService` 需要显式传入 `app` 实例作为第二个参数。组件 setup 内通常没有 `app` 对象，实践中几乎没有场景会把 `app` 传递到组件内部，因此此 API 基本不会出现在组件 setup 中。组件内请使用 `useService` 代替，它的查找链同样能覆盖 App 容器和根容器。
+:::
 
 在 App 容器中获取服务实例。查找范围从 App 容器开始，找不到时可回退到全局根容器，因此能读取 `declareAppProviders` 和 `declareRootProviders` 声明的服务。由于不在组件的 `provide/inject` 链上，无法读取组件内通过 `declareProviders` 声明的服务。
 

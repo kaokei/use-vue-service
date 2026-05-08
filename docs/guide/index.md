@@ -83,8 +83,16 @@ const countService = useService(CountService);
 - `useAppService` —— 从 App 容器开始查找，可回退到根容器。因此它能读取 `declareAppProviders` 和 `declareRootProviders` 声明的服务，但读取不到其他组件内通过 `declareProviders` 声明的服务。
 - `useRootService` —— 直接操作根容器，只能读取 `declareRootProviders` 声明的服务。
 
-::: tip 三组 API 并非完全独立
-`useService` 的查找链覆盖了全部三层容器，推荐在组件内优先使用 `useService`。`useRootService` 和 `useAppService` 主要用于组件树之外（如 main.ts、插件初始化等场景）。
+::: tip 组件内请优先使用 useService
+`useService` 的查找链覆盖了全部三层容器，**组件内绝大多数情况应统一使用 `useService`**，不需要区分服务是通过哪组 `declare*` 声明的。
+
+`useRootService` 和 `useAppService` **不适合在组件 setup 内调用**，原因如下：
+- `useRootService` 绕过了组件容器和 App 容器，只查根容器；在组件内使用通常没必要，还容易误导读者以为它是 `declareRootProviders` 的专属配对 API（实际上 `useService` 同样可以读取根容器的服务）。
+- `useAppService` 需要显式传入 `app` 实例作为第二个参数，组件 setup 内通常没有 `app` 对象，实践中几乎没有场景会这样用。
+
+这两个 API 的主要用途是**组件树之外**（如 `main.ts`、插件初始化、Pinia store、工具函数等），而非组件 setup 内部。
+
+**唯一适合在组件内使用 `useRootService` 的罕见场景**：同一个服务 token 同时被 `declareProviders`、`declareAppProviders`、`declareRootProviders` 多次绑定，此时 `useService` 会按就近原则优先返回组件容器或 App 容器中的实例，无法直接取到根容器中的同名服务，才需要使用 `useRootService`。
 :::
 
 ### 组件级：useService / declareProviders
@@ -125,6 +133,10 @@ App 级作用域通过 `app.runWithContext` 在指定 Vue App 实例的上下文
 - `declareAppProviders(providers, app)` —— 在指定 App 实例的上下文中声明服务提供者。
 - `useAppService(token, app)` —— 从 App 容器中获取服务实例，找不到时可回退到根容器，但不会查找组件容器。
 - `declareAppProvidersPlugin(providers)` —— 返回一个 Vue 插件，可直接用于 `app.use()`。
+
+::: warning declareAppProviders 和 useAppService 不适合在组件 setup 内调用
+这两个 API 都需要显式传入 `app` 实例作为第二个参数。组件 setup 内通常没有 `app` 对象，实践中几乎没有场景会把 `app` 传递到组件内部，因此这两个 API 基本不会出现在组件 setup 中。如果需要声明 App 级服务，请在 `main.ts` 中通过 `declareAppProvidersPlugin` 插件形式注册，然后在组件内通过 `useService` 正常获取即可。
+:::
 
 ```ts
 import { createApp } from 'vue';

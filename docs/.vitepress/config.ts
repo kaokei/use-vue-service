@@ -56,10 +56,20 @@ export default defineConfig({
       { text: 'API', link: '/api/' },
       { text: 'Decorator', link: '/decorator/' },
       { text: 'Example', link: '/examples' },
+      { text: 'Ecosystem', link: '/ecosystem/devtools' },
       { text: 'Note', link: '/note/00.README' },
     ],
 
     sidebar: {
+      '/ecosystem/': [
+        {
+          text: '生态工具',
+          items: [
+            { text: 'DevTools 插件', link: '/ecosystem/devtools' },
+            { text: 'Nuxt 插件', link: '/ecosystem/nuxt-plugin' },
+          ],
+        },
+      ],
       '/note/': [
         {
           text: '核心概念',

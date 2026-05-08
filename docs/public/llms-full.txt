@@ -91,6 +91,8 @@ type FindChildrenServices = <T>(token: CommonToken<T>) => T[];
 - `useAppService` — 从 App 容器开始，可回退到根容器。能读取 `declareAppProviders` 和 `declareRootProviders` 声明的服务，无法读取组件内 `declareProviders` 声明的服务。
 - `useRootService` — 直接操作根容器，只能读取 `declareRootProviders` 声明的服务。
 
+**组件内应统一使用 `useService`**：`useService` 的查找链覆盖全部三层容器，组件内无需区分服务是通过哪组 `declare*` 声明的，不要因为服务是通过 `declareRootProviders` 声明的就在组件内改用 `useRootService`。`useRootService` 和 `useAppService` 主要用于组件树之外（如 `main.ts`、工具函数等）。
+
 ### 第一组：组件级作用域 — useService / declareProviders
 
 容器通过 Vue 的 provide/inject 机制在组件树中传递。这是最常用的方式。
@@ -162,6 +164,8 @@ function useRootService<T>(token: CommonToken<T>): T;
 
 从全局根容器中获取服务实例。只能读取 `declareRootProviders` 声明的服务，不会查找 App 容器或组件容器。
 
+**注意**：`useRootService` 并非 `declareRootProviders` 在组件内的专属配对 API。`useService` 的查找链最终也会回退到根容器，**组件内应统一使用 `useService`**。只有极少数情况才需要在组件内使用 `useRootService`：同一个 token 被 `declareProviders`/`declareAppProviders`/`declareRootProviders` 多次绑定，`useService` 因就近原则无法取到根容器中的实例时，才需要明确指定从根容器获取。
+
 ### 第三组：App 级作用域 — useAppService / declareAppProviders / declareAppProvidersPlugin
 
 通过 `app.runWithContext` 在指定 Vue App 实例的上下文中操作容器，适用于多 App 实例场景，每个 App 拥有独立的容器。
@@ -174,6 +178,8 @@ function declareAppProviders(providers: FunctionProvider, app: App): void;
 ```
 
 在指定 App 实例的上下文中声明服务提供者。
+
+**注意**：需要显式传入 `app` 实例作为第二个参数，实践中几乎没有场景会把 `app` 传递到组件内部，因此此 API 基本不会在组件 setup 中调用。推荐在 `main.ts` 中使用，或改用 `declareAppProvidersPlugin` 以 Vue 插件形式注册。
 
 行为逻辑：
 - 如果该 App 已经有容器，则直接追加绑定
@@ -196,6 +202,8 @@ function useAppService<T>(token: CommonToken<T>, app: App): T;
 ```
 
 在指定 App 实例的上下文中获取服务实例。查找范围从 App 容器开始，找不到时可回退到全局根容器，无法读取组件内通过 `declareProviders` 声明的服务。
+
+**注意**：需要显式传入 `app` 实例作为第二个参数，实践中几乎没有场景会把 `app` 传递到组件内部，因此此 API 基本不会在组件 setup 中调用。组件内请使用 `useService` 代替，它的查找链同样能覆盖 App 容器和根容器。
 
 #### declareAppProvidersPlugin
 

@@ -41,6 +41,20 @@ npm install @kaokei/di @kaokei/use-vue-service
 - `useAppService(token, app)` — 从 App 容器获取服务，可回退到根容器，不查找组件容器
 - `declareAppProvidersPlugin(providers)` — 返回 Vue 插件，用于 `app.use()`
 
+**注意**：`declareAppProviders` 和 `useAppService` 都需要显式传入 `app` 实例作为第二个参数，实践中几乎没有场景会把 `app` 传递到组件内部，因此这两个 API 基本不会在组件 setup 中使用。需要声明 App 级服务时，推荐在 `main.ts` 中使用 `declareAppProvidersPlugin` 插件形式。
+
+## 常见误用
+
+**误用一：在组件 setup 中使用 `declareAppProviders` 或 `useAppService`**
+
+这两个 API 需要 `app` 参数，组件 setup 内通常没有 `app` 对象。正确做法：在 `main.ts` 中通过 `app.use(declareAppProvidersPlugin([...]))` 声明，然后在组件内通过 `useService` 获取。
+
+**误用二：在组件内用 `useRootService` 获取根容器服务**
+
+`useRootService` 并非 `declareRootProviders` 在组件内的专属配对 API。`useService` 的查找链最终也会回退到根容器，**组件内应统一使用 `useService`**，无需区分服务是通过哪组 `declare*` 声明的。
+
+只有极少数情况才需要在组件内使用 `useRootService`：同一个 token 被多组 `declare*` 重复绑定，`useService` 因就近原则无法取到根容器中的实例时，才需要明确指定从根容器获取。
+
 ## 装饰器
 
 ### @Computed
