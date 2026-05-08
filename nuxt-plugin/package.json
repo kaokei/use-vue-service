@@ -1,6 +1,6 @@
 {
   "name": "@kaokei/nuxt-use-vue-service",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "type": "module",
   "description": "Nuxt module for @kaokei/use-vue-service — zero-config auto-imports",
   "main": "./dist/module.mjs",
@@ -16,7 +16,8 @@
     "prepare": "nuxt-module-build build"
   },
   "dependencies": {
-    "@nuxt/kit": "^4.4.2"
+    "@nuxt/kit": "^4.4.2",
+    "@kaokei/devtools-use-vue-service": "^1.0.1"
   },
   "devDependencies": {
     "@nuxt/module-builder": "^1.0.2",

@@ -6,6 +6,7 @@
  * 启用组件审查增强（container 标签 + Services 状态面板）。
  */
 
+import { defineNuxtPlugin } from '#app'
 import { setupDevtools } from '@kaokei/devtools-use-vue-service'
 
 export default defineNuxtPlugin((nuxtApp) => {
