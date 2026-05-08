@@ -20,7 +20,7 @@
     "./package.json": "./package.json"
   },
   "sideEffects": false,
-  "homepage": "https://github.com/kaokei/use-vue-service",
+  "homepage": "https://use-vue-service.kaokei.com/",
   "author": "kaokei",
   "license": "MIT",
   "bugs": {

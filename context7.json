@@ -3,11 +3,7 @@
   "projectTitle": "use-vue-service",
   "description": "Lightweight Vue 3 state management with dependency injection, inspired by Angular services. Replace Vuex/Pinia via class-based services and component-level DI for reactive state sharing.",
   "branch": "main",
-  "folders": [
-    "docs",
-    "examples",
-    "src"
-  ],
+  "folders": ["docs", "examples", "src"],
   "excludeFolders": [
     "node_modules",
     "dist",
@@ -40,5 +36,7 @@
     { "tag": "v4.0.1", "title": "4.0.1" },
     { "tag": "v4.0.0", "title": "4.0.0" },
     { "tag": "v3.0.0", "title": "3.0.0" }
-  ]
+  ],
+  "url": "https://context7.com/kaokei/use-vue-service",
+  "public_key": "pk_aifpTBe74spOO8to7rErY"
 }
