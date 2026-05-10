@@ -1,182 +1,91 @@
-# HTTP 服务 — 请求封装与响应缓存
+# HTTP 请求服务 — 无状态请求工具
 
 ## 场景描述
 
-封装统一的 HTTP 请求服务，提供 GET/POST 等常用方法，支持请求缓存、加载状态和错误处理。
+封装 HTTP 请求服务，提供 GET/POST/PUT/DELETE 方法。服务本身不持有 loading/error 状态，每个请求的状态由调用方独立管理。
+
+## 设计原则（参考 Angular HttpClient）
+
+- **服务无状态** — 不维护全局 loading/error，每个请求的状态由调用方用 `ref()` 独立管理
+- **@Raw() 跳过响应式** — 服务实例不需要 Vue 响应式追踪，避免不必要的性能开销
+- **commonHeaders** — 公共请求头（如 token）统一配置，自动合并到每个请求
 
 ## 服务定义
 
 ```ts
-import { Injectable } from '@kaokei/use-vue-service';
+import { Injectable, Raw } from '@kaokei/use-vue-service';
 
-/** HTTP 请求选项 */
-interface RequestOptions {
-  /** 请求头 */
+interface FetchConfig {
   headers?: Record<string, string>;
-  /** 是否缓存响应结果 */
-  cache?: boolean;
-  /** 缓存有效期（毫秒），默认 5 分钟 */
-  cacheTTL?: number;
+  params?: Record<string, any>;
 }
 
-/** 缓存的条目 */
-interface CacheEntry {
-  data: any;
-  timestamp: number;
-  ttl: number;
-}
-
-/**
- * HTTP 请求服务。
- * 
- * 服务实例本身是 Vue reactive 对象，因此 loading 和 error
- * 属性在模板中直接是响应式的。
- */
+@Raw()
 @Injectable()
 export class ApiService {
-  /** 全局加载状态（响应式） */
-  loading = false;
+  baseURL = '';
 
-  /** 全局错误信息（响应式） */
-  error = '';
+  commonHeaders: Record<string, string> = {};
 
-  /** API 基础地址 */
-  private baseURL = '';
-
-  /** 响应缓存 Map */
-  private cache = new Map<string, CacheEntry>();
-
-  /** 默认缓存有效期：5 分钟 */
-  private defaultCacheTTL = 5 * 60 * 1000;
-
-  /**
-   * 设置 API 基础地址。
-   */
   setBaseURL(url: string): void {
     this.baseURL = url;
   }
 
-  /**
-   * 发起 GET 请求。
-   */
-  async get<T = any>(
-    url: string,
-    options: RequestOptions = {}
-  ): Promise<T> {
-    return this.request<T>(url, { method: 'GET', ...options });
+  setHeader(key: string, value: string): void {
+    this.commonHeaders[key] = value;
   }
 
-  /**
-   * 发起 POST 请求。
-   */
+  removeHeader(key: string): void {
+    delete this.commonHeaders[key];
+  }
+
+  async get<T = any>(url: string, config?: FetchConfig): Promise<T> {
+    return this.request<T>(url, { method: 'GET', ...config });
+  }
+
   async post<T = any>(
     url: string,
     body?: any,
-    options: RequestOptions = {}
+    config?: FetchConfig
   ): Promise<T> {
-    return this.request<T>(url, {
-      method: 'POST',
-      body: body ? JSON.stringify(body) : undefined,
-      ...options,
-    });
+    return this.request<T>(url, { method: 'POST', body, ...config });
   }
 
-  /**
-   * 发起 PUT 请求。
-   */
   async put<T = any>(
     url: string,
     body?: any,
-    options: RequestOptions = {}
+    config?: FetchConfig
   ): Promise<T> {
-    return this.request<T>(url, {
-      method: 'PUT',
-      body: body ? JSON.stringify(body) : undefined,
-      ...options,
-    });
+    return this.request<T>(url, { method: 'PUT', body, ...config });
   }
 
-  /**
-   * 发起 DELETE 请求。
-   */
-  async delete<T = any>(
-    url: string,
-    options: RequestOptions = {}
-  ): Promise<T> {
-    return this.request<T>(url, { method: 'DELETE', ...options });
+  async delete<T = any>(url: string, config?: FetchConfig): Promise<T> {
+    return this.request<T>(url, { method: 'DELETE', ...config });
   }
 
-  /**
-   * 清除所有缓存。
-   */
-  clearCache(): void {
-    this.cache.clear();
-  }
-
-  /**
-   * 清除指定 URL 的缓存。
-   */
-  clearCacheFor(url: string): void {
-    this.cache.delete(url);
-  }
-
-  /**
-   * 核心请求方法。
-   */
   private async request<T>(
     url: string,
-    options: RequestOptions & { method: string; body?: string }
+    config: FetchConfig & { method: string; body?: any }
   ): Promise<T> {
     const fullURL = url.startsWith('http') ? url : `${this.baseURL}${url}`;
 
-    // 检查缓存
-    if (options.cache && options.method === 'GET') {
-      const cached = this.cache.get(fullURL);
-      if (cached) {
-        const age = Date.now() - cached.timestamp;
-        if (age < cached.ttl) {
-          return cached.data as T;
-        }
-        // 缓存过期，删除
-        this.cache.delete(fullURL);
-      }
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...this.commonHeaders,
+      ...config.headers,
+    };
+
+    const response = await fetch(fullURL, {
+      method: config.method,
+      headers,
+      body: config.body ? JSON.stringify(config.body) : undefined,
+    });
+
+    if (!response.ok) {
+      throw new Error(`请求失败: ${response.status} ${response.statusText}`);
     }
 
-    this.loading = true;
-    this.error = '';
-
-    try {
-      const response = await fetch(fullURL, {
-        method: options.method,
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
-        },
-        body: options.body,
-      });
-
-      if (!response.ok) {
-        throw new Error(`请求失败: ${response.status} ${response.statusText}`);
-      }
-
-      const data: T = await response.json();
-
-      // 写入缓存
-      if (options.cache && options.method === 'GET') {
-        this.cache.set(fullURL, {
-          data,
-          timestamp: Date.now(),
-          ttl: options.cacheTTL ?? this.defaultCacheTTL,
-        });
-      }
-
-      return data;
-    } catch (err: any) {
-      this.error = err?.message || '网络错误，请稍后重试';
-      throw err;
-    } finally {
-      this.loading = false;
-    }
+    return response.json() as Promise<T>;
   }
 }
 ```
@@ -185,67 +94,113 @@ export class ApiService {
 
 ```vue
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { declareProviders, useService } from '@kaokei/use-vue-service';
 import { ApiService } from './api.service';
 
-// 声明服务
 declareProviders([ApiService]);
-
-// 获取服务实例
 const api = useService(ApiService);
 
-// 组件本地状态
-const users = ref<any[]>([]);
-const isLoading = ref(false);
+// ===== 每个请求独立管理自己的状态 =====
 
-// 获取数据
-async function fetchUsers() {
-  isLoading.value = true;
+// 请求 1：获取用户
+const userLoading = ref(false);
+const userError = ref('');
+const user = ref();
+
+async function fetchUser(id: number) {
+  userLoading.value = true;
+  userError.value = '';
   try {
-    // GET 请求，开启缓存，10 分钟有效
-    users.value = await api.get<any[]>('/users', {
-      cache: true,
-      cacheTTL: 10 * 60 * 1000,
-    });
-  } catch {
-    // 错误信息在 api.error 中
+    user.value = await api.get(`/users/${id}`);
+  } catch (err: any) {
+    userError.value = err.message;
   } finally {
-    isLoading.value = false;
+    userLoading.value = false;
   }
 }
 
-onMounted(() => {
-  api.setBaseURL('https://jsonplaceholder.typicode.com');
-  fetchUsers();
-});
+// 请求 2：获取列表（与请求 1 的 loading 互不干扰）
+const listLoading = ref(false);
+const listError = ref('');
+const list = ref([]);
+
+async function fetchList() {
+  listLoading.value = true;
+  listError.value = '';
+  try {
+    list.value = await api.get('/posts');
+  } catch (err: any) {
+    listError.value = err.message;
+  } finally {
+    listLoading.value = false;
+  }
+}
+
+// 请求 3：POST 创建
+const createLoading = ref(false);
+const createResult = ref('');
+
+async function createPost() {
+  createLoading.value = true;
+  try {
+    const result = await api.post('/posts', {
+      title: '新文章',
+      body: '文章内容',
+    });
+    createResult.value = `创建成功，ID: ${result.id}`;
+  } catch (err: any) {
+    createResult.value = `失败: ${err.message}`;
+  } finally {
+    createLoading.value = false;
+  }
+}
+
+// 初始化配置
+api.setBaseURL('https://jsonplaceholder.typicode.com');
+// api.setHeader('Authorization', 'Bearer xxx');
 </script>
 
 <template>
   <div>
-    <!-- 全局加载状态 -->
-    <div v-if="api.loading || isLoading">加载中...</div>
+    <!-- 请求 1 -->
+    <div>
+      <button @click="fetchUser(1)" :disabled="userLoading">
+        {{ userLoading ? '加载中...' : '获取用户' }}
+      </button>
+      <p v-if="userError" style="color: red">{{ userError }}</p>
+      <div v-if="user">
+        <strong>{{ user.name }}</strong>
+        <span>{{ user.email }}</span>
+      </div>
+    </div>
 
-    <!-- 全局错误提示 -->
-    <p v-if="api.error" style="color: red">{{ api.error }}</p>
+    <!-- 请求 2 — loading 与请求 1 互不影响 -->
+    <div>
+      <button @click="fetchList" :disabled="listLoading">
+        {{ listLoading ? '加载中...' : '获取列表' }}
+      </button>
+      <p v-if="listError" style="color: red">{{ listError }}</p>
+      <ul>
+        <li v-for="item in list" :key="item.id">{{ item.title }}</li>
+      </ul>
+    </div>
 
-    <!-- 数据展示 -->
-    <ul>
-      <li v-for="user in users" :key="user.id">
-        {{ user.name }}
-      </li>
-    </ul>
-
-    <!-- 操作按钮 -->
-    <button @click="fetchUsers">刷新数据</button>
-    <button @click="api.clearCache()">清除缓存</button>
+    <!-- 请求 3 -->
+    <div>
+      <button @click="createPost" :disabled="createLoading">
+        {{ createLoading ? '提交中...' : '创建文章' }}
+      </button>
+      <p>{{ createResult }}</p>
+    </div>
   </div>
 </template>
 ```
 
 ## 关键要点
 
-1. **服务实例是 reactive 对象** — `loading` 和 `error` 直接是响应式的，多个组件可共享同一状态。
-2. **缓存由 Map 管理** — 按 URL 缓存 GET 请求结果，支持自定义 TTL。缓存到期自动淘汰。
-3. **loading/error 是服务全局状态** — 所有请求共享，适合全局 loading 条；组件局部 loading 用 `ref` 单独管理。
-4. **请求方法返回 Promise** — 调用方可以用 `await` 或 `.then()` 处理结果，灵活性高。
+1. **@Raw() 跳过响应式** — 服务实例不需要 Vue 做 reactive 包装，因为它是无状态的请求工具，没有需要在模板中绑定的响应式属性。
+2. **服务不持有 loading/error** — 这是 Angular HttpClient 10 年验证的设计原则。一个 service 可能被多个组件注入，如果 loading 是全局的，组件 A 的请求会导致组件 B 也显示 loading。
+3. **每个请求独立管理状态** — 调用方用 `ref()` 创建自己的 `loading`、`error`、`data`，多个并发请求互不干扰。
+4. **commonHeaders 统一配置** — 公共请求头（如 token）通过 `setHeader()` 配置一次，所有请求自动携带。
+5. **错误交给调用方** — 请求失败直接 throw，由调用方 try/catch 处理，错误信息由调用方决定如何展示。

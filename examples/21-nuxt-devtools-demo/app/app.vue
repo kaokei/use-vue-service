@@ -14,6 +14,9 @@
       <NuxtLink to="/notification" style="color: #42b883; text-decoration: none; font-weight: 600;">
         🔔 通知队列服务
       </NuxtLink>
+      <NuxtLink to="/http" style="color: #42b883; text-decoration: none; font-weight: 600;">
+        🌐 HTTP 请求服务
+      </NuxtLink>
     </nav>
 
     <!-- 页面内容 -->
