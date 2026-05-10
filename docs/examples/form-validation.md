@@ -222,7 +222,7 @@ import { declareProviders, useService } from '@kaokei/use-vue-service';
 import { FormService, required, minLength, isEmail } from './form.service';
 
 // 声明服务
-declareProviders(FormService);
+declareProviders([FormService]);
 
 const form = useService(FormService);
 

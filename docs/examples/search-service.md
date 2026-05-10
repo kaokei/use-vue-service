@@ -178,7 +178,7 @@ import { declareProviders, useService } from '@kaokei/use-vue-service';
 import { SearchService } from './search.service';
 
 // 声明服务，与当前组件绑定
-declareProviders(SearchService);
+declareProviders([SearchService]);
 
 // 获取服务实例
 const searchService = useService(SearchService);

@@ -143,7 +143,7 @@ import { declareProviders, useService } from '@kaokei/use-vue-service';
 import { ProductService } from './product.service';
 
 // 声明服务，与当前组件绑定
-declareProviders(ProductService);
+declareProviders([ProductService]);
 
 // 获取服务实例
 const productService = useService(ProductService);

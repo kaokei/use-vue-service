@@ -190,7 +190,7 @@ import { declareProviders, useService } from '@kaokei/use-vue-service';
 import { ApiService } from './api.service';
 
 // 声明服务
-declareProviders(ApiService);
+declareProviders([ApiService]);
 
 // 获取服务实例
 const api = useService(ApiService);

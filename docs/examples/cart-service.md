@@ -148,7 +148,7 @@ import { declareProviders, useService } from '@kaokei/use-vue-service';
 import { CartService } from './cart.service';
 
 // 声明服务，与当前组件绑定
-declareProviders(CartService);
+declareProviders([CartService]);
 
 // 获取服务实例
 const cart = useService(CartService);

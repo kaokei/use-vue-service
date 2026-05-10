@@ -172,7 +172,7 @@ import { NotificationService } from './notification.service';
 
 // 声明服务为全局服务（使用 declareRootProviders）
 // 或者声明为组件级服务（使用 declareProviders）
-declareProviders(NotificationService);
+declareProviders([NotificationService]);
 
 // 获取服务实例
 const notif = useService(NotificationService);
