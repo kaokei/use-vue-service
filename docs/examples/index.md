@@ -1,4 +1,19 @@
-# CodeSandbox 在线示例
+# 示例代码
+
+## 常见业务场景
+
+以下是基于 `@kaokei/use-vue-service` 实现常见业务场景的完整示例代码，涵盖搜索、购物车、HTTP 请求、表单验证等典型需求。每个示例均包含完整的服务定义和组件使用代码。
+
+| 示例 | 说明 |
+| ---- | ---- |
+| [搜索服务](./search-service) | 防抖搜索、加载状态和错误处理 |
+| [购物车服务](./cart-service) | 响应式购物车、@Computed 计算总价、localStorage 持久化 |
+| [HTTP 请求服务](./http-service) | 统一请求封装、响应缓存和错误处理 |
+| [商品列表服务](./product-list) | 响应式数组的增删改查和 @Computed 筛选 |
+| [表单验证服务](./form-validation) | 多字段验证规则、表单状态管理 |
+| [通知队列服务](./notification-queue) | 消息队列、超时自动清除、@PreDestroy 清理 |
+
+## CodeSandbox 在线示例
 
 以下示例托管在 GitHub 仓库的 `examples/` 目录中，可通过 CodeSandbox 直接在线运行。
 

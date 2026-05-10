@@ -5,6 +5,11 @@
   "branch": "main",
   "folders": ["docs", "examples", "src"],
   "excludeFolders": [
+    "docs/.vitepress/cache",
+    "docs/.vitepress/dist",
+    "docs/public",
+    "docs/superpowers",
+    "docs/note",
     "node_modules",
     "dist",
     "coverage",
