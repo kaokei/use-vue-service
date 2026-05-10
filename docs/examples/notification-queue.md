@@ -49,7 +49,7 @@ export class NotificationService {
   /**
    * 当前可见的通知数量（响应式派生状态）。
    */
-  @Computed
+  @Computed()
   get visibleCount(): number {
     return this.notifications.length;
   }
@@ -57,7 +57,7 @@ export class NotificationService {
   /**
    * 是否有通知（响应式派生状态）。
    */
-  @Computed
+  @Computed()
   get hasNotifications(): boolean {
     return this.notifications.length > 0;
   }
@@ -245,7 +245,7 @@ const notif = useService(NotificationService);
 ## 关键要点
 
 1. **服务实例是 reactive 对象** — `notifications` 数组的 push/splice 自动触发模板更新。
-2. **@Computed 派生状态** — `visibleCount` 和 `hasNotifications` 自动跟随数组变化。
+2. **@Computed() 派生状态** — `visibleCount` 和 `hasNotifications` 自动跟随数组变化。
 3. **@PreDestroy 生命周期** — `dispose()` 方法在组件/容器销毁时自动调用，清理所有定时器，防止内存泄漏。
 4. **数量限制** — 超过 `maxVisible` 时移除最早的通知，保持界面整洁。
 5. **自动移除** — 每条通知默认 3 秒后自动消失，可通过参数自定义时长。

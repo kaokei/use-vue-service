@@ -13,79 +13,66 @@
 ## 服务定义
 
 ```ts
-import { Injectable, Raw } from '@kaokei/use-vue-service';
+import { Injectable, Raw } from '@kaokei/use-vue-service'
 
 interface FetchConfig {
-  headers?: Record<string, string>;
-  params?: Record<string, any>;
+  headers?: Record<string, string>
+  params?: Record<string, any>
 }
 
 @Raw()
 @Injectable()
-export class ApiService {
-  baseURL = '';
+export class HttpService {
+  baseURL = ''
 
-  commonHeaders: Record<string, string> = {};
+  commonHeaders: Record<string, string> = {}
 
   setBaseURL(url: string): void {
-    this.baseURL = url;
+    this.baseURL = url
   }
 
   setHeader(key: string, value: string): void {
-    this.commonHeaders[key] = value;
+    this.commonHeaders[key] = value
   }
 
   removeHeader(key: string): void {
-    delete this.commonHeaders[key];
+    delete this.commonHeaders[key]
   }
 
   async get<T = any>(url: string, config?: FetchConfig): Promise<T> {
-    return this.request<T>(url, { method: 'GET', ...config });
+    return this.request<T>(url, { method: 'GET', ...config })
   }
 
-  async post<T = any>(
-    url: string,
-    body?: any,
-    config?: FetchConfig
-  ): Promise<T> {
-    return this.request<T>(url, { method: 'POST', body, ...config });
+  async post<T = any>(url: string, body?: any, config?: FetchConfig): Promise<T> {
+    return this.request<T>(url, { method: 'POST', body, ...config })
   }
 
-  async put<T = any>(
-    url: string,
-    body?: any,
-    config?: FetchConfig
-  ): Promise<T> {
-    return this.request<T>(url, { method: 'PUT', body, ...config });
+  async put<T = any>(url: string, body?: any, config?: FetchConfig): Promise<T> {
+    return this.request<T>(url, { method: 'PUT', body, ...config })
   }
 
   async delete<T = any>(url: string, config?: FetchConfig): Promise<T> {
-    return this.request<T>(url, { method: 'DELETE', ...config });
+    return this.request<T>(url, { method: 'DELETE', ...config })
   }
 
+  // 统一请求入口，合并公共请求头
   private async request<T>(
     url: string,
     config: FetchConfig & { method: string; body?: any }
   ): Promise<T> {
-    const fullURL = url.startsWith('http') ? url : `${this.baseURL}${url}`;
+    const fullURL = url.startsWith('http') ? url : `${this.baseURL}${url}`
 
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+    const mergedHeaders: Record<string, string> = {
       ...this.commonHeaders,
       ...config.headers,
-    };
-
-    const response = await fetch(fullURL, {
-      method: config.method,
-      headers,
-      body: config.body ? JSON.stringify(config.body) : undefined,
-    });
-
-    if (!response.ok) {
-      throw new Error(`请求失败: ${response.status} ${response.statusText}`);
     }
 
-    return response.json() as Promise<T>;
+    return $fetch<T>(fullURL, {
+      method: config.method as any,
+      headers: mergedHeaders,
+      body: config.body,
+      params: config.params,
+    })
   }
 }
 ```
@@ -94,71 +81,71 @@ export class ApiService {
 
 ```vue
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { declareProviders, useService } from '@kaokei/use-vue-service';
-import { ApiService } from './api.service';
+import { ref } from 'vue'
+import { declareProviders, useService } from '@kaokei/use-vue-service'
+import { HttpService } from '~/services/HttpService'
 
-declareProviders([ApiService]);
-const api = useService(ApiService);
+declareProviders([HttpService])
+const http = useService(HttpService)
 
 // ===== 每个请求独立管理自己的状态 =====
 
 // 请求 1：获取用户
-const userLoading = ref(false);
-const userError = ref('');
-const user = ref();
+const userLoading = ref(false)
+const userError = ref('')
+const user = ref()
 
 async function fetchUser(id: number) {
-  userLoading.value = true;
-  userError.value = '';
+  userLoading.value = true
+  userError.value = ''
   try {
-    user.value = await api.get(`/users/${id}`);
+    user.value = await http.get(`/users/${id}`)
   } catch (err: any) {
-    userError.value = err.message;
+    userError.value = err.message
   } finally {
-    userLoading.value = false;
+    userLoading.value = false
   }
 }
 
 // 请求 2：获取列表（与请求 1 的 loading 互不干扰）
-const listLoading = ref(false);
-const listError = ref('');
-const list = ref([]);
+const listLoading = ref(false)
+const listError = ref('')
+const list = ref([])
 
 async function fetchList() {
-  listLoading.value = true;
-  listError.value = '';
+  listLoading.value = true
+  listError.value = ''
   try {
-    list.value = await api.get('/posts');
+    list.value = await http.get('/posts')
   } catch (err: any) {
-    listError.value = err.message;
+    listError.value = err.message
   } finally {
-    listLoading.value = false;
+    listLoading.value = false
   }
 }
 
 // 请求 3：POST 创建
-const createLoading = ref(false);
-const createResult = ref('');
+const createLoading = ref(false)
+const createResult = ref('')
 
 async function createPost() {
-  createLoading.value = true;
+  createLoading.value = true
   try {
-    const result = await api.post('/posts', {
+    const result = await http.post('/posts', {
       title: '新文章',
       body: '文章内容',
-    });
-    createResult.value = `创建成功，ID: ${result.id}`;
+    })
+    createResult.value = `创建成功，ID: ${result.id}`
   } catch (err: any) {
-    createResult.value = `失败: ${err.message}`;
+    createResult.value = `失败: ${err.message}`
   } finally {
-    createLoading.value = false;
+    createLoading.value = false
   }
 }
 
 // 初始化配置
-api.setBaseURL('https://jsonplaceholder.typicode.com');
-// api.setHeader('Authorization', 'Bearer xxx');
+http.setBaseURL('https://jsonplaceholder.typicode.com')
+// http.setHeader('Authorization', 'Bearer xxx')
 </script>
 
 <template>

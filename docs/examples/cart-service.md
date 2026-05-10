@@ -33,13 +33,13 @@ export class CartService {
   items: CartItem[] = [];
 
   /** localStorage 存储键名 */
-  private readonly STORAGE_KEY = 'app_cart';
+  private readonly STORAGE_KEY = 'nuxt_demo_cart';
 
   /**
    * 计算总价（响应式派生状态）。
    * 当 items 数组变化时自动重新计算。
    */
-  @Computed
+  @Computed()
   get totalPrice(): number {
     return this.items.reduce(
       (sum, item) => sum + item.price * item.quantity,
@@ -50,7 +50,7 @@ export class CartService {
   /**
    * 计算商品总数量（响应式派生状态）。
    */
-  @Computed
+  @Computed()
   get totalCount(): number {
     return this.items.reduce((sum, item) => sum + item.quantity, 0);
   }
@@ -194,6 +194,6 @@ onMounted(() => {
 ## 关键要点
 
 1. **服务实例是 reactive 对象** — `items` 数组的 `push`、`splice`、直接索引赋值都在 Vue 响应式追踪范围内，模板自动更新。
-2. **@Computed 计算派生状态** — `totalPrice` 和 `totalCount` 是 getter，依赖 `items` 数组，当数组变化时自动重新计算并缓存。
+2. **@Computed() 计算派生状态** — `totalPrice` 和 `totalCount` 是 getter，依赖 `items` 数组，当数组变化时自动重新计算并缓存。
 3. **localStorage 持久化** — `load()` 在组件 `onMounted` 时调用恢复数据；每次修改后调用 `save()` 写入。注意捕获 JSON 解析和写入异常。
 4. **数组替换保持响应式** — `this.items = data` 整体替换数组时，Vue reactive 会自动追踪新数组。

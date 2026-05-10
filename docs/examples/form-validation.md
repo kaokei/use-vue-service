@@ -2,14 +2,14 @@
 
 ## 场景描述
 
-通过继承 `FormService` 基类创建业务表单，直接声明 `model` 对象即可使用 `v-model="form.model.fieldName"` 双向绑定。`errors` 和 `isValid` 通过 `@Computed` 自动响应式更新。
+通过继承 `FormService` 基类创建业务表单，直接声明 `model` 对象即可使用 `v-model="form.model.fieldName"` 双向绑定。`errors` 和 `isValid` 通过 `@Computed()` 自动响应式更新。
 
 ## 设计原则
 
 - **model 和 rules 分离** — model 是纯数据，rules 是验证规则，职责清晰
 - **FormService 是基类** — 业务表单继承后只需声明 `model` 和 `rules`
 - **v-model 直接绑定** — `form.model.fieldName` 直接是响应式属性
-- **@Computed errors** — model 变化时自动重新验证，无需手动调用 `validate()`
+- **@Computed() errors** — model 变化时自动重新验证，无需手动调用 `validate()`
 
 ## 服务定义
 
@@ -34,7 +34,7 @@ export class FormService<T extends Record<string, any>> {
   touched: Record<string, boolean> = {};
 
   // 只展示已触摸字段的错误信息
-  @Computed()
+  @Computed()()
   get errors(): Record<string, string> {
     const result: Record<string, string> = {};
     if (!this.model) return result;
@@ -54,7 +54,7 @@ export class FormService<T extends Record<string, any>> {
   }
 
   // 校验全部字段（不受 touched 限制），用于控制提交按钮状态
-  @Computed()
+  @Computed()()
   get isValid(): boolean {
     if (!this.model) return false;
     for (const field of Object.keys(this.rules)) {

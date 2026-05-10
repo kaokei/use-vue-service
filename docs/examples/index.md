@@ -6,12 +6,13 @@
 
 | 示例 | 说明 |
 | ---- | ---- |
-| [搜索服务](./search-service) | 防抖搜索、加载状态和错误处理 |
+| [搜索服务](./search-service) | 基类继承模式：防抖搜索、分页、URL 持久化、RouterService 注入 |
 | [购物车服务](./cart-service) | 响应式购物车、@Computed 计算总价、localStorage 持久化 |
 | [HTTP 请求服务](./http-service) | 统一请求封装、响应缓存和错误处理 |
 | [商品列表服务](./product-list) | 响应式数组的增删改查和 @Computed 筛选 |
 | [表单验证服务](./form-validation) | 多字段验证规则、表单状态管理 |
 | [通知队列服务](./notification-queue) | 消息队列、超时自动清除、@PreDestroy 清理 |
+| [倒计时服务](./countdown-service) | 组件级服务实例、@PreDestroy 自动清理定时器 |
 
 ## CodeSandbox 在线示例
 

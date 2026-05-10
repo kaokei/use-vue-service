@@ -45,7 +45,7 @@ export class ProductService {
    * 依赖 products、filterKeyword、filterCategory，
    * 任一变化时自动重新计算。
    */
-  @Computed
+  @Computed()
   get filteredProducts(): Product[] {
     let result = this.products;
 
@@ -64,7 +64,7 @@ export class ProductService {
   /**
    * 计算商品总数（响应式派生状态）。
    */
-  @Computed
+  @Computed()
   get totalCount(): number {
     return this.products.length;
   }
@@ -72,7 +72,7 @@ export class ProductService {
   /**
    * 计算筛选后数量。
    */
-  @Computed
+  @Computed()
   get filteredCount(): number {
     return this.filteredProducts.length;
   }
@@ -204,6 +204,6 @@ function addDemoProduct() {
 ## 关键要点
 
 1. **数组天然响应式** — `this.products.push()`、`this.products.splice()`、`this.products = newArray` 都在 Vue reactive 追踪范围内，模板自动更新。
-2. **@Computed 实现筛选** — `filteredProducts` 依赖 `products`、`filterKeyword`、`filterCategory`，任一变化时自动重新计算，且结果被缓存。
+2. **@Computed() 实现筛选** — `filteredProducts` 依赖 `products`、`filterKeyword`、`filterCategory`，任一变化时自动重新计算，且结果被缓存。
 3. **数组方法均可用** — `find`、`filter`、`findIndex` 等原生数组方法在服务内正常使用，不需要特殊处理。
 4. **对象属性修改也是响应式的** — `Object.assign(product, updates)` 直接修改数组元素的属性，自动触发响应式更新。
