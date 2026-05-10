@@ -23,6 +23,9 @@
       <NuxtLink to="/search" style="color: #42b883; text-decoration: none; font-weight: 600;">
         🔍 搜索分页服务
       </NuxtLink>
+      <NuxtLink to="/countdown" style="color: #42b883; text-decoration: none; font-weight: 600;">
+        ⏱ 倒计时服务
+      </NuxtLink>
     </nav>
 
     <!-- 页面内容 -->

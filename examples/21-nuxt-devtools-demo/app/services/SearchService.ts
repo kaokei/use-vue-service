@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@kaokei/use-vue-service'
+import { Injectable, Inject, PreDestroy } from '@kaokei/use-vue-service'
 import { RouterService } from './RouterService'
 
 interface PaginationResult<T> {
@@ -235,6 +235,7 @@ export class SearchService<T = any> {
 
   // ===== 生命周期 =====
 
+  @PreDestroy()
   dispose(): void {
     this.clearDebounce()
   }
