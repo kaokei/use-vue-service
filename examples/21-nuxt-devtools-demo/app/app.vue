@@ -20,6 +20,9 @@
       <NuxtLink to="/form" style="color: #42b883; text-decoration: none; font-weight: 600;">
         📝 表单验证服务
       </NuxtLink>
+      <NuxtLink to="/search" style="color: #42b883; text-decoration: none; font-weight: 600;">
+        🔍 搜索分页服务
+      </NuxtLink>
     </nav>
 
     <!-- 页面内容 -->
