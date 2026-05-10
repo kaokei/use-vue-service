@@ -25,3 +25,5 @@
 ## Todo List
 
 1. 改成tsdown来打包代码
+
+2. 搜索服务的6/7需要优化，主要都是和autobind相关，autobind需要解决响应式不生效的问题
