@@ -9,6 +9,7 @@
 | `@Raw`<br/>（accessor）    |     ✓      |     ✓      |         ✗          |       ✗        |            ✓             |
 | `@Raw`<br/>（class）       |     ✓      |     ✓      |         ✓          |       ✗        |            ✓             |
 | `@RunInScope`<br/>（method） |     ✓      |     ✓      |         ✗          |       ✗        |            ✓             |
+| `@autobind`<br/>（method）   |     ✓      |     ✗      |         ✗          |       ✗        |            ✗             |
 
 **说明：**
 
@@ -116,3 +117,23 @@ public setup() { watchEffect(() => { /* ... */ }); }
 方法装饰器，将方法体包裹在一个新的 Vue `EffectScope` 中执行，并返回该 `EffectScope`。方法内的 `watchEffect`、`watch`、`computed` 等副作用统一由该 scope 管理。**不会自动调用**被装饰的方法，需要用户主动调用。
 
 [详细说明](../api/index.md#runinscope)
+
+---
+
+## @autobind
+
+```ts
+// 用法：不带括号
+@autobind
+public handleClick() { /* this 始终指向 reactive proxy */ }
+```
+
+方法装饰器，将方法绑定到 `reactive(this)` 上，确保 `this` 始终指向 Vue 响应式 proxy 对象。适用于 `setTimeout`、`Promise.then`、事件回调等需要保持 `this` 绑定的场景。
+
+**关键特性：**
+
+- 内部使用 `value.bind(reactive(this))` 绑定，不会破坏 Vue 响应式追踪
+- 兼容 `@Raw` 装饰器：检测 `context.metadata[RAW_CLASS_KEY]`，在 `@Raw` 类中回退为普通 `bind(this)` 绑定
+- 仅支持无括号调用（`@autobind`），不支持工厂形式（`@autobind()`）
+- 不依赖 `@Injectable` 或 `@Inject`
+- 不支持 `decorate()` 函数（内部使用 `addInitializer`）

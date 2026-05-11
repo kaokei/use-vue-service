@@ -599,9 +599,9 @@ override model2TOParserMap = {
 
 基类中的方法（`search`、`reset`、`onPageChange`、`onPageSizeChange`、`queryFromUrl`）**均未使用 `@autobind` 装饰器**。
 
-`@autobind` 会将方法绑定到原始实例上，覆盖原型链方法。而 `@kaokei/use-vue-service` 通过 Vue 的 `reactive()` 包裹服务实例，依赖于原型链上的方法 —— 如果先行使用了 `@autobind` 将方法绑定到实例自身，就会**破坏 Vue 响应式 Proxy 的依赖追踪**，导致属性变化无法触发视图更新。
+本库现在提供了 Vue 响应式兼容的 `@autobind` 装饰器，内部使用 `value.bind(reactive(this))` 绑定方法，确保 `this` 始终指向 reactive proxy，不会破坏响应式追踪。同时 `@autobind` 兼容 `@Raw` 装饰器，会检测 `context.metadata[RAW_CLASS_KEY]` 标记，在 `@Raw` 类中回退为普通绑定。
 
-在这个框架中，`this` 始终指向 `reactive` 包裹后的 proxy 对象，因此即使将方法作为回调传递（如 `@input="search.search"`），`this` 也不会丢失。无需 `@autobind`。
+搜索服务选择不使用 `@autobind` 是出于风格偏好：箭头函数写法 `search = () => {}` 同样能保证 `this` 正确，且代码意图更直观。但如果需要在 `setTimeout`、`Promise.then` 等回调场景中保持 `this` 绑定，推荐使用本库提供的 `@autobind`。
 
 Vue 组件中的事件处理遵循以下模式即可确保 `this` 正确：
 

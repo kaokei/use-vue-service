@@ -8,7 +8,7 @@
 
 - **组件级服务** — 每个组件内部调用 `declareProviders([CountdownService])`，获得**完全独立**的服务实例
 - **@PreDestroy 自动清理** — 组件卸载时自动调用 `dispose()` 清除定时器，无需手动管理
-- **避免 @autobind** — `setTimeout` 回调使用箭头函数 `() => this.tick()`，保持 `this` 指向 reactive Proxy，确保响应式正常工作
+- **箭头函数风格** — `setTimeout` 回调使用箭头函数 `() => this.tick()`，保持 `this` 指向 reactive Proxy，确保响应式正常工作。本库提供的 `@autobind` 装饰器现已兼容 Vue 响应式，也可用于此类回调场景
 - **不同展现方式共享同一 Service** — `CountdownText`（行内文本）和 `CountdownBlocks`（卡片数字）使用同一个 `CountdownService` 类
 
 ## 服务定义
