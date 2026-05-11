@@ -1,12 +1,16 @@
 /**
  * autobind + reactive() 响应式兼容性测试
  *
- * 测试 use-vue-service 版 autobind（value.bind(reactive(this))）的完整行为。
- * 利用 Vue 3 reactive() 幂等性，autobind 方法绑定到 reactive proxy，
- * 实现解构/回调场景下 this 正确 + 属性修改响应式。
+ * 测试类别2：先 new Class() 再通过 reactive() 变成响应式对象
+ *
+ * 当用户显式使用 const proxy = reactive(new MyService()) 时，autobind 装饰器
+ * 确保方法绑定到 reactive proxy，使得：
+ * 1. 解构调用时 this 仍指向 proxy，属性修改触发响应式更新
+ * 2. 作为 Promise.then 回调时，this 正确，属性修改触发响应式更新
+ * 3. 作为 setTimeout 回调时，this 正确，属性修改触发响应式更新
  */
-import { reactive, watch, nextTick, isReactive, markRaw } from 'vue';
-import { autobind, Injectable, Raw } from '@/index';
+import { reactive, watch, isReactive } from 'vue';
+import { autobind, Injectable } from '@/index';
 
 // ==================== 测试服务类 ====================
 
@@ -15,12 +19,8 @@ class CounterService {
   public count = 0;
   public message = '';
 
-  public incrementNormal() {
-    this.count++;
-  }
-
   @autobind
-  public incrementAutobind() {
+  public increment() {
     this.count++;
   }
 
@@ -35,92 +35,10 @@ class CounterService {
   }
 }
 
-// ==================== @Raw 兼容测试服务类 ====================
-
-@Raw()
-@Injectable()
-class RawService {
-  public count = 0;
-
-  @autobind
-  public increment() {
-    this.count++;
-  }
-
-  @autobind
-  public getCount() {
-    return this.count;
-  }
-}
-
-// ==================== 核心功能测试 ====================
-
-describe('autobind + reactive() — 响应式兼容性', () => {
-  it('@autobind 方法通过 proxy 调用，修改属性时 watch 触发', async () => {
-    const raw = new CounterService();
-    const proxy = reactive(raw);
-
-    let watchCount = 0;
-    watch(
-      () => proxy.count,
-      () => watchCount++
-    );
-
-    proxy.incrementAutobind();
-    await nextTick();
-
-    expect(watchCount).toBe(1);
-  });
-
-  it('对比：普通方法修改属性，watch 正常触发', async () => {
-    const raw = new CounterService();
-    const proxy = reactive(raw);
-
-    let watchCount = 0;
-    watch(
-      () => proxy.count,
-      () => watchCount++
-    );
-
-    proxy.incrementNormal();
-    await nextTick();
-
-    expect(watchCount).toBe(1);
-  });
-
-  it('多次修改同一属性，watch（sync模式）每次触发', () => {
-    const raw = new CounterService();
-    const proxy = reactive(raw);
-
-    let watchCount = 0;
-    watch(
-      () => proxy.count,
-      () => watchCount++,
-      { flush: 'sync' }
-    );
-
-    proxy.incrementAutobind();
-    expect(watchCount).toBe(1);
-    proxy.incrementAutobind();
-    expect(watchCount).toBe(2);
-    proxy.incrementAutobind();
-    expect(watchCount).toBe(3);
-    expect(proxy.count).toBe(3);
-  });
-
-  it('@autobind 方法读取属性，返回 proxy 上的值', () => {
-    const raw = new CounterService();
-    const proxy = reactive(raw);
-
-    proxy.count = 100;
-    expect(proxy.getCount()).toBe(100);
-  });
-});
-
-// ==================== 解构调用测试 ====================
+// ==================== 类别2：先 new Class() 再通过 reactive() 变成响应式对象 ====================
 
 describe('autobind + reactive() — 解构调用', () => {
-  it('解构后作为普通函数调用，watch 触发（核心新行为）', () => {
+  it('解构后作为普通函数调用，watch 正常触发', () => {
     const raw = new CounterService();
     const proxy = reactive(raw);
 
@@ -131,10 +49,11 @@ describe('autobind + reactive() — 解构调用', () => {
       { flush: 'sync' }
     );
 
-    const { incrementAutobind } = proxy;
-    incrementAutobind();
+    const { increment } = proxy;
+    increment();
 
     expect(watchCount).toBe(1);
+    expect(raw.count).toBe(1);
     expect(proxy.count).toBe(1);
   });
 
@@ -149,16 +68,17 @@ describe('autobind + reactive() — 解构调用', () => {
       { flush: 'sync' }
     );
 
-    const { incrementAutobind } = proxy;
-    incrementAutobind();
-    incrementAutobind();
-    incrementAutobind();
+    const { increment } = proxy;
+    increment();
+    increment();
+    increment();
 
     expect(watchCount).toBe(3);
+    expect(raw.count).toBe(3);
     expect(proxy.count).toBe(3);
   });
 
-  it('解构后调用带参数的方法，修改正确触发 watch', () => {
+  it('解构后调用带参数的方法', () => {
     const raw = new CounterService();
     const proxy = reactive(raw);
 
@@ -170,72 +90,115 @@ describe('autobind + reactive() — 解构调用', () => {
     );
 
     const { setMessage } = proxy;
-    setMessage('world');
+    setMessage('hello');
 
-    expect(lastMsg).toBe('world');
-    expect(proxy.message).toBe('world');
+    expect(lastMsg).toBe('hello');
+    expect(raw.message).toBe('hello');
+    expect(proxy.message).toBe('hello');
   });
 });
 
-// ==================== @Raw 兼容性测试 ====================
+describe('autobind + reactive() — Promise.then 回调', () => {
+  it('Promise.then 传递无参方法', async () => {
+    const raw = new CounterService();
+    const proxy = reactive(raw);
 
-describe('autobind + @Raw() class — 兼容性', () => {
-  it('@Raw 类实例本身不是响应式的（模拟 DI 容器 activationHandle 行为）', () => {
-    const raw = new RawService();
+    let watchCount = 0;
+    watch(
+      () => proxy.count,
+      () => watchCount++,
+      { flush: 'sync' }
+    );
 
-    // 模拟 use-vue-service activationHandle 对 @Raw 类的处理：
-    // if (getOwnMetadata(RAW_CLASS_KEY, token)) return markRaw(obj);
-    const instance = markRaw(raw);
+    await Promise.resolve().then(proxy.increment);
 
-    expect(isReactive(instance)).toBe(false);
-  });
-
-  it('@Raw 类的 autobind 方法修改 raw 实例属性', () => {
-    const raw = new RawService();
-    const instance = markRaw(raw);
-
-    instance.increment();
-    expect(instance.count).toBe(1);
+    expect(watchCount).toBe(1);
     expect(raw.count).toBe(1);
+    expect(proxy.count).toBe(1);
   });
 
-  it('@Raw 类的 autobind 方法读取属性正确', () => {
-    const raw = new RawService();
-    const instance = markRaw(raw);
+  it('Promise.then 多次链式调用', async () => {
+    const raw = new CounterService();
+    const proxy = reactive(raw);
 
-    instance.count = 42;
-    expect(instance.getCount()).toBe(42);
-  });
+    let watchCount = 0;
+    watch(
+      () => proxy.count,
+      () => watchCount++,
+      { flush: 'sync' }
+    );
 
-  it('@Raw 类 + autobind 不会创建孤立 proxy（数据一致性）', () => {
-    const raw = new RawService();
-    const instance = markRaw(raw);
+    await Promise.resolve()
+      .then(proxy.increment)
+      .then(proxy.increment)
+      .then(proxy.increment);
 
-    instance.increment();
-    instance.increment();
-    instance.increment();
-
+    expect(watchCount).toBe(3);
     expect(raw.count).toBe(3);
-    expect(instance.count).toBe(3);
-    // markRaw 返回的是同一个对象引用
-    expect(raw).toBe(instance);
+    expect(proxy.count).toBe(3);
+  });
+
+  it('Promise.then 传递需要参数的方法', async () => {
+    const raw = new CounterService();
+    const proxy = reactive(raw);
+
+    let lastMsg = '';
+    watch(
+      () => proxy.message,
+      (val) => { lastMsg = val; },
+      { flush: 'sync' }
+    );
+
+    await Promise.resolve('hello').then(proxy.setMessage);
+
+    expect(lastMsg).toBe('hello');
+    expect(raw.message).toBe('hello');
+    expect(proxy.message).toBe('hello');
   });
 });
 
-// ==================== 集成场景测试 ====================
-
-describe('autobind + reactive() — 基础行为', () => {
-  it('instance 通过 reactive 包装后，isReactive 为 true（非 @Raw 类）', () => {
+describe('autobind + reactive() — setTimeout 回调', () => {
+  it('setTimeout 传递方法作为回调', async () => {
     const raw = new CounterService();
     const proxy = reactive(raw);
-    expect(isReactive(proxy)).toBe(true);
+
+    let watchCount = 0;
+    watch(
+      () => proxy.count,
+      () => watchCount++,
+      { flush: 'sync' }
+    );
+
+    await new Promise<void>((resolve) => {
+      setTimeout(proxy.increment, 0);
+      setTimeout(resolve, 20);
+    });
+
+    expect(watchCount).toBe(1);
+    expect(raw.count).toBe(1);
+    expect(proxy.count).toBe(1);
   });
 
-  it('proxy 和 raw 数据保持一致', () => {
+  it('setTimeout 多次触发', async () => {
     const raw = new CounterService();
     const proxy = reactive(raw);
 
-    proxy.incrementAutobind();
-    expect(raw.count).toBe(proxy.count);
+    let watchCount = 0;
+    watch(
+      () => proxy.count,
+      () => watchCount++,
+      { flush: 'sync' }
+    );
+
+    await new Promise<void>((resolve) => {
+      setTimeout(proxy.increment, 0);
+      setTimeout(proxy.increment, 0);
+      setTimeout(proxy.increment, 0);
+      setTimeout(resolve, 20);
+    });
+
+    expect(watchCount).toBe(3);
+    expect(raw.count).toBe(3);
+    expect(proxy.count).toBe(3);
   });
 });
