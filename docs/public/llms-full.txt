@@ -58,6 +58,7 @@ export type { FindChildService, FindChildrenServices } from './interface';
 export { Computed } from './computed';
 export { Raw } from './raw';
 export { RunInScope } from './effect-scope';
+export { autobind } from './autobind';
 ```
 
 ---
@@ -454,6 +455,39 @@ scope.stop();
 ```
 
 > 注意：TypeScript 装饰器目前无法自动修改返回类型，这是语言层面的限制。
+
+### @autobind
+
+方法装饰器，将方法绑定到 `reactive(this)` 上（Vue 响应式兼容版），确保方法被解构或作为回调传递时 `this` 不会丢失。
+
+```ts
+// 仅支持无括号调用
+@autobind
+public handleClick() { /* this 始终指向 reactive proxy */ }
+```
+
+**关键特性：**
+- 兼容 `@Raw` 装饰器：检测 `context.metadata[RAW_CLASS_KEY]`，在 `@Raw` 类中回退为普通 `bind(this)`
+- 不依赖 `@Injectable` 或 `@Inject`
+- 不支持 `decorate()` 函数（内部使用 `addInitializer`）
+
+**使用场景：** Vue SFC 模板 `@click="service.method"` 不需要此装饰器（编译器自动处理）；JS 中解构方法、`setTimeout` 回调、`Promise.then` 回调等场景需要。
+
+```ts
+import { autobind } from '@kaokei/use-vue-service';
+
+class CountdownService {
+  public second = 0;
+
+  @autobind
+  tick(): void {
+    this.second--;
+    if (this.second > 0) {
+      setTimeout(this.tick, 1000);  // 直接方法引用，this 自动正确
+    }
+  }
+}
+```
 
 ---
 

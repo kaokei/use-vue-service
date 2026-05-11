@@ -543,3 +543,52 @@ scope.stop();
 绝大多数场景无需关注返回值，直接调用方法即可。只有需要手动管理 scope 时，才需要处理类型问题。
 这个类型问题主要是由于 TypeScript 装饰器目前无法自动修改被装饰方法的返回类型。
 :::
+
+## autobind
+
+```ts
+// 用法：不带括号（仅此一种）
+@autobind
+public handleClick() { /* this 始终指向 reactive proxy */ }
+```
+
+方法装饰器，将方法绑定到实例上，确保方法被解构传递或作为回调（`setTimeout`、`Promise.then`）时 `this` 不会丢失。
+
+### 关键特性
+
+- 仅支持无括号调用（`@autobind`），不支持工厂形式（`@autobind()`）
+- 兼容 `@Raw` 装饰器：检测 `context.metadata[RAW_CLASS_KEY]`，在 `@Raw` 类中回退为普通 `bind(this)`
+- 不依赖 `@Injectable` 或 `@Inject`
+- 不支持 `decorate()` 函数（内部使用 `addInitializer`）
+
+### 使用场景
+
+| 场景 | 是否需要 @autobind |
+|---|---|
+| Vue SFC 模板 `@click="service.method"` | ❌ 不需要（编译器自动包裹箭头函数） |
+| JS 中解构方法 `const { method } = service` | ✅ 需要 |
+| 回调传递 `setTimeout(service.method, 0)` | ✅ 需要 |
+| `Promise.then(service.method)` | ✅ 需要 |
+
+### 使用示例
+
+```ts
+import { autobind } from '@kaokei/use-vue-service';
+
+class CountdownService {
+  public second = 0;
+
+  @autobind
+  tick(): void {
+    this.second--;
+    if (this.second > 0) {
+      setTimeout(this.tick, 1000);  // 直接传递方法引用，this 自动正确
+    }
+  }
+
+  start(seconds: number) {
+    this.second = seconds;
+    this.tick();
+  }
+}
+```

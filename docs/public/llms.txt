@@ -69,6 +69,9 @@ npm install @kaokei/di @kaokei/use-vue-service
 ### @RunInScope
 在 EffectScope 中运行方法，自动管理副作用生命周期。返回 Child_Scope 供手动停止。注意：**不会自动调用**被装饰的方法，需用户主动调用才会生效。
 
+### @autobind
+方法装饰器，将方法绑定到 `reactive(this)`（Vue 响应式兼容版），确保解构/`setTimeout`/`Promise.then` 等场景下 `this` 始终指向 reactive proxy。仅支持无括号调用（`@autobind`），兼容 `@Raw` 装饰器。
+
 ## Token 常量
 
 这两个 Token 用于在**子孙容器树**中查找指定 token 对应的服务实例，查找方向与 `useService` 相反。注意：查找基于容器树而非组件树，查找起点是调用方实际拿到的容器所在节点（可能是祖先组件的容器）。

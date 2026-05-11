@@ -4,10 +4,6 @@ import { RAW_CLASS_KEY } from './constants';
 /**
  * 方法装饰器：自动绑定方法的 this 到实例（Vue 响应式兼容版）
  *
- * 与 @kaokei/di 原始 autobind 的区别：
- * - 原始版：value.bind(this) — 绑定到原始实例，reactive() 后方法内修改丢失响应式
- * - 本版：value.bind(reactive(this)) — 利用 Vue 3 reactive() 幂等性，this 指向 proxy
- *
  * 调用场景全覆盖：
  * - proxy.method()         → this = proxy → 响应式生效 ✅
  * - const m = proxy.method; m() → this = proxy → 响应式生效 ✅
