@@ -27,14 +27,16 @@
   "excludeFiles": [],
   "rules": [
     "Use class-based services with dependency injection instead of centralized stores like Pinia/Vuex",
-    "Three scope levels available: component-level (useService), global root (useRootService), app-level (useAppService)",
+    "All APIs are imported from @kaokei/use-vue-service; @kaokei/di is a required peer dependency but never imported directly",
+    "Three scope levels available: component-level (useService/declareProviders), global root (useRootService/declareRootProviders), app-level (useAppService/declareAppProviders)",
     "Mark service classes with @Injectable() decorator to make them injectable via DI container",
-    "Use declareProviders() in component setup to bind services to component scope — service lifecycle then matches the component's",
     "Retrieve reactive service instances via useService(), useRootService(), or useAppService() composables",
-    "This library re-exports all @kaokei/di APIs — use @kaokei/di for advanced DI patterns like tokens and bindings",
-    "Services support lifecycle via constructor (acts as post-construct initialization)"
+    "Use declareProviders() in component setup to bind services to component scope — service lifecycle matches the component's",
+    "Decorators available: @Injectable, @Inject, @autobind, @Computed, @Raw, @RunInScope, @PostConstruct, @PreDestroy, @Self, @SkipSelf, @Optional, @LazyInject",
+    "For Nuxt projects, use @kaokei/nuxt-use-vue-service module for auto-imports instead of manual imports"
   ],
   "previousVersions": [
+    { "tag": "v4.0.5", "title": "4.0.5" },
     { "tag": "v4.0.4", "title": "4.0.4" },
     { "tag": "v4.0.3", "title": "4.0.3" },
     { "tag": "v4.0.2", "title": "4.0.2" },
