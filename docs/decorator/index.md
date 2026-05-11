@@ -1,6 +1,9 @@
 # 装饰器速查表
 
-本库同时透传导出了 `@kaokei/di` 的全部装饰器（`@Injectable`、`@Inject`、`@PostConstruct`、`@PreDestroy`、`@Self`、`@SkipSelf`、`@Optional`、`@LazyInject`、`@autobind`），可直接从 `@kaokei/use-vue-service` 导入使用。详细说明请参阅 [@kaokei/di 装饰器文档](https://di.kaokei.com/decorator/)。
+本库导出了以下装饰器，可直接从 `@kaokei/use-vue-service` 导入使用：
+
+- **`@kaokei/di` 透传装饰器**：`@Injectable`、`@Inject`、`@PostConstruct`、`@PreDestroy`、`@Self`、`@SkipSelf`、`@Optional`、`@LazyInject` — 详细说明请参阅 [@kaokei/di 装饰器文档](https://di.kaokei.com/decorator/)
+- **本库专属装饰器**：`@autobind`、`@Computed`、`@Raw`、`@RunInScope` — 下方有完整说明
 
 | 装饰器             | 无括号调用 | 有括号调用 | 依赖 `@Injectable` | 依赖 `@Inject` | 支持 `decorate()` |
 | ------------------ | :--------: | :--------: | :----------------: | :------------: | :----------------------: |
@@ -132,8 +135,17 @@ public handleClick() { /* this 始终指向 reactive proxy */ }
 
 **关键特性：**
 
-- 内部使用 `value.bind(reactive(this))` 绑定，不会破坏 Vue 响应式追踪
+- 内部使用 `value.bind(reactive(this))` 绑定，利用 Vue 3 `reactive()` 幂等性，不会破坏 Vue 响应式追踪
 - 兼容 `@Raw` 装饰器：检测 `context.metadata[RAW_CLASS_KEY]`，在 `@Raw` 类中回退为普通 `bind(this)` 绑定
 - 仅支持无括号调用（`@autobind`），不支持工厂形式（`@autobind()`）
 - 不依赖 `@Injectable` 或 `@Inject`
 - 不支持 `decorate()` 函数（内部使用 `addInitializer`）
+
+**使用场景**（详见 [autobind 的必要性分析](../../note/22.autobind的必要性分析.md)）：
+
+| 场景 | 是否需要 @autobind |
+|---|---|
+| Vue SFC 模板 `@click="service.method"` | ❌ 不需要（编译器自动包裹箭头函数） |
+| JS 中解构方法 `const { method } = service` | ✅ 需要 |
+| 回调传递 `setTimeout(service.method, 0)` | ✅ 需要 |
+| `Promise.then(service.method)` | ✅ 需要 |

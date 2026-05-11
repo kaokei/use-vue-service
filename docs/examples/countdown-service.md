@@ -8,13 +8,12 @@
 
 - **组件级服务** — 每个组件内部调用 `declareProviders([CountdownService])`，获得**完全独立**的服务实例
 - **@PreDestroy 自动清理** — 组件卸载时自动调用 `dispose()` 清除定时器，无需手动管理
-- **箭头函数风格** — `setTimeout` 回调使用箭头函数 `() => this.tick()`，保持 `this` 指向 reactive Proxy，确保响应式正常工作。本库提供的 `@autobind` 装饰器现已兼容 Vue 响应式，也可用于此类回调场景
 - **不同展现方式共享同一 Service** — `CountdownText`（行内文本）和 `CountdownBlocks`（卡片数字）使用同一个 `CountdownService` 类
 
 ## 服务定义
 
 ```ts
-import { Injectable, PreDestroy } from '@kaokei/use-vue-service'
+import { Injectable, PreDestroy, autobind } from '@kaokei/use-vue-service'
 
 @Injectable()
 export class CountdownService {
@@ -42,6 +41,7 @@ export class CountdownService {
     this.tick()
   }
 
+  @autobind
   private tick(): void {
     const elapsed = Date.now() - this.startTimestamp
     let remaining = this.totalSeconds * 1000 - elapsed
@@ -58,7 +58,7 @@ export class CountdownService {
     this.day = Math.min(99, Math.floor((totalHour - this.hour) / 24))
 
     if (remaining > 0) {
-      this.timer = window.setTimeout(() => this.tick(), this.step)
+      this.timer = window.setTimeout(this.tick, this.step)
     }
   }
 
@@ -199,6 +199,6 @@ const blocks = [
 
 1. **组件级作用域** — 每个组件内部调用 `declareProviders([CountdownService])` 获得独立的服务实例，多个倒计时组件之间互不干扰。
 2. **@PreDestroy 自动清理** — 组件卸载时框架自动调用 `dispose()` 方法清除 `setTimeout`，不会出现定时器泄漏。无需手动在 `onUnmounted` 中清理。
-3. **避免 @autobind 保持响应式** — `tick()` 中的 `setTimeout` 使用箭头函数 `() => this.tick()`，保证 `this` 指向 reactive Proxy 而非 raw 对象，从而模板能正确响应 `day`/`hour`/`minute`/`second` 的变化。
+3. **@autobind + setTimeout** — `tick()` 使用 `@autobind` 装饰器绑定 `this`，使得 `window.setTimeout(this.tick, this.step)` 可以直接传递方法引用而无需箭头函数包裹，同时保持 `this` 指向 reactive proxy，响应式正常工作。
 4. **基于时间戳而非递减计数** — `tick()` 通过 `Date.now() - startTimestamp` 计算剩余时间，比每次 `totalSeconds--` 更精确，不受定时器精度偏差影响。
 5. **同一 Service 类，两种展现方式** — `CountdownText` 和 `CountdownBlocks` 使用完全相同的 `CountdownService`，只是模板渲染方式不同。服务层和视图层解耦。

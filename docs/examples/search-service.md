@@ -595,14 +595,6 @@ override model2TOParserMap = {
 
 在组件中，关键词输入框绑定 `@input="search.search()"`，状态下拉框绑定 `@change="onStatusChange"` 并内部调用 `search.immediateSearch()`。
 
-### 6. 为什么不用 @autobind
-
-基类中的方法（`search`、`reset`、`onPageChange`、`onPageSizeChange`、`queryFromUrl`）**均未使用 `@autobind` 装饰器**。
-
-本库现在提供了 Vue 响应式兼容的 `@autobind` 装饰器，内部使用 `value.bind(reactive(this))` 绑定方法，确保 `this` 始终指向 reactive proxy，不会破坏响应式追踪。同时 `@autobind` 兼容 `@Raw` 装饰器，会检测 `context.metadata[RAW_CLASS_KEY]` 标记，在 `@Raw` 类中回退为普通绑定。
-
-搜索服务选择不使用 `@autobind` 是出于风格偏好：箭头函数写法 `search = () => {}` 同样能保证 `this` 正确，且代码意图更直观。但如果需要在 `setTimeout`、`Promise.then` 等回调场景中保持 `this` 绑定，推荐使用本库提供的 `@autobind`。
-
 Vue 组件中的事件处理遵循以下模式即可确保 `this` 正确：
 
 ```vue
@@ -617,7 +609,7 @@ Vue 组件中的事件处理遵循以下模式即可确保 `this` 正确：
 <select :value="search.model.status" @change="onStatusChange" />
 ```
 
-### 7. 下拉框使用 `:value` + `@change` 而非 `v-model`
+### 6. 下拉框使用 `:value` + `@change` 而非 `v-model`
 
 状态下拉框使用单向绑定 + 事件处理，而不是 `v-model="search.model.status"`：
 
@@ -632,7 +624,7 @@ Vue 组件中的事件处理遵循以下模式即可确保 `this` 正确：
 
 输入框使用 `v-model="search.model.keyword"` 没问题，因为 `@input="search.search()"` 委托给服务方法的防抖逻辑处理。
 
-### 8. `STATUS_OPTIONS` 和 `STATUS_LABEL_MAP` 模式
+### 7. `STATUS_OPTIONS` 和 `STATUS_LABEL_MAP` 模式
 
 不是随意定义两个互相独立的数组和对象。`STATUS_LABEL_MAP` 必须从 `STATUS_OPTIONS` 推导生成，确保 **value/label 映射始终与下拉选项同步**。当需要新增状态时，只需修改一处：
 
@@ -651,7 +643,7 @@ const STATUS_OPTIONS = [...]
 const STATUS_LABEL_MAP = { published: '已发布', draft: '草稿' } // 手动维护
 ```
 
-### 9. 方法完整 API 速查
+### 8. 方法完整 API 速查
 
 | 方法 | 签名 | 说明 |
 |------|------|------|

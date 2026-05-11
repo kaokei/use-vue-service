@@ -46,7 +46,7 @@
         <li><strong>组件级服务</strong> — 每个倒计时组件内部调用 <code>declareProviders([CountdownService])</code>，获得独立实例</li>
         <li><strong>@PreDestroy 自动清理</strong> — 组件卸载时 <code>dispose()</code> 自动清除定时器，防止内存泄漏</li>
         <li><strong>不同展现方式</strong> — CountdownText（行内文本）和 CountdownBlocks（卡片数字）共享同一个 Service 类</li>
-        <li><strong>避免 @autobind</strong> — setTimeout 回调使用箭头函数 <code>() => this.tick()</code>，保持响应式正常工作</li>
+        <li><strong>递归 setTimeout 倒计时</strong> — <code>tick()</code> 通过 setTimeout 递归调用自身，实现精确毫秒级倒计时</li>
       </ul>
     </section>
   </div>

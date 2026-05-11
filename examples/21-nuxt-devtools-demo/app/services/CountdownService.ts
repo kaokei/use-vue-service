@@ -1,4 +1,4 @@
-import { Injectable, PreDestroy } from '@kaokei/use-vue-service'
+import { Injectable, PreDestroy, autobind } from '@kaokei/use-vue-service'
 
 @Injectable()
 export class CountdownService {
@@ -26,6 +26,7 @@ export class CountdownService {
     this.tick()
   }
 
+  @autobind
   private tick(): void {
     const elapsed = Date.now() - this.startTimestamp
     let remaining = this.totalSeconds * 1000 - elapsed
@@ -42,7 +43,7 @@ export class CountdownService {
     this.day = Math.min(99, Math.floor((totalHour - this.hour) / 24))
 
     if (remaining > 0) {
-      this.timer = window.setTimeout(() => this.tick(), this.step)
+      this.timer = window.setTimeout(this.tick, this.step)
     }
   }
 
